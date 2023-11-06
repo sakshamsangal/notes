@@ -1,0 +1,289 @@
+<templateSet group="user">
+  <template name="arr-init" value="int[] arr = {1, 2, 3, 4, 5, 6, 7};" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_EXPRESSION" value="true" />
+      <option name="JAVA_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="pi" value="// pick&#10;        // ignore" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_EXPRESSION" value="true" />
+      <option name="JAVA_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="cmax" value="int currMax = java.lang.Integer.MIN_VALUE;" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_EXPRESSION" value="true" />
+      <option name="JAVA_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="cmin" value="int currMin = java.lang.Integer.MAX_VALUE;" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_EXPRESSION" value="true" />
+      <option name="JAVA_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="sum1" value="int sum = 0;" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_EXPRESSION" value="true" />
+      <option name="JAVA_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="start-end" value="int start = 0;&#10;        int end = 0;" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_EXPRESSION" value="true" />
+      <option name="JAVA_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="two-pointer" value="int start = 0;&#10;int end = arr.length - 1;&#10;while (start &lt; end) {&#10;    // success&#10;    &#10;    // movement&#10;    if (true) {&#10;        start++;&#10;    } else {&#10;        end--;&#10;    }&#10;}" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_EXPRESSION" value="true" />
+      <option name="JAVA_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="arr-obj" value="int[] $a$ = new int[2];" description="" toReformat="true" toShortenFQNames="true">
+    <variable name="a" expression="" defaultValue="&quot;arr&quot;" alwaysStopAt="true" />
+    <context>
+      <option name="JAVA_EXPRESSION" value="true" />
+      <option name="JAVA_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="letter-occ" value="// letter occurrence&#10;        int[] arr = new int[26];&#10;        for (int i = 0; i &lt; magazine.length(); i++) {&#10;            arr[magazine.charAt(i) - 97]++;&#10;        }" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_EXPRESSION" value="true" />
+      <option name="JAVA_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="is-null" value="if (java.util.Objects.isNull($EXP$)) {&#10;        }" description="" toReformat="true" toShortenFQNames="true">
+    <variable name="EXP" expression="variableOfType(&quot;&quot;)" defaultValue="&quot;exp&quot;" alwaysStopAt="true" />
+    <context>
+      <option name="JAVA_EXPRESSION" value="true" />
+      <option name="JAVA_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="sec-config" value="@org.springframework.context.annotation.Configuration&#10;@org.springframework.security.config.annotation.web.configuration.EnableWebSecurity&#10;@org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity&#10;public class SecurityConfig {&#10;&#10;&#10;}" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="security-user" value="spring.security.user.name= Basant&#10;spring.security.user.password= Pwd1" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="Properties" value="true" />
+    </context>
+  </template>
+  <template name="bean-securityfilterchain" value="@org.springframework.context.annotation.Bean&#10;    public org.springframework.security.web.SecurityFilterChain securityFilterChain(org.springframework.security.config.annotation.web.builders.HttpSecurity http) throws java.lang.Exception {&#10;        return http.csrf().disable()&#10;                .authorizeHttpRequests()&#10;                .requestMatchers(&quot;/products/welcome&quot;,&quot;/products/new&quot;).permitAll()&#10;                .and()&#10;                .authorizeHttpRequests().requestMatchers(&quot;/products/**&quot;)&#10;                .authenticated().and().formLogin().and().build();&#10;    }" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="get-by-id-role" value="@org.springframework.web.bind.annotation.GetMapping(&quot;$path$&quot;)&#10;@org.springframework.security.access.prepost.PreAuthorize(&quot;hasAuthority('$ROLE$')&quot;)&#10;public $CN$ get$CN$ById(@org.springframework.web.bind.annotation.PathVariable int id) {&#10;    return $ser$.get$CN$(id);&#10;}" description="" toReformat="true" toShortenFQNames="true">
+    <variable name="path" expression="&quot;/{id}&quot;" defaultValue="" alwaysStopAt="true" />
+    <variable name="ROLE" expression="enum(&quot;ROLE_USER&quot;, &quot;ROLE_ADMIN&quot;)" defaultValue="" alwaysStopAt="true" />
+    <variable name="CN" expression="className()" defaultValue="" alwaysStopAt="true" />
+    <variable name="ser" expression="suggestVariableName()" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="get-all-role" value="@org.springframework.web.bind.annotation.GetMapping(&quot;$path$&quot;)&#10;@org.springframework.security.access.prepost.PreAuthorize(&quot;hasAuthority('$ROLE$')&quot;)&#10;public java.util.List&lt;$CN$&gt; getAll$CN$s() {&#10;    return $ser$.getAll$CN$s(id);&#10;}" description="" toReformat="true" toShortenFQNames="true">
+    <variable name="path" expression="&quot;/all&quot;" defaultValue="" alwaysStopAt="true" />
+    <variable name="ROLE" expression="enum(&quot;ROLE_USER&quot;, &quot;ROLE_ADMIN&quot;)" defaultValue="" alwaysStopAt="true" />
+    <variable name="CN" expression="className()" defaultValue="" alwaysStopAt="true" />
+    <variable name="ser" expression="suggestVariableName()" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="get-api-string" value="@org.springframework.web.bind.annotation.GetMapping(&quot;/$a$&quot;)&#10;    public java.lang.String $a$() {&#10;        return &quot;$msg$&quot;;&#10;    }" description="" toReformat="true" toShortenFQNames="true">
+    <variable name="a" expression="&quot;welcome&quot;" defaultValue="" alwaysStopAt="true" />
+    <variable name="msg" expression="&quot;Welcome this endpoint is not secure&quot;" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="pri-final" value="private final $a$ $b$;" description="" toReformat="true" toShortenFQNames="true">
+    <variable name="a" expression="className()" defaultValue="" alwaysStopAt="true" />
+    <variable name="b" expression="decapitalize(a)" defaultValue="" alwaysStopAt="false" />
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="post-api-add" value="@org.springframework.web.bind.annotation.PostMapping(&quot;/$a$&quot;)&#10;    public java.lang.String add$cn$(@org.springframework.web.bind.annotation.RequestBody $req$ $d$){&#10;        return $c$.add$cn$($d$);&#10;    }&#10;$END$" description="" toReformat="true" toShortenFQNames="true">
+    <variable name="a" expression="&quot;new&quot;" defaultValue="" alwaysStopAt="true" />
+    <variable name="cn" expression="suggestVariableName()" defaultValue="" alwaysStopAt="true" />
+    <variable name="req" expression="suggestVariableName()" defaultValue="" alwaysStopAt="true" />
+    <variable name="c" expression="suggestVariableName()" defaultValue="" alwaysStopAt="true" />
+    <variable name="d" expression="decapitalize(req)" defaultValue="" alwaysStopAt="false" />
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="vel" value="implementation 'org.apache.velocity:velocity:1.7'" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="GROOVY_EXPRESSION" value="true" />
+      <option name="GROOVY_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="map-struct" value="implementation 'org.mapstruct:mapstruct:1.5.5.Final'&#10;&#9;annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'&#10;&#9;annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="GROOVY_EXPRESSION" value="true" />
+      <option name="GROOVY_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="cmax-cond" value="currMax = java.lang.Math.max(currMax, s.length());" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_EXPRESSION" value="true" />
+      <option name="JAVA_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="count" value="int count = 0;" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_EXPRESSION" value="true" />
+      <option name="JAVA_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="sliding-widow" value="int start = 0;&#10;int sum = 0;&#10;int $currMin$;&#10;for (int i = 0; i &lt; $nums$.length; i++) {&#10;    &#10;}&#10;&#10;return $a$;" description="" toReformat="true" toShortenFQNames="true">
+    <variable name="currMin" expression="enum(&quot;currMin = java.lang.Integer.MAX_VALUE&quot;, &quot;currMax = java.lang.Integer.MIN_VALUE&quot;)" defaultValue="" alwaysStopAt="true" />
+    <variable name="nums" expression="arrayVariable()" defaultValue="" alwaysStopAt="true" />
+    <variable name="a" expression="enum(&quot;currMin&quot;, &quot;currMax&quot;)" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="JAVA_EXPRESSION" value="true" />
+      <option name="JAVA_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="res" value="'$code$':&#10;          description: $resDes$&#10;          content:&#10;            application/json:&#10;              schema:&#10;                $ref: '#/components/schemas/$ApplicationResponse$'" description="" toReformat="true" toShortenFQNames="true">
+    <variable name="code" expression="enum(&quot;200&quot;, &quot;201&quot;, &quot;403&quot;, &quot;404&quot;, &quot;500&quot;)" defaultValue="" alwaysStopAt="true" />
+    <variable name="resDes" expression="enum(&quot;Successful operation&quot;, &quot;Created&quot;, &quot;Forbidden&quot;, &quot;Resource not found&quot;, &quot;Internal server error&quot;)" defaultValue="" alwaysStopAt="true" />
+    <variable name="ApplicationResponse" expression="&quot;ApplicationResponse&quot;" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="GROOVY" value="false" />
+      <option name="HTML" value="false" />
+      <option name="JAVA_CODE" value="false" />
+      <option name="JSON" value="false" />
+      <option name="KOTLIN" value="false" />
+      <option name="MAVEN" value="false" />
+      <option name="OTHER" value="true" />
+      <option name="Properties" value="false" />
+      <option name="SHELL_SCRIPT" value="false" />
+      <option name="XML" value="false" />
+      <option name="XML_ATTRIBUTE" value="false" />
+    </context>
+  </template>
+  <template name="sch-req" value="$Student$:&#10;      description: $schDes$&#10;      required:&#10;        - $req$&#10;      type: object&#10;      properties:&#10;        action:&#10;          type: $string$&#10;          description: &gt;&#10;            $des$" description="" toReformat="true" toShortenFQNames="true">
+    <variable name="Student" expression="&quot;Student&quot;" defaultValue="" alwaysStopAt="true" />
+    <variable name="schDes" expression="&quot;Student info&quot;" defaultValue="" alwaysStopAt="true" />
+    <variable name="req" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="string" expression="enum(&quot;string&quot;,&quot;number&quot;,&quot;integer&quot;,&quot;boolean&quot;,&quot;array&quot;,&quot;object&quot;) " defaultValue="" alwaysStopAt="true" />
+    <variable name="des" expression="&quot;field desc&quot;" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="GROOVY" value="false" />
+      <option name="HTML" value="false" />
+      <option name="JAVA_CODE" value="false" />
+      <option name="JSON" value="false" />
+      <option name="KOTLIN" value="false" />
+      <option name="MAVEN" value="false" />
+      <option name="OTHER" value="true" />
+      <option name="Properties" value="false" />
+      <option name="SHELL_SCRIPT" value="false" />
+      <option name="XML" value="false" />
+      <option name="XML_ATTRIBUTE" value="false" />
+    </context>
+  </template>
+  <template name="str-req" value="$id$:&#10;          type: string&#10;          pattern: ^(?!\s*$).+&#10;          example: $ex$&#10;          description: $myDesc$" description="" toReformat="true" toShortenFQNames="true">
+    <variable name="id" expression="&quot;id&quot;" defaultValue="" alwaysStopAt="true" />
+    <variable name="ex" expression="enum(&quot;tx123&quot;,&quot;Sample123&quot;)" defaultValue="" alwaysStopAt="true" />
+    <variable name="myDesc" expression="&quot;my description&quot;" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="GROOVY" value="false" />
+      <option name="HTML" value="false" />
+      <option name="JAVA_CODE" value="false" />
+      <option name="JSON" value="false" />
+      <option name="KOTLIN" value="false" />
+      <option name="MAVEN" value="false" />
+      <option name="OTHER" value="true" />
+      <option name="Properties" value="false" />
+      <option name="SHELL_SCRIPT" value="false" />
+      <option name="XML" value="false" />
+      <option name="XML_ATTRIBUTE" value="false" />
+    </context>
+  </template>
+  <template name="obj" value="$obj$:&#10;      description: $Response$&#10;      required:&#10;        - &#10;      type: object&#10;      properties:" description="" toReformat="true" toShortenFQNames="true">
+    <variable name="obj" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="Response" expression="&quot;Response from getDocumentStatusAPI&quot;" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="GROOVY" value="false" />
+      <option name="HTML" value="false" />
+      <option name="JAVA_CODE" value="false" />
+      <option name="JSON" value="false" />
+      <option name="KOTLIN" value="false" />
+      <option name="MAVEN" value="false" />
+      <option name="OTHER" value="true" />
+      <option name="Properties" value="false" />
+      <option name="SHELL_SCRIPT" value="false" />
+      <option name="XML" value="false" />
+      <option name="XML_ATTRIBUTE" value="false" />
+    </context>
+  </template>
+  <template name="str" value="$id$:&#10;          type: string&#10;          example: $tx123$&#10;          description: $myDesc$" description="" toReformat="true" toShortenFQNames="true">
+    <variable name="id" expression="&quot;id&quot;" defaultValue="" alwaysStopAt="true" />
+    <variable name="tx123" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="myDesc" expression="&quot;myDesc&quot;" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="GROOVY" value="false" />
+      <option name="HTML" value="false" />
+      <option name="JAVA_CODE" value="false" />
+      <option name="JSON" value="false" />
+      <option name="KOTLIN" value="false" />
+      <option name="MAVEN" value="false" />
+      <option name="OTHER" value="true" />
+      <option name="Properties" value="false" />
+      <option name="SHELL_SCRIPT" value="false" />
+      <option name="XML" value="false" />
+      <option name="XML_ATTRIBUTE" value="false" />
+    </context>
+  </template>
+  <template name="swagger-boiler" value="openapi: 3.0.1&#10;info:&#10;  title: $appName$&#10;  version: 1.0.0&#10;servers:&#10;  - url: $host$&#10;    description: $appDesc$&#10;paths:&#10;components:&#10;  schemas:" description="" toReformat="true" toShortenFQNames="true">
+    <variable name="appName" expression="&quot;Student mgt system&quot;" defaultValue="" alwaysStopAt="true" />
+    <variable name="host" expression="&quot;http://localhost:8080&quot;" defaultValue="" alwaysStopAt="true" />
+    <variable name="appDesc" expression="&quot;It will manage student&quot;" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="GROOVY" value="false" />
+      <option name="HTML" value="false" />
+      <option name="JAVA_CODE" value="false" />
+      <option name="JSON" value="false" />
+      <option name="KOTLIN" value="false" />
+      <option name="MAVEN" value="false" />
+      <option name="OTHER" value="true" />
+      <option name="Properties" value="false" />
+      <option name="SHELL_SCRIPT" value="false" />
+      <option name="XML" value="false" />
+      <option name="XML_ATTRIBUTE" value="false" />
+    </context>
+  </template>
+  <template name="post-api" value="$contextpath$:&#10;    $verb$:&#10;      tags:&#10;        - $tag$&#10;      description: &gt;&#10;        $des$ &#10;      requestBody:&#10;        content:&#10;            application/json:&#10;                schema:&#10;                  $ref: '#/components/schemas/$obj$'&#10;        required: true&#10;      responses:&#10;          '200':&#10;              description: Successful operation&#10;              content:&#10;                application/json:&#10;                  schema:&#10;                    $ref: '#/components/schemas/ApplicationResponse'" description="" toReformat="true" toShortenFQNames="true">
+    <variable name="contextpath" expression="&quot;/&quot;" defaultValue="" alwaysStopAt="true" />
+    <variable name="verb" expression="enum(&quot;post&quot;,&quot;put&quot;) " defaultValue="" alwaysStopAt="true" />
+    <variable name="tag" expression="&quot;add-student&quot;" defaultValue="" alwaysStopAt="true" />
+    <variable name="des" expression="&quot;my desc&quot;" defaultValue="" alwaysStopAt="true" />
+    <variable name="obj" expression="&quot;Student&quot;" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="GROOVY" value="false" />
+      <option name="HTML" value="false" />
+      <option name="JAVA_CODE" value="false" />
+      <option name="JSON" value="false" />
+      <option name="KOTLIN" value="false" />
+      <option name="MAVEN" value="false" />
+      <option name="OTHER" value="true" />
+      <option name="Properties" value="false" />
+      <option name="SHELL_SCRIPT" value="false" />
+      <option name="XML" value="false" />
+      <option name="XML_ATTRIBUTE" value="false" />
+    </context>
+  </template>
+  <template name="oas" value="implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="GROOVY_EXPRESSION" value="true" />
+      <option name="GROOVY_STATEMENT" value="true" />
+    </context>
+  </template>
+</templateSet>

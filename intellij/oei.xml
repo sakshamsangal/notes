@@ -1,0 +1,346 @@
+<templateSet group="oei">
+  <template name="n" value="$Clazz$ $obj$ = new $Clazz$();&#10;$END$" description="new Obj" toReformat="true" toShortenFQNames="true">
+    <variable name="Clazz" expression="className()" defaultValue="" alwaysStopAt="true" />
+    <variable name="obj" expression="decapitalize(Clazz)" defaultValue="" alwaysStopAt="false" />
+    <context>
+      <option name="JAVA_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="exc-class" value="import lombok.Getter;&#10;&#10;&#10;/**&#10; * This is a custom exception handler for application exception&#10; */&#10;@lombok.Getter&#10;public class ApplicationException extends java.lang.RuntimeException {&#10;    private final java.lang.String code;&#10;    private final java.lang.String message;&#10;&#10;&#10;    public ApplicationException(java.lang.String code, java.lang.String message, final java.lang.Throwable cause) {&#10;        super(message, cause);&#10;        this.code = code;&#10;        this.message = message;&#10;&#10;    }&#10;&#10;&#10;}" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="mock-ex" value="@org.junit.jupiter.api.extension.ExtendWith({org.mockito.junit.jupiter.MockitoExtension.class})" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="test-1" value="@org.junit.jupiter.api.Test&#10;    void testMapper2() {&#10;        // given&#10;        com.thomsonreuters.einv.api.mapper.InvoiceTypeMapper INSTANCE = org.mapstruct.factory.Mappers.getMapper(com.thomsonreuters.einv.api.mapper.InvoiceTypeMapper.class);&#10;        com.thomsonreuters.einv.api.config.JacksonConfiguration configuration = new com.thomsonreuters.einv.api.config.JacksonConfiguration();&#10;        com.fasterxml.jackson.databind.ObjectMapper mapper = configuration.objectMapper();&#10;        com.thomsonreuters.einv.api.model.process_document.request.EDocument eDocument;&#10;        try {&#10;            eDocument = mapper.readValue(com.thomsonreuters.einv.api.util.Util.getJSONString(com.thomsonreuters.einv.api.util.Util.REQ_EDOCUMENT_SUC + &quot;doc_success_inv4.json&quot;), com.thomsonreuters.einv.api.model.process_document.request.EDocument.class);&#10;        } catch (com.fasterxml.jackson.core.JsonProcessingException e) {&#10;            throw new java.lang.RuntimeException(e);&#10;        }&#10;&#10;        // when&#10;        com.thomsonreuters.einv.api.model.jaxb.pagero.pagerouniversalformat.invoice._1.InvoiceType response = INSTANCE.mapEDocumentToInvoiceType(eDocument);&#10;        com.thomsonreuters.einv.api.model.jaxb.pagero.pagerouniversalformat.invoice._1.InvoiceType invoiceType = pufTransformationService.setAdditionalMappingsInvoice(eDocument, response);&#10;        java.lang.String xml = pufTransformationService.createInvoiceTypeXMLString(invoiceType);&#10;&#10;        // then&#10;        org.junit.jupiter.api.Assertions.assertNotNull(response);&#10;&#10;    }" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="s3-class" value="public class AmazonS3Util {&#10;    private static com.amazonaws.services.s3.AmazonS3 s3Obj;&#10;&#10;    private AmazonS3Util() {&#10;        // private constructor&#10;    }&#10;&#10;    public static com.amazonaws.services.s3.AmazonS3 getInstance(java.lang.String clientRegion) {&#10;        if (s3Obj == null) {&#10;            s3Obj = com.amazonaws.services.s3.AmazonS3ClientBuilder.standard()&#10;                    .withRegion(clientRegion)&#10;                    .withCredentials(com.amazonaws.auth.DefaultAWSCredentialsProviderChain.getInstance())&#10;                    .build();&#10;        }&#10;        return s3Obj;&#10;    }&#10;&#10;}" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="s3-file-service" value="@org.springframework.stereotype.Service&#10;@lombok.extern.slf4j.Slf4j&#10;public class S3FileService {&#10;&#10;    private final com.thomsonreuters.einv.api.config.ConfigProperties configProperties;&#10;&#10;    @org.springframework.beans.factory.annotation.Autowired&#10;    public S3FileService(com.thomsonreuters.einv.api.config.ConfigProperties configProperties) {&#10;        this.configProperties = configProperties;&#10;    }&#10;&#10;    public java.lang.String uploadFile(java.lang.String fileNameWithPath, org.springframework.web.multipart.MultipartFile file) {&#10;        log.info(&quot;OSEI - uploadFile call start&quot;);&#10;&#10;        java.lang.String clientRegion = configProperties.getClientRegion();&#10;&#10;        com.amazonaws.services.s3.model.ObjectMetadata metaData = new com.amazonaws.services.s3.model.ObjectMetadata();&#10;        metaData.setContentLength(file.getSize());&#10;        metaData.setContentType(file.getContentType());&#10;&#10;        com.amazonaws.services.s3.AmazonS3 s3Client;&#10;        try {&#10;            s3Client = com.thomsonreuters.einv.api.amazon_s3.AmazonS3Util.getInstance(clientRegion);&#10;            log.info(&quot;Amazon S3 instance is now available to use&quot;);&#10;            s3Client.putObject(configProperties.getBucketName(), fileNameWithPath, file.getInputStream(), metaData);&#10;&#10;        } catch (com.amazonaws.AmazonServiceException | java.io.IOException e) {&#10;            log.error(&quot;AmazonServiceException |IOException &quot;, e);&#10;&#10;            // The call was transmitted successfully, but Amazon S3 couldn't process&#10;            // it, so it returned an error response.&#10;            throw new com.thomsonreuters.einv.api.exception.ApplicationException(org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR.toString(), e.getMessage(), e);&#10;        } catch (com.amazonaws.SdkClientException e) {&#10;            // Amazon S3 couldn't be contacted for a response, or the client&#10;            // couldn't parse the response from Amazon S3.&#10;            log.error(&quot;uploadFile method exception: &quot; + e);&#10;            throw new com.thomsonreuters.einv.api.exception.ApplicationException(org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR.toString(), e.getMessage(), e);&#10;        }&#10;&#10;//        s3Client.setObjectAcl(configProperties.getBucketName(), fileNameWithPath, CannedAccessControlList.PublicRead);&#10;        log.info(&quot;File object created successfully at&quot; + s3Client.getUrl(configProperties.getBucketName(), fileNameWithPath).toString());&#10;        return s3Client.getUrl(configProperties.getBucketName(), fileNameWithPath).toString();&#10;    }&#10;&#10;    public java.io.InputStream getFile(java.lang.String fileName) {&#10;&#10;        java.lang.String clientRegion = configProperties.getClientRegion();&#10;        com.amazonaws.services.s3.AmazonS3 s3Client = null;&#10;        try {&#10;            s3Client = com.amazonaws.services.s3.AmazonS3ClientBuilder.standard()&#10;                    .withRegion(clientRegion)&#10;                    .withCredentials(com.amazonaws.auth.DefaultAWSCredentialsProviderChain.getInstance())&#10;                    .build();&#10;&#10;        } catch (com.amazonaws.AmazonServiceException e) {&#10;            e.printStackTrace();&#10;        } catch (com.amazonaws.SdkClientException e) {&#10;            log.error(&quot;getFile method Exception: &quot; + e);&#10;            e.printStackTrace();&#10;        }&#10;&#10;        //read the file&#10;        if (java.util.Objects.nonNull(s3Client)) {&#10;            com.amazonaws.services.s3.model.S3Object s3object = s3Client.getObject(configProperties.getBucketName(), fileName);&#10;            log.info(&quot;File object read successfully at&quot; + s3Client.getUrl(configProperties.getBucketName(), fileName).toString());&#10;            return s3object.getObjectContent();&#10;        }&#10;        return null;&#10;    }&#10;&#10;&#10;}" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="web-client-bean-1" value="@org.springframework.context.annotation.Bean&#10;    public org.springframework.web.reactive.function.client.WebClient webClient(org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager authorizedClientManager){&#10;        reactor.netty.resources.ConnectionProvider connectionProvider = reactor.netty.resources.ConnectionProvider.create(getConfigProperties().getConnectionPoolName(),&#10;                getConfigProperties().getConnectionPoolSize());&#10;&#10;        reactor.netty.http.client.HttpClient httpClient = reactor.netty.http.client.HttpClient.create(connectionProvider)&#10;                .option(io.netty.channel.ChannelOption.CONNECT_TIMEOUT_MILLIS, getConfigProperties().getConnectionTimeOut())&#10;                .responseTimeout(java.time.Duration.ofSeconds(getConfigProperties().getResponseTimeOut()))&#10;                .wiretap(false);&#10;        org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction oauth2Client =&#10;                new org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager);&#10;&#10;        oauth2Client.setDefaultClientRegistrationId(&quot;pagero&quot;);&#10;&#10;        return org.springframework.web.reactive.function.client.WebClient.builder()&#10;                .baseUrl(configProperties.getPageroOnlineUrl())&#10;                .apply(oauth2Client.oauth2Configuration())&#10;                .clientConnector(new org.springframework.http.client.reactive.ReactorClientHttpConnector(httpClient))&#10;                .filter(buildRetryExchangeFilterFunction())&#10;                .build();&#10;    }" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="web-client-retry" value="private org.springframework.web.reactive.function.client.ExchangeFilterFunction buildRetryExchangeFilterFunction() {&#10;        return (clientRequest, next) -&gt; {&#10;            java.lang.String apiName = clientRequest.attribute(com.thomsonreuters.einv.api.util.Constants.API_NAME)&#10;                    .map(java.lang.String.class::cast).orElse(&quot;&quot;);&#10;            java.lang.String eDocumentId = clientRequest.attribute(com.thomsonreuters.einv.api.util.Constants.EDOCUMENT_ID)&#10;                    .map(java.lang.String.class::cast).orElse(&quot;&quot;);&#10;&#10;            return next.exchange(clientRequest).flatMap(&#10;                    clientResponse -&gt; {&#10;                        if(!clientResponse.statusCode().is2xxSuccessful()){&#10;                            return handleErrorResponse(clientResponse, apiName, eDocumentId);&#10;                        }&#10;                        return reactor.core.publisher.Mono.just(clientResponse);&#10;                    }&#10;            ).retryWhen(reactor.util.retry.Retry.fixedDelay(configProperties.getMaxRetry(), java.time.Duration.ofSeconds(&#10;                    configProperties.getTimeIntervalBetweenRetry()))&#10;                    .filter(throwable -&gt; throwable instanceof org.springframework.web.reactive.function.client.WebClientRequestException&#10;                            &amp;&amp; throwable.getCause() instanceof io.netty.handler.timeout.TimeoutException)&#10;                    .onRetryExhaustedThrow((retryBackoffSpec, retrySignal) -&gt; {&#10;                        throw new com.thomsonreuters.einv.api.exception.ClientException(org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR,&quot;External Partner Service failed to process after max retries&quot;, apiName, eDocumentId);&#10;                    }));&#10;        };&#10;    }" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="cont-1" value="@org.springframework.web.bind.annotation.RequestMapping(&quot;/v1&quot;)&#10;@org.springframework.web.bind.annotation.RestController&#10;@lombok.extern.slf4j.Slf4j&#10;@lombok.RequiredArgsConstructor&#10;public class EDocumentController implements com.thomsonreuters.einv.api.controller.EDocumentApi {&#10;&#10;    private com.thomsonreuters.einv.api.service.ProcessDocumentService processDocumentService;&#10;&#10;    @org.springframework.beans.factory.annotation.Autowired&#10;    public EDocumentController(com.thomsonreuters.einv.api.service.ProcessDocumentService processDocumentService){&#10;        this.processDocumentService = processDocumentService;&#10;    }&#10;&#10;    @java.lang.Override&#10;    public org.springframework.http.ResponseEntity&lt;com.thomsonreuters.einv.api.model.process_document.response.EDocumentResponse&gt; processDocument(@jakarta.validation.Valid @org.springframework.web.bind.annotation.RequestBody com.thomsonreuters.einv.api.model.process_document.request.EDocument eDocument) {&#10;        log.info(&quot;OSEI - Process document api call start with eDocumentId {}&quot;, eDocument.getId());&#10;        com.thomsonreuters.einv.api.model.process_document.response.EDocumentResponse eDocumentResponse = processDocumentService.submitDocument(eDocument, &quot;processDocument&quot;);&#10;        log.info(&quot;OSEI - Process document api call end with eDocumentId {}&quot;, eDocument.getId());&#10;        return new org.springframework.http.ResponseEntity&lt;&gt;(eDocumentResponse,org.springframework.http.HttpStatus.CREATED);&#10;    }&#10;&#10;&#10;}" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="webflux" value="implementation 'org.springframework.boot:spring-boot-starter-webflux'" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="GROOVY_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="g-s3-0" value="implementation 'com.amazonaws:aws-java-sdk-s3:1.12.506'" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="GROOVY_EXPRESSION" value="true" />
+      <option name="GROOVY_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="cont-0" value="public interface EDocumentApi {&#10;&#10;    @io.swagger.v3.oas.annotations.Operation(&#10;            description = &quot;It will process the document. It will take the inputs from ERP, forms a PUF XML and performs validation against XSD &amp; schematron&quot;,&#10;            security = {@io.swagger.v3.oas.annotations.security.SecurityRequirement(name = &quot;bearer-key&quot;)}&#10;    )&#10;    @io.swagger.v3.oas.annotations.responses.ApiResponses(value = {&#10;            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;201&quot;, description = &quot;A successful response from the API&quot;, content = {@io.swagger.v3.oas.annotations.media.Content(mediaType = org.springframework.http.MediaType.APPLICATION_JSON_VALUE,&#10;                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = com.thomsonreuters.einv.api.model.process_document.response.EDocumentResponse.class))}),&#10;            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;400&quot;, description = &quot;Bad Request&quot;, content = {@io.swagger.v3.oas.annotations.media.Content(mediaType = org.springframework.http.MediaType.APPLICATION_JSON_VALUE,&#10;                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = com.thomsonreuters.einv.api.model.error.ApiError.class))}),&#10;            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;403&quot;, description = &quot;Forbidden&quot;, content = {@io.swagger.v3.oas.annotations.media.Content(mediaType = org.springframework.http.MediaType.APPLICATION_JSON_VALUE,&#10;                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = com.thomsonreuters.einv.api.model.error.ApiError.class))}),&#10;            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;404&quot;, description = &quot;Resource not found&quot;, content = {@io.swagger.v3.oas.annotations.media.Content(mediaType = org.springframework.http.MediaType.APPLICATION_JSON_VALUE,&#10;                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = com.thomsonreuters.einv.api.model.error.ApiError.class))}),&#10;            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal Server Error&quot;, content = {@io.swagger.v3.oas.annotations.media.Content(mediaType = org.springframework.http.MediaType.APPLICATION_JSON_VALUE,&#10;                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = com.thomsonreuters.einv.api.model.error.ApiError.class))})&#10;    })&#10;    @io.swagger.v3.oas.annotations.Parameter(in = io.swagger.v3.oas.annotations.enums.ParameterIn.HEADER, name = &quot;correlationId&quot;, schema = @io.swagger.v3.oas.annotations.media.Schema(type = &quot;string&quot;))&#10;    @org.springframework.web.bind.annotation.PostMapping(path = &quot;/processDocument&quot;, consumes = org.springframework.http.MediaType.APPLICATION_JSON_VALUE, produces = org.springframework.http.MediaType.APPLICATION_JSON_VALUE)&#10;    org.springframework.http.ResponseEntity&lt;com.thomsonreuters.einv.api.model.process_document.response.EDocumentResponse&gt; processDocument(@jakarta.validation.Valid @org.springframework.web.bind.annotation.RequestBody com.thomsonreuters.einv.api.model.process_document.request.EDocument eDocument);&#10;&#10;}" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="pojo-1" value="public class Student {&#10;&#10;    public java.lang.String firstName;&#10;    public java.lang.String lastName;&#10;}" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="pojo-error" value="@lombok.Getter&#10;@lombok.Setter&#10;@lombok.ToString&#10;public class ApiError {&#10;    private java.lang.String code;&#10;&#10;    private java.util.List&lt;java.lang.String&gt; messages;&#10;&#10;&#10;    public com.app.ApiError addMessagesItem(java.lang.String messagesItem) {&#10;        if (this.messages == null) {&#10;            this.messages = new java.util.ArrayList&lt;&gt;();&#10;        }&#10;        this.messages.add(messagesItem);&#10;        return this;&#10;    }&#10;}" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="wc-post-file" value="/**&#10;     * @param xmlDocument String in XML format&#10;     * @param companyId   Pagero supplier companyId&#10;     *                    In this method we are calling&#10;     *                    Pagero POST File API&#10;     * @return fileId&#10;     */&#10;    public java.lang.String submitDocument(java.lang.String xmlDocument, java.lang.String companyId, java.lang.String callingApiName, java.lang.String eDocumentId) {&#10;        log.info(&quot;OSEI-Submit document to Pagero for eDocumentId {}&quot;, eDocumentId);&#10;        org.springframework.util.MultiValueMap&lt;java.lang.String, java.lang.Object&gt; formData = new org.springframework.util.LinkedMultiValueMap&lt;&gt;();&#10;        formData.add(com.app.constant.Constants.PAYLOAD, new org.springframework.core.io.ByteArrayResource(xmlDocument.getBytes()));&#10;        formData.add(com.app.constant.Constants.DOCUMENT_TYPE, com.app.constant.Constants.INVOICE);&#10;        formData.add(com.app.constant.Constants.SENDING_COMPANY_ID, companyId);&#10;&#10;&#10;        return webClient.post()&#10;                .uri(configProperties.getPageroPostFilePath())&#10;                .attributes(attrs -&gt; {&#10;                    attrs.put(com.app.constant.Constants.API_NAME, callingApiName);&#10;                    attrs.put(com.app.constant.Constants.EDOCUMENT_ID, eDocumentId);&#10;&#10;                })&#10;                .contentType(org.springframework.http.MediaType.MULTIPART_FORM_DATA)&#10;                .body(org.springframework.web.reactive.function.BodyInserters.fromMultipartData(formData))&#10;                .retrieve()&#10;                .bodyToMono(java.lang.String.class)&#10;                .block();&#10;&#10;    }" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="cp-1" value="@org.springframework.context.annotation.Configuration&#10;@org.springframework.boot.context.properties.ConfigurationProperties(prefix = &quot;einv&quot;)&#10;@lombok.Getter&#10;@lombok.Setter&#10;public class ConfigProperties {&#10;&#10;    @org.springframework.beans.factory.annotation.Value(&quot;${pagero.online.url}&quot;)&#10;    private java.lang.String pageroOnlineUrl;&#10;&#10;    @org.springframework.beans.factory.annotation.Value(&quot;${pagero.post.file.path}&quot;)&#10;    private java.lang.String pageroPostFilePath;&#10;&#10;&#10;}" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="bean-wc" value="/**&#10;     * This is the bean for WebClient&#10;     * WebClient is used to call client APIs&#10;     *&#10;     * @return WebClient&#10;     */&#10;    @org.springframework.context.annotation.Bean&#10;    public org.springframework.web.reactive.function.client.WebClient webClient() {&#10;        return org.springframework.web.reactive.function.client.WebClient.builder()&#10;                .baseUrl(configProperties.getPageroOnlineUrl())&#10;                .build();&#10;    }" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="bean-rt-0" value="@org.springframework.context.annotation.Bean&#10;    public org.springframework.web.client.RestTemplate restTemplate() {&#10;        return new org.springframework.web.client.RestTemplate();&#10;    }" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="api-config" value="@org.springframework.context.annotation.Configuration&#10;@lombok.RequiredArgsConstructor&#10;public class ApiConfiguration {&#10;&#10;    private final com.app.config.ConfigProperties configProperties;&#10;&#10;}" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="cons" value="/**&#10; * This class is used to maintain all constants except error messages&#10; */&#10;public class Constants {&#10;&#10;    public static final java.lang.String PAYLOAD = &quot;payload&quot;;&#10;    public static final java.lang.String DOCUMENT_TYPE = &quot;documentType&quot;;&#10;    public static final java.lang.String SENDING_COMPANY_ID = &quot;sendingCompanyId&quot;;&#10;    public static final java.lang.String INVOICE = &quot;Invoice&quot;;&#10;    public static final java.lang.String API_NAME = &quot;apiName&quot;;&#10;    public static final java.lang.String EDOCUMENT_ID = &quot;eDocumentId&quot;;&#10;&#10;    private Constants() {&#10;    }&#10;&#10;}" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="ex-app" value="throw new com.thomsonreuters.einv.api.exception.ApplicationException(org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR.toString(), e.getMessage(), e);" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_EXPRESSION" value="true" />
+      <option name="JAVA_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="s3-acl" value="s3Client.setObjectAcl(configProperties.getBucketName(), fileNameWithPath, CannedAccessControlList.PublicRead);" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_COMMENT" value="true" />
+    </context>
+  </template>
+  <template name="test-2" value="@org.junit.jupiter.api.Test&#10;    void testCRN() throws java.lang.Exception {&#10;        // given&#10;        com.thomsonreuters.einv.api.model.process_document.request.EDocument document = getInstance();&#10;        document.seteDocumentType(new com.thomsonreuters.einv.api.model.process_document.request.EDocumentType(com.thomsonreuters.einv.api.model.process_document.request.EDocumentType.ValueEnum.CRN));&#10;        java.lang.String jsonString = mapper.writeValueAsString(document);&#10;&#10;        // when&#10;        java.lang.String response = success(jsonString);&#10;&#10;        // then&#10;        org.junit.jupiter.api.Assertions.assertNotNull(response);&#10;    }" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="xml-1" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;&#10;&lt;map&gt;&#10;&#10;&#10;&lt;/map&gt;" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="XML_TEXT" value="true" />
+    </context>
+  </template>
+  <template name="jackson-config" value="com.thomsonreuters.einv.api.config.JacksonConfiguration configuration = new com.thomsonreuters.einv.api.config.JacksonConfiguration();&#10;        com.fasterxml.jackson.databind.ObjectMapper mapper = configuration.objectMapper();" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_EXPRESSION" value="true" />
+      <option name="JAVA_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="sprinng-run" value="--spring.config.location=C:/Users/c282465/Desktop/config/" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_EXPRESSION" value="true" />
+      <option name="JAVA_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="lom-set-ign" value="@lombok.Setter(lombok.AccessLevel.NONE)" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="mock-repo-find" value="org.mockito.Mockito.when(processDocumentArRepository.findByStatusCodeAndDocumentFileNameIsNull(org.mockito.Mockito.any(), org.mockito.Mockito.any())).thenReturn(processDocumentAr);" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_EXPRESSION" value="true" />
+      <option name="JAVA_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="mock-repo-save" value="org.mockito.Mockito.doAnswer((i) -&gt; null).when(legalEntitiesRepository).save(org.mockito.Mockito.any());" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_EXPRESSION" value="true" />
+      <option name="JAVA_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="ms-after-map-1" value="@org.mapstruct.AfterMapping&#10;    default void setLotIdentification(@org.mapstruct.MappingTarget com.thomsonreuters.einv.api.model.jaxb.pagero.commonaggregatecomponents._1.ItemInstanceType des, com.thomsonreuters.einv.api.model.process_document.request.ItemInstance src) {&#10;        des.setLotIdentification(INSTANCE.toLotIdentificationType(src.getLotId(), src.getLotExpiryDate()));&#10;    }" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="ms-2" value="@org.mapstruct.BeanMapping(ignoreByDefault = true)&#10;    @org.mapstruct.Mapping(source = &quot;str1&quot;, target = &quot;lotNumberID&quot;)&#10;    @org.mapstruct.Mapping(source = &quot;str2&quot;, target = &quot;expiryDate&quot;)&#10;    com.thomsonreuters.einv.api.model.jaxb.pagero.commonaggregatecomponents._1.LotIdentificationType toLotIdentificationType(java.lang.String str1, java.time.LocalDate str2);" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="yc" value="#---------------- $A$ config starts --------------&#10;$B$&#10;#---------------- $A$ config ends ----------------&#10;$END$" description="" toReformat="false" toShortenFQNames="true">
+    <variable name="A" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="B" expression="" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="GROOVY" value="false" />
+      <option name="HTML" value="false" />
+      <option name="JAVA_CODE" value="false" />
+      <option name="JSON" value="false" />
+      <option name="KOTLIN" value="false" />
+      <option name="MAVEN" value="false" />
+      <option name="OTHER" value="true" />
+      <option name="Properties" value="false" />
+      <option name="SHELL_SCRIPT" value="false" />
+      <option name="XML" value="false" />
+      <option name="XML_ATTRIBUTE" value="false" />
+    </context>
+  </template>
+  <template name="yc-mock" value="spring:&#10;  profiles:&#10;    group:&#10;      mock:&#10;        - einv&#10;        - db-temp&#10;        - ep&#10;        - log&#10;        - sch&#10;        - security&#10;        - s3&#10;        - msg&#10;        - ui" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="GROOVY" value="false" />
+      <option name="HTML" value="false" />
+      <option name="JAVA_CODE" value="false" />
+      <option name="JSON" value="false" />
+      <option name="KOTLIN" value="false" />
+      <option name="MAVEN" value="false" />
+      <option name="OTHER" value="true" />
+      <option name="Properties" value="false" />
+      <option name="SHELL_SCRIPT" value="false" />
+      <option name="XML" value="false" />
+      <option name="XML_ATTRIBUTE" value="false" />
+    </context>
+  </template>
+  <template name="jpa-repo" value="@org.springframework.stereotype.Repository&#10;public interface $A$Repository extends org.springframework.data.jpa.repository.JpaRepository&lt;$A$, java.lang.Long&gt; {&#10;}" description="" toReformat="true" toShortenFQNames="true">
+    <variable name="A" expression="" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="jpa-1-1" value="//////////////////////////////////////////////////////////////////////&#10;    // one to one using shared pk&#10;    //////////////////////////////////////////////////////////////////////&#10;&#10;    // Person - parent&#10;    @jakarta.persistence.Id&#10;    @jakarta.persistence.GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)&#10;    private java.lang.Long id;&#10;&#10;    private java.lang.String lastName;&#10;&#10;    @jakarta.persistence.OneToOne(cascade = jakarta.persistence.CascadeType.ALL, mappedBy = &quot;person&quot;)&#10;    private com.example.demo.jpa.AadharNum aadharNum;&#10;&#10;&#10;    &#10;    // child AadharNum&#10;    @jakarta.persistence.Id&#10;    private java.lang.Long id;&#10;&#10;    private java.lang.String num;&#10;&#10;    @jakarta.persistence.OneToOne&#10;    @jakarta.persistence.PrimaryKeyJoinColumn&#10;    private com.example.demo.jpa.Person person;" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="ms-time" value="@org.mapstruct.Mapping(expression = &quot;java(LocalDateTime.now())&quot;, target = &quot;createTime&quot;)&#10;    @org.mapstruct.Mapping(expression = &quot;java(LocalDateTime.now())&quot;, target = &quot;updateTime&quot;)" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="mock-comm" value="// given&#10;        &#10;        &#10;        // when&#10;        &#10;        &#10;        // then" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_EXPRESSION" value="true" />
+      <option name="JAVA_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="con-jsonPath-to-string" value="public static java.lang.String getJSONString(java.lang.String jsonPath) {&#10;        byte[] encoded;&#10;        try {&#10;            encoded = java.nio.file.Files.readAllBytes(org.springframework.util.ResourceUtils.getFile(jsonPath).toPath());&#10;        } catch (java.io.IOException e) {&#10;            throw new java.lang.RuntimeException(e);&#10;        }&#10;        return new java.lang.String(encoded, java.nio.charset.StandardCharsets.US_ASCII);&#10;    }" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="con-str-to-file" value="public static void saveStringToFile(java.lang.String text, java.lang.String fn) {&#10;        try (java.io.OutputStreamWriter writer = new java.io.OutputStreamWriter(new java.io.FileOutputStream(&quot;src/test/resources/&quot; + fn), java.nio.charset.StandardCharsets.UTF_8)) {&#10;            writer.write(text);&#10;        } catch (java.io.IOException e) {&#10;            throw new java.lang.RuntimeException(e);&#10;        }&#10;    }" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="fie-wc" value="private final org.springframework.web.reactive.function.client.WebClient webClient;" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="fie-cp" value="private final com.thomsonreuters.einv.api.config.ConfigProperties configProperties;" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="mdc-4" value="if (org.apache.commons.lang3.StringUtils.equals(org.slf4j.MDC.get(com.thomsonreuters.einv.api.util.Constants.ENDPOINT_NAME), com.thomsonreuters.einv.api.util.Constants.V1_PROCESS_DOCUMENT)) {&#10;                processDocumentArDbService.updateErrorInProcessAr(org.slf4j.MDC.get(com.thomsonreuters.einv.api.util.Constants.CORRELATION_ID), $E$.getMessage());&#10;            }" description="" toReformat="true" toShortenFQNames="true">
+    <variable name="E" expression="" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="JAVA_EXPRESSION" value="true" />
+      <option name="JAVA_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="grad-dev" value="developmentOnly 'org.springframework.boot:spring-boot-devtools'" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="GROOVY_EXPRESSION" value="true" />
+      <option name="GROOVY_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="bean-wc-cook-heaer" value="/**&#10;     * This is the bean for WebClient&#10;     * WebClient is used to call client APIs&#10;     *&#10;     * @return WebClient&#10;     */&#10;    @org.springframework.context.annotation.Bean&#10;    public org.springframework.web.reactive.function.client.WebClient webClient() {&#10;        return org.springframework.web.reactive.function.client.WebClient.builder()&#10;                .baseUrl(&quot;http://localhost:3000&quot;)&#10;                .defaultCookie(&quot;cookie-name&quot;, &quot;cookie-value&quot;)&#10;                .defaultHeader(org.springframework.http.HttpHeaders.CONTENT_TYPE, org.springframework.http.MediaType.APPLICATION_JSON_VALUE)&#10;                .build();&#10;    }" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="wc-get" value="public java.lang.String getSample() {&#10;        return webClient.get()&#10;                .uri(&quot;/me&quot;)&#10;                .retrieve()&#10;                .bodyToMono(java.lang.String.class).block();&#10;    }" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="mws-obj" value="private final $A$ obj = new $A$(org.springframework.web.reactive.function.client.WebClient.create(mockWebServer.url(&quot;/&quot;).toString()));" description="" toReformat="true" toShortenFQNames="true">
+    <variable name="A" expression="" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="mws-test1" value="@org.junit.jupiter.api.Test&#10;    void call() {&#10;        mockWebServer.enqueue(&#10;                new okhttp3.mockwebserver.MockResponse()&#10;                        .setResponseCode(200)&#10;                        .setHeader(org.springframework.http.HttpHeaders.CONTENT_TYPE, org.springframework.http.MediaType.APPLICATION_JSON_VALUE)&#10;                        .setBody(&quot;{\n&quot; +&#10;                                &quot;  &quot;id&quot;: &quot;id12344&quot;,\n&quot; +&#10;                                &quot;  &quot;issueDate&quot;: &quot;2023-06-23&quot;\n&quot; +&#10;                                &quot;}&quot;)&#10;        );&#10;        java.lang.String s = obj.callApi();&#10;        java.lang.System.out.println(&quot;s = &quot; + s);&#10;&#10;        com.jayway.jsonpath.DocumentContext jsonContext = com.jayway.jsonpath.JsonPath.parse(s);&#10;        org.junit.jupiter.api.Assertions.assertEquals(&quot;id12344&quot;, jsonContext.read(&quot;$.id&quot;));&#10;    }" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="wc-put1" value="public java.lang.String callApi() {&#10;        return webClient.put()&#10;                .uri(&quot;/me&quot;)&#10;                .contentType(org.springframework.http.MediaType.APPLICATION_JSON)&#10;                .retrieve()&#10;                .bodyToMono(java.lang.String.class).block();&#10;    }" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="pojo-student" value="public class Student {&#10;&#10;    public java.lang.String firstName;&#10;    public java.lang.String lastName;&#10;}" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="pojo-student-lom" value="@lombok.Getter&#10;@lombok.Setter&#10;@lombok.ToString&#10;public class Student {&#10;    public java.lang.String firstName;&#10;    public java.lang.String lastName;&#10;}" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="his-1" value="com.thomsonreuters.einv.api.persistence.entity.ProcessDocumentArHistory processDocumentArHistory= new com.thomsonreuters.einv.api.persistence.entity.ProcessDocumentArHistory();&#10;        processDocumentArHistory.setEDocument(processDocumentAr);&#10;        processDocumentArHistory.setStatusCode(com.thomsonreuters.einv.api.util.DBStatusCodeConstants.INITIATED);&#10;        processDocumentArHistory.setCreateTime(java.time.LocalDateTime.now());&#10;&#10;        processDocumentArHistoryRepository.save(processDocumentArHistory);" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_EXPRESSION" value="true" />
+      <option name="JAVA_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="fie-his" value="private final com.thomsonreuters.einv.api.persistence.repositories.ProcessDocumentArHistoryRepository processDocumentArHistoryRepository;" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="jpa-col" value="@jakarta.validation.constraints.Size(max = $size$)&#10;@jakarta.validation.constraints.NotNull&#10;@jakarta.persistence.Column(name = &quot;$name$&quot;, nullable = $bool$, length = $size$)&#10;private java.lang.String $name$;" description="" toReformat="true" toShortenFQNames="true">
+    <variable name="name" expression="enum(&quot;name&quot;,&quot;statusCode&quot;,&quot;statusMessage&quot;)" defaultValue="" alwaysStopAt="true" />
+    <variable name="size" expression="enum(&quot;100&quot;,&quot;20&quot;,&quot;50&quot;)" defaultValue="" alwaysStopAt="true" />
+    <variable name="bool" expression="enum(&quot;true&quot;,&quot;false&quot;)" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="met-void" value="public void foo(){&#10;        &#10;    }" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+    </context>
+  </template>
+  <template name="null-check" value="if (java.util.Objects.nonNull($EXP$)) {&#10;        }" description="" toReformat="true" toShortenFQNames="true">
+    <variable name="EXP" expression="variableOfType(&quot;&quot;)" defaultValue="&quot;exp&quot;" alwaysStopAt="true" />
+    <context>
+      <option name="JAVA_EXPRESSION" value="true" />
+      <option name="JAVA_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="time" value="java.time.Instant start = java.time.Instant.now();&#10;&#10;        &#10;        java.time.Instant finish = java.time.Instant.now();&#10;        long timeElapsed = java.time.Duration.between(start, finish).toMillis();  //in millis&#10;        log.info(&quot;For eDocumentId {}, timeElapsed for validation {}&quot;, eDocument.getId(), timeElapsed);" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_EXPRESSION" value="true" />
+      <option name="JAVA_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="time2" value="start = java.time.Instant.now();&#10;&#10;&#10;            finish = java.time.Instant.now();&#10;            timeElapsed = java.time.Duration.between(start, finish).toMillis();  //in millis&#10;            log.info(&quot;For eDocumentId {}, timeElapsed for validation {}&quot;, eDocument.getId(), timeElapsed);" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="JAVA_EXPRESSION" value="true" />
+      <option name="JAVA_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="al" value="java.util.List&lt;$clazz$&gt; list = new java.util.ArrayList&lt;&gt;();&#10;$END$" description="" toReformat="true" toShortenFQNames="true">
+    <variable name="clazz" expression="enum(&quot;Integer&quot;,&quot;String&quot;)" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="JAVA_EXPRESSION" value="true" />
+      <option name="JAVA_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="alobj" value="java.util.List&lt;$clazz$&gt; $b$ = new java.util.ArrayList&lt;&gt;();&#10;$END$" description="" toReformat="true" toShortenFQNames="true">
+    <variable name="clazz" expression="className()" defaultValue="" alwaysStopAt="true" />
+    <variable name="b" expression="decapitalize(clazz)" defaultValue="" alwaysStopAt="false" />
+    <context>
+      <option name="JAVA_EXPRESSION" value="true" />
+      <option name="JAVA_STATEMENT" value="true" />
+    </context>
+  </template>
+</templateSet>
