@@ -57,3 +57,26 @@ NumpadRight::^z
 
 PgUp::^f
 PgDn::^r
+
+
+`::{
+    Send "^!t"
+    Sleep 20
+}
+
+!\::{
+    Send "!j"
+    Send "^{BackSpace}"
+}
+
+!y::{
+    Send "^c"
+    Send "^v"
+}
+
+!.::{
+    Send "^d"
+    Sleep 20
+}
+
+;#w::^Right
