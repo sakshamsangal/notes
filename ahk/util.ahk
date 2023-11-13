@@ -1,82 +1,56 @@
-﻿;!\::^z
-; Insert::+F6
-; RShift::+F6
-
-AppsKey::^d
-;CapsLock::Enter
-; PrintScreen::^z
-; PrintScreen::^+s
-#c::Run "calc.exe"
-#n::Run "notepad++" 
-; ++p::^+t
-
 ; ````````````````````````````````````````````````````
-; ````````````````````````````````````````````````````
-; ````````````````````````````````````````````````````
-; ````````````````````````````````````````````````````
-; ````````````````````````````````````````````````````
-; ````````````````````````````````````````````````````
-; ````````````````````````````````````````````````````
-; ````````````````````````````````````````````````````
-;`::AltTabMenu
-;insert::AltTabMenu
-
 ;#=WINDOWS KEY
 ;^=CTRL
 ;!=ALT
 ;+=SHIFT
 ;{ } = DATA ENTRY
 
+F1::myFun(["^c"])
+F2::myFun(["^v"])
+F3::myFun(["^x"])
+F4::myFun(["!{Insert}"])
+F5::myFun(["^s"])
+F6::myFun(["^a", "^c"])
+F7::myFun(["^a", "{Delete}"])
+F8::myFun(["+{F6}"]) ; ^!t
+F9::myFun(["^f"])  
+F10::myFun(["^!l"])  ;"^+s"
+F12::myFun(["!{Enter}"]) 
+
+
+`::myFun(["^!t"])
+!\::myFun(["!j" , "^{BackSpace}"])
+!y::myFun(["^c", "^v"]) 
+!.::myFun(["^d"]) 
+
+myFun(arr) {
+    for n in arr {
+        Send n		
+    }
+    Sleep 20
+}
+
 ; Shift + Wheel for horizontal scrolling
 +WheelDown::WheelRight
 +WheelUp::WheelLeft
 
-;4
-NumpadLeft::^c
-
-;5
-NumpadClear::^v
-
-;0
-NumpadIns::^!l
-
-;7
-NumpadHome::!Enter
-
-;1
-NumpadEnd::^+t
-
-
-;9
-NumpadPgUp::^Space
-
-NumpadPgDn::!Tab
-
-NumpadRight::^z
-
+#c::Run "calc.exe"
+#n::Run "notepad++" 
 
 PgUp::^f
 PgDn::^r
 
-
-`::{
-    Send "^!t"
-    Sleep 20
-}
-
-!\::{
-    Send "!j"
-    Send "^{BackSpace}"
-}
-
-!y::{
-    Send "^c"
-    Send "^v"
-}
-
-!.::{
-    Send "^d"
-    Sleep 20
-}
-
+; !\::^z
+; Insert::+F6
+; RShift::+F6
+; ++p::^+t
+; AppsKey::^d
+;CapsLock::Enter
+; PrintScreen::^z
+; PrintScreen::^+s
+;`::AltTabMenu
+;insert::AltTabMenu
 ;#w::^Right
+
+
+
