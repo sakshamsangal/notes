@@ -1,0 +1,159 @@
+= Java notes
+:toc: left
+
+== spring boot
+=== request flow in spring boot
+. request -> servlet container -> dispatcher servlet
+. Dispatcher servlet do:
+** choose controller -> IOC -> object create
+** preHandle will execute
+** call to controller
+** postHandle
+** afterCompletion
+** get response from controller
+
+image::ds.png[]
+
+== java core
+=== Class
+[source,java]
+----
+class Student {
+    int rollNumber;
+    String name;
+
+    public Student(int rollNumber, String name) {
+        this.rollNumber = rollNumber;
+        this.name = name;
+    }
+
+    public int getRollNumber() {
+        return rollNumber;
+    }
+
+    public void setRollNumber(int rollNumber) {
+        this.rollNumber = rollNumber;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+----
+- prototype to create objects
+- Pascal case
+- only extend (subclass) one parent.
+- implement more than one interface.
+
+=== What happens if both superclass and subclass have a field with same name?
+Field value gets override.
+
+[source,java]
+----
+
+class Car {
+    String color = "white";
+}
+
+class SuperCar extends Car {
+    String color = "yellow";
+}
+
+class Main {
+    public static void main(String[] args) {
+        SuperCar superCar = new SuperCar();
+        System.out.println(superCar.color); // yellow
+    }
+}
+
+
+if SuperCar is empty then,
+
+class Car {
+    String color = "white";
+}
+
+class SuperCar extends Car {
+    // String color = "yellow";
+}
+
+class Main {
+    public static void main(String[] args) {
+        SuperCar superCar = new SuperCar();
+        System.out.println(superCar.color); // white
+    }
+}
+
+----
+
+=== Abstraction
+- hide certain details
+- show essential information to user
+- class declared with abstract keyword
+- can have abstract and non-abstract methods
+
+
+=== object class
+- defines base state and behavior of every object
+- parent class of all class.
+
+
+=== inheritance
+[source,java]
+----
+class Car {
+    void show() {
+        System.out.println("Car");
+    }
+}
+
+// inheritance
+class SuperCar extends Car {
+
+    // run time polymorphism
+    @Override
+    void show() {
+        System.out.println("SuperCar");
+    }
+
+}
+
+class Main {
+    public static void main(String[] args) {
+        SuperCar superCar = new SuperCar();
+        superCar.show(); // SuperCar
+    }
+}
+----
+
+=== exception
+[source,java]
+----
+public class EmailNotValidException extends Exception{
+	//*****************START*****************Solution 3.1 + 3.2*****************
+
+    public EmailNotValidException(String message) {
+        super(message);
+    }
+
+
+    //*****************END*****************Solution 3.1 + 3.2*****************
+
+    public static void main(String[] args) {
+		try {
+			throw new EmailNotValidException("Custom Message");
+		} catch (EmailNotValidException e) {
+			System.out.println(e.getMessage());
+		}
+
+		/**
+		 * Your output should look like this.
+		 * Custom Message
+		 */
+	}
+}
+----

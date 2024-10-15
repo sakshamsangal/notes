@@ -1,7 +1,7 @@
 public because so that implementing class can access it.
 static because interface object is not created.
 final because so that we cannot reassign variable.
-abstract because methods are declared without deinition.
+abstract because methods are declared without definition.
 
 In Java 8, we can have default and static methods in interfaces
 
