@@ -1,0 +1,4589 @@
+:toc: left
+== spring aop
+
+=== step 1
+
+* add dependency
+** aop
+** boot starter/web
+** lombok
+
+=== step 2
+
+* make advice class with pointcut annotation
+
+com/example/demo/advice/MilkAdvice.java
+
+[source,java]
+----
+package com.example.demo.advice;
+
+import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+@Aspect
+@Component
+@Slf4j
+public class MilkAdvice {
+
+
+    @Pointcut(value = "execution(* com.example.demo.controller.*.*(..) )")
+    public void myPointcut() {
+
+    }
+
+    @Around("myPointcut()")
+    public Object applicationLogger(ProceedingJoinPoint pjp) throws Throwable {
+        ObjectMapper mapper = new ObjectMapper();
+        String methodName = pjp.getSignature().getName();
+        String className = pjp.getTarget().getClass().toString();
+        Object[] array = pjp.getArgs();
+        log.info("=================================");
+        log.info("Unified logging");
+        log.info("methodName = " + methodName);
+        log.info("className = " + className);
+        log.info("Unified logging request: " + mapper.writeValueAsString(array));
+        Object object = pjp.proceed();
+        log.info("Unified logging response: " + mapper.writeValueAsString(object));
+        log.info("=================================");
+        return object;
+    }
+
+}
+----
+
+[source,java]
+----
+package com.example.demo.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
+
+@Configuration
+public class BeanConfig {
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+}
+
+
+package com.example.demo.util;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
+import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
+
+@Component
+@Slf4j
+@RequiredArgsConstructor
+public class ConsumeUser {
+
+    @Value("${endpoint.user}")
+    private String userEndpoint;
+    private final RestTemplate restTemplate;
+
+
+    public void user() {
+        // set headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.add("Authorization", "Bearer 623c0324-4395-3769-a8b9-49d3c8be91e9");
+
+        // set the payload
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("title", "john");
+        map.add("body", "body test");
+
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
+        log.info(String.valueOf(entity));
+
+        // String userEndpoint = "https://jsonplaceholder.typicode.com/posts/2";
+
+        ResponseEntity<String> response = restTemplate.exchange(userEndpoint, HttpMethod.POST, entity, String.class);
+        log.info(String.valueOf(response));
+    }
+
+}
+----
+
+[source,java]
+----
+package com.example.demo.util;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.client.RestTemplate;
+
+@Component
+@Slf4j
+@RequiredArgsConstructor
+public class ConsumeUser {
+
+    @Value("${endpoint.user}")
+    private String userEndpoint;
+    private final RestTemplate restTemplate;
+
+    public void user() {
+        WebClient webClient = WebClient.create();
+        String str = webClient.get()
+                .uri(userEndpoint)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+        log.info(str);
+    }
+
+}
+----
+
+[source,java]
+----
+@DeleteMapping("/users/{id}")
+public void deleteUser(@PathVariable("id") int id) {
+    userService.deleteById(id);
+}
+----
+
+[source,java]
+----
+
+
+// rest controller
+@DeleteMapping("/{id}")
+public void deleteLocation(@PathVariable("id") int id) {
+locationRepository.deleteById(id);
+}
+
+// controller
+@RequestMapping("deleteLocation")
+public String deleteLocation(@RequestParam("id") int id, ModelMap modelMap) {
+// Location location = service.getLocationById(id);
+Location location = new Location();
+location.setId(id);
+service.deleteLocation(location);
+List<Location> locations = service.getAllLocations();
+modelMap.addAttribute("locations", locations);
+return "displayLocations";
+}
+
+// service
+public void deleteLocation(Location location) {
+repository.delete(location);
+}
+----
+
+[source,java]
+----
+    @GetMapping("/get")
+    ResponseEntity<String> age() {
+
+        return ResponseEntity.ok().body("Custom header set");
+    }
+    
+    @GetMapping("/customHeader")
+    ResponseEntity<String> age(@RequestParam("yearOfBirth") int yearOfBirth) {
+
+        return ResponseEntity.ok()
+                .header("Custom-Header", "foo")
+                .body("Custom header set");
+    }
+
+
+    @GetMapping("/customHeader")
+    ResponseEntity<String> age(@RequestParam("yearOfBirth") int yearOfBirth) {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Custom-Header", "foo");
+        return new ResponseEntity<>("Custom header set", headers, HttpStatus.OK);
+    }
+
+----
+
+[source,java]
+----
+@GetMapping("/users")
+public List<User> getUsers() {
+    return userService.findAll();
+}
+
+@GetMapping("/users/{id}")
+public User getUserById(@PathVariable("id") int id) {
+    return userService.findById(id).orElse(null);
+}
+----
+
+[source,java]
+----
+@GetMapping
+public List<Location> getLocations() {
+    return locationRepository.findAll();
+
+}
+
+
+@RequestMapping("/displayLocations")
+public String displayLocations(ModelMap modelMap) {
+    List<Location> locations = service.getAllLocations();
+    modelMap.addAttribute("locations", locations);
+    return "displayLocations";
+}
+
+// service
+public List<Location> getAllLocations() {
+    return repository.findAll();
+}
+
+@GetMapping("/{id}")
+public Location getLocation(@PathVariable("id") int id) {
+    Optional<Location> optionalLocation = locationRepository.findById(id);
+    return optionalLocation.orElse(null);
+}
+
+public Location getLocationById(int id) {
+    Optional<Location> optionalLocation = repository.findById(id);
+    return optionalLocation.orElse(null);
+}
+----
+
+[source,java]
+----
+@PostMapping("/users")
+public User postUser(@RequestBody User user) {
+    return userService.save(user);
+}
+----
+
+[source,java]
+----
+
+@PostMapping
+public Location createLocation(@RequestBody Location location) {
+return locationRepository.save(location);
+}
+
+@RequestMapping("/saveLoc")
+public String saveLocation(@ModelAttribute("location") Location location, ModelMap modelMap) {
+Location locationSaved = service.saveLocation(location);
+String msg = "Location saved with id: " + locationSaved.getId();
+modelMap.addAttribute("msg", msg);
+
+    // email sending
+    // email.sendEmail("sakshamsangal111@gmail.com", "Location saved", "Hi, Location saved");
+    return "createLocation";
+
+}
+
+public Location saveLocation(Location location) {
+return repository.save(location);
+}
+----
+
+[source,java]
+----
+
+@PutMapping("/users")
+public User putUser(@RequestBody User user) {
+    return userService.save(user);
+}
+----
+
+[source,java]
+----
+@PutMapping
+public Location updateLocation(@RequestBody Location location) {
+return locationRepository.save(location);
+
+}
+
+@RequestMapping("/showUpdate")
+public String showUpdate(@RequestParam("id") int id, ModelMap modelMap) {
+Location location = service.getLocationById(id);
+modelMap.addAttribute("location", location);
+return "updateLocation";
+}
+
+@RequestMapping("/updateLoc")
+public String updateLocation(@ModelAttribute("location") Location location, ModelMap modelMap) {
+service.updateLocation(location);
+List<Location> locations = service.getAllLocations();
+modelMap.addAttribute("locations", locations);
+return "displayLocations";
+}
+
+public void updateLocation(Location location) {
+repository.save(location);
+}
+
+----
+
+== Rest Controller
+
+[source,java]
+----
+package com.example.demo.controller;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+
+import com.example.demo.service.UserService;
+
+
+@RestController
+@RequestMapping("/api")
+@RequiredArgsConstructor
+@Slf4j
+public class UserController {
+    private final UserService userService;
+
+
+
+}
+----
+
+[source,java]
+----
+package org.example.controller;
+
+import org.example.model.request.PenRequest;
+import org.example.model.response.PenResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+
+import org.springframework.web.bind.annotation.*;
+
+
+
+public interface PenController {
+
+    @Operation(description = "this is desc", summary = "this is summary")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "success", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Object.class))})
+    })
+    ResponseEntity<PenResponse> postPen(@RequestBody PenRequest penRequest) ;
+}
+----
+
+== convert string[] to uppercase by spring batch
+
+=== pom
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-batch</artifactId>
+</dependency>
+
+<dependency>
+    <groupId>com.h2database</groupId>
+    <artifactId>h2</artifactId>
+    <scope>runtime</scope>
+</dependency>
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-test</artifactId>
+    <scope>test</scope>
+</dependency>
+----
+
+=== property
+
+[source,java]
+----
+spring.batch.job.enabled=false
+spring.main.banner-mode=off
+# logging.level.root=ERROR
+----
+
+=== Main
+
+[source,java]
+----
+@SpringBootApplication
+@EnableBatchProcessing
+public class JarApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(JarApplication.class, args);
+    }
+
+}
+----
+
+=== Test
+
+[source,java]
+----
+
+@SpringBootTest
+class JarApplicationTests {
+
+    @Autowired
+    JobLauncher jobLauncher;
+
+    @Autowired
+    Job job;
+
+    @Test
+    void test1() throws Exception {
+        JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
+                .toJobParameters();
+
+        jobLauncher.run(job, jobParameters);
+    }
+
+}
+----
+
+=== MyReader
+
+[source,java]
+----
+
+public class MyReader implements ItemReader<String> {
+
+    private String[] arr = {"saksham", "sahitya", "sakshi"};
+    private int count = 0;
+
+    @Override
+    public String read() {
+        if (count < arr.length) return arr[count++];
+        return null;
+    }
+}
+----
+
+=== MyWriter
+
+[source,java]
+----
+
+public class MyWriter implements ItemWriter<String> {
+
+    @Override
+    public void write(List<? extends String> list) throws Exception {
+
+        System.out.println(list);
+    }
+}
+----
+
+=== MyProcessor
+
+[source,java]
+----
+
+public class MyProcessor implements ItemProcessor<String, String> {
+
+
+    @Override
+    public String process(String s) {
+        return s.toUpperCase();
+    }
+}
+----
+
+=== MyJobExecutionListener
+
+[source,java]
+----
+public class MyJobExecutionListener implements JobExecutionListener {
+    @Override
+    public void beforeJob(JobExecution jobExecution) {
+        System.out.println("beforeJob");
+    }
+
+    @Override
+    public void afterJob(JobExecution jobExecution) {
+        System.out.println("afterJob");
+    }
+}
+----
+
+=== BatchConfig
+
+[source,java]
+----
+@Configuration
+public class BatchConfig {
+
+
+    private final StepBuilderFactory stepBuilderFactory;
+
+    private final JobBuilderFactory jobBuilderFactory;
+
+    @Autowired
+    public BatchConfig(StepBuilderFactory stepBuilderFactory, JobBuilderFactory jobBuilderFactory) {
+        this.stepBuilderFactory = stepBuilderFactory;
+        this.jobBuilderFactory = jobBuilderFactory;
+    }
+
+
+    @Bean
+    public Job myJob() {
+        return jobBuilderFactory.get("j1")
+                .incrementer(new RunIdIncrementer())
+                .listener(myJobExecutionListener())
+                .start(myStep())
+                .build();
+    }
+
+    @Bean
+    public Step myStep() {
+        return stepBuilderFactory.get("s1")
+                .<String, String>chunk(1)
+                .reader(myReader())
+                .processor(myProcessor())
+                .writer(myWriter())
+                .build();
+    }
+
+
+    @Bean
+    public MyReader myReader() {
+        return new MyReader();
+    }
+
+    @Bean
+    public MyProcessor myProcessor() {
+        return new MyProcessor();
+    }
+
+    @Bean
+    public MyWriter myWriter() {
+        return new MyWriter();
+    }
+
+    @Bean
+    public MyJobExecutionListener myJobExecutionListener() {
+        return new MyJobExecutionListener();
+    }
+}
+----
+
+=== output
+
+....
+2020-12-27 21:32:29.841  INFO 3304 --- [           main] o.s.b.c.l.support.SimpleJobLauncher      : Job: [SimpleJob: [name=j1]] launched with the following parameters: [{time=1609084949733}]
+beforeJob
+2020-12-27 21:32:29.902  INFO 3304 --- [           main] o.s.batch.core.job.SimpleStepHandler     : Executing step: [s1]
+[SAKSHAM]
+[SAHITYA]
+[SAKSHI]
+2020-12-27 21:32:30.035  INFO 3304 --- [           main] o.s.batch.core.step.AbstractStep         : Step: [s1] executed in 131ms
+afterJob
+2020-12-27 21:32:30.040  INFO 3304 --- [           main] o.s.b.c.l.support.SimpleJobLauncher      : Job: [SimpleJob: [name=j1]] completed with the following parameters: [{time=1609084949733}] and the following status: [COMPLETED] in 166ms
+....
+
+== CSV to MySQL
+
+=== sql
+
+[source,sql]
+----
+create database mydb;
+use mydb;
+
+create table product(
+id int auto_increment PRIMARY KEY,
+name varchar(20),
+description varchar(100),
+price decimal(8,3)
+);
+
+select * from product;
+----
+
+=== pom
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-test</artifactId>
+    <scope>test</scope>
+</dependency>
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-batch</artifactId>
+</dependency>
+
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <scope>runtime</scope>
+</dependency>
+----
+
+=== property
+
+[source,java]
+----
+spring.batch.job.enabled=false
+spring.main.banner-mode=off
+#logging.level.root=ERROR
+
+spring.batch.initialize-schema=ALWAYS
+----
+
+=== Main
+
+[source,java]
+----
+@SpringBootApplication
+@EnableBatchProcessing
+public class JarApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(JarApplication.class, args);
+    }
+
+}
+----
+
+=== Test
+
+[source,java]
+----
+@SpringBootTest
+class JarApplicationTests {
+
+    @Autowired
+    JobLauncher jobLauncher;
+
+    @Autowired
+    Job job;
+
+    @Test
+    void test1() throws Exception {
+        JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
+                .toJobParameters();
+
+        jobLauncher.run(job, jobParameters);
+    }
+}
+----
+
+=== BatchConfig
+
+[source,java]
+----
+@Configuration
+public class BatchConfig{
+
+    final StepBuilderFactory stepBuilderFactory;
+
+    final JobBuilderFactory jobBuilderFactory;
+
+    public BatchConfig(@Lazy StepBuilderFactory stepBuilderFactory,@Lazy JobBuilderFactory jobBuilderFactory) {
+        this.stepBuilderFactory = stepBuilderFactory;
+        this.jobBuilderFactory = jobBuilderFactory;
+    }
+
+
+    @Bean
+    public Job myJob() {
+        return jobBuilderFactory.get("j1")
+                .incrementer(new RunIdIncrementer())
+                .start(myStep())
+                .build();
+    }
+
+    @Bean
+    public Step myStep() {
+        return stepBuilderFactory.get("s1")
+                .<Product, Product>chunk(1)
+                .reader(productItemReader())
+                .processor(productItemProcessor())
+                .writer(productItemWriter())
+                .build();
+    }
+
+    @Bean
+    public ItemReader<Product> productItemReader() {
+        FlatFileItemReader<Product> productFlatFileItemReader = new FlatFileItemReader<>();
+        productFlatFileItemReader.setResource(new ClassPathResource("products.csv"));
+
+        DefaultLineMapper<Product> productDefaultLineMapper = new DefaultLineMapper<>();
+        DelimitedLineTokenizer delimitedLineTokenizer = new DelimitedLineTokenizer();
+
+        delimitedLineTokenizer.setNames("id", "name", "description", "price");
+        BeanWrapperFieldSetMapper<Product> productBeanWrapperFieldSetMapper = new BeanWrapperFieldSetMapper<>();
+        productBeanWrapperFieldSetMapper.setTargetType(Product.class);
+
+        productDefaultLineMapper.setLineTokenizer(delimitedLineTokenizer);
+        productDefaultLineMapper.setFieldSetMapper(productBeanWrapperFieldSetMapper);
+
+        productFlatFileItemReader.setLineMapper(productDefaultLineMapper);
+
+        return productFlatFileItemReader;
+    }
+
+
+    @Bean
+    public ItemProcessor<Product, Product> productItemProcessor() {
+        return (product) -> {
+            product.setPrice(0.90 * product.getPrice());
+            return product;
+        };
+    }
+
+    @Bean
+    public ItemWriter<Product> productItemWriter(){
+        JdbcBatchItemWriter<Product> productJdbcBatchItemWriter = new JdbcBatchItemWriter<>();
+        productJdbcBatchItemWriter.setDataSource(dataSource());
+        productJdbcBatchItemWriter.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>());
+        productJdbcBatchItemWriter.setSql("INSERT INTO product(id,name,description,price) VALUES(:id,:name,:description,:price)");
+        return  productJdbcBatchItemWriter;
+    }
+
+    @Bean
+    public DataSource dataSource() {
+        DriverManagerDataSource driverManagerDataSource = new DriverManagerDataSource();
+        driverManagerDataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        driverManagerDataSource.setUrl("jdbc:mysql://localhost:3306/mydb");
+        driverManagerDataSource.setUsername("root");
+        driverManagerDataSource.setPassword("root");
+        return driverManagerDataSource;
+    }
+
+}
+----
+
+=== Pojo
+
+[source,java]
+----
+public class Product{
+    private int id;
+    private String name;
+    private String description;
+    private double price;
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", price=" + price +
+                '}';
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+}
+----
+
+=== csv
+
+[source,csv]
+----
+main/resources/products.csv
+10,pen,awesome,100
+20,pencil,poor,200
+30,cat,good,300
+40,dog,nice,400
+----
+
+=== Output
+
+[source,text]
+----
+// in the database
+SELECT * FROM mydb.product;
+
+10  pen awesome 90.000
+20  pencil  poor    180.000
+30  cat good    270.000
+40  dog nice    360.000
+----
+
+== profiling
+
+used to switch among properties file
+
+`src/main/resources/application.properties`
+
+=== switch by application.properties
+
+....
+application-dev.properties
+
+application-test.properties
+
+application.properties
+    spring.profiles.active=dev // active properties file 
+....
+
+=== switch by VM arguments
+
+....
+delete spring.profiles.active=dev
+
+VM arguments:
+-Dspring.profiles.active=dev
+....
+
+=== database connection
+
+....
+# database connection
+spring.datasource.url=jdbc:mysql://localhost:3306/projectdb
+spring.datasource.username=root
+spring.datasource.password=root
+....
+
+=== show sql query on console
+
+....
+spring.jpa.show-sql=true
+....
+
+=== set prefix and suffix for view resolve
+
+....
+spring.mvc.view.prefix=/WEB-INF/view/
+spring.mvc.view.suffix=.jsp
+....
+
+=== make root = error and banner = off
+
+....
+spring.main.banner-mode=off
+logging.level.root=ERROR
+....
+
+[source,yml]
+----
+#logging:
+#  level:
+#    root: INFO
+#    tests: INFO
+server:
+  port: 8080
+spring:
+  datasource:
+    password: root
+    url: jdbc:mysql://localhost:3306/mydb
+    username: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+endpoint:
+  token: https://jsonplaceholder.typicode.com/posts
+
+#upload:
+#  dir: D:/Temporary/upload
+----
+
+[source,java]
+----
+package com.example.demo.entity;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.Data;
+
+
+@Entity
+@Data
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+    private String name;
+    private String description;
+    private double price;
+}
+----
+
+== print message from sender to reciver using jms
+
+=== requirements
+
+[source,text]
+----
+download active mq
+activemq start 
+activemq stop 
+http://localhost:8161/index.html 
+Manage ActiveMQ broker
+----
+
+=== pom
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter</artifactId>
+</dependency>
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-activemq</artifactId>
+</dependency>
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-test</artifactId>
+    <scope>test</scope>
+</dependency>
+----
+
+=== property
+
+[source,java]
+----
+spring.jms.myQueue=myQueue
+spring.main.banner-mode=off
+
+spring.activemq.broker-url=tcp://localhost:61616
+spring.activemq.user=admin
+spring.activemq.password=admin
+
+#spring.jms.pub-sub-domain=true
+----
+
+=== main
+
+[source,java]
+----
+@SpringBootApplication
+@EnableJms
+public class JarApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(JarApplication.class, args);
+    }
+
+}
+----
+
+=== MessageSender
+
+[source,java]
+----
+@Component
+public class MessageSender{
+    private final JmsTemplate jmsTemplate;
+
+    @Autowired
+    public MessageSender(JmsTemplate jmsTemplate) {
+        this.jmsTemplate = jmsTemplate;
+    }
+
+    @Value("${spring.jms.myQueue}")
+    private String queue;
+
+    public void mySend(String message) {
+        // MessageCreator messageCreator = new MessageCreator() {
+        //     @Override
+        //     public Message createMessage(Session session) throws JMSException {
+        //         return session.createTextMessage(message);
+        //     }
+        // };
+
+        MessageCreator messageCreator = session -> session.createTextMessage(message);
+
+        jmsTemplate.send(queue, messageCreator);
+
+
+        // jmsTemplate.convertAndSend(queue, message);
+    }
+}
+----
+
+=== MyListener
+
+[source,java]
+----
+@Component
+public class MyListener {
+
+    @JmsListener(destination = "${spring.jms.myQueue}")
+    public void myReceive(String message) {
+        System.out.println("myReceive() " + message);
+    }
+}
+----
+
+=== test
+
+[source,java]
+----
+@SpringBootTest
+class JarApplicationTests {
+
+    @Autowired
+    MessageSender messageSender;
+
+    @Test
+    void test1() {
+
+        messageSender.mySend("hello ");
+    }
+
+}
+----
+
+=== output
+
+....
+myReceive() hello 
+....
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <property name="HOME_LOG" value="logs/app.log"/>
+
+    <appender name="FILE-ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>log</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/archived/app.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <!-- each archived file, size max 10MB -->
+            <maxFileSize>10MB</maxFileSize>
+            <!-- total size of all archive files, if total size > 20GB, it will delete old archived file -->
+            <totalSizeCap>20GB</totalSizeCap>
+            <!-- 60 days to keep -->
+            <maxHistory>60</maxHistory>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="com.mkyong" level="debug" additivity="false">
+        <appender-ref ref="FILE-ROLLING"/>
+    </logger>
+
+    <root level="error">
+        <appender-ref ref="FILE-ROLLING"/>
+    </root>
+
+</configuration>
+----
+
+....
+
+package com.javacodegeeks.examples.logbackencoderexample;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class ApplicationStarter3 {
+
+    private static final Logger logger  = LoggerFactory.getLogger( "sizeAndTimeBased" );
+
+    public static void main( final String[] args ) {
+
+        for ( int i = 1; i <= 40; i++ ) {
+            logger.info( "write log with SizeAndTimeBasedFNATP" );
+
+            try {
+                Thread.sleep( 1000L );
+            } catch ( final InterruptedException e ) {
+                logger.error( "an error occurred", e );
+            }
+        }
+    }
+}
+
+## logback.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="SIZE_AND_TIME_BASED_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>c:/logs/archived/app.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            
+            <!-- every second -->
+            <fileNamePattern>c:/logs/archived/app_%d{yyy_MM_dd HH_mm_ss}_%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10KB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <logger name="sizeAndTimeBased" level="INFO">
+        <appender-ref ref="SIZE_AND_TIME_BASED_FILE" />
+    </logger>
+</configuration>
+
+....
+
+my-[Entity]-811 // download with no dependency
+
+// test the code run hello world
+
+=== create insert view
+
+....
+create bootstrap starter
+insert form accordingly
+....
+
+....
+there is no webapp support in jar packaging
+for webapp support packaging should be war
+
+main
+    webapp
+        WEB-INF
+            insert[Entity]View.jsp
+....
+
+=== controller
+
+....
+[Entity]Controller
+    send insert[Entity]View.jsp view 
+    insert data and send view with [Entity] object
+....
+
+=== my-[Entity]-811.iml
+
+....
+<configuration>
+    <webroots>
+        <root url="file://$MODULE_DIR$/src/main/webapp" relative="/" />
+    </webroots>
+    <sourceRoots>
+        <root url="file://$MODULE_DIR$/src/main/java" />
+        <root url="file://$MODULE_DIR$/src/main/resources" />
+    </sourceRoots>
+</configuration>
+....
+
+=== send insert[Entity]View.jsp view
+
+return view
+
+=== insert data and send view with [Entity] object
+
+....
+transfer data from UI to java object 
+get the service object using autowire by constructor injection
+pass the [Entity] object to service and get the saved object 
+add object to view using modal map 
+retun view
+....
+
+=== insert service
+
+....
+create a [Entity]Service interface
+create its implementation [Entity]ServiceImpl
+get repo object using autowire by constructor injection
+pass the [Entity] object to repo and get the saved object 
+return saved object
+....
+
+=== repo
+
+....
+create an interface [Entity]Repo which extends JpaRepository
+1st parameter is entity class,
+2nd parameter is data type of ID of entity
+....
+
+=== pom
+
+....
+<!-- for @Controller, @RequestMapping-->
+<!-- for view support -->
+<!-- for crud operations-->
+<!-- for mysql connection-->
+....
+
+=== for view resolving
+
+....
+spring.mvc.view.prefix=/WEB-INF/
+spring.mvc.view.suffix=.jsp
+....
+
+=== to connect with database
+
+....
+spring.datasource.url=jdbc:mysql://localhost:3306/projectdb
+spring.datasource.username=root
+spring.datasource.password=root
+....
+
+== Project structure
+
+....
+main
+    java
+        com.mylocation
+            controller
+                LocationController.java
+                LocationRestController.java
+            entity
+                Location.java
+            service
+                LocationService.java
+                LocationServiceImpl.java
+            repository
+                LocationRepository.java
+            util 
+            main file
+    resources
+        static 
+            css 
+                styles.css
+            templates
+        application.properties
+    webapp
+        WEB-INF 
+            View
+                Location
+                    insertLocation.jsp
+                    displayLocation.jsp
+                    updateLocation.jsp
+                report.jsp
+....
+
+=== Spring Boot application.properties value not populating
+
+* The way you are performing the injection of the property will not
+work,
+* because the injection is done after the constructor is called.
+
+[source,java]
+----
+@Slf4j
+@AllArgsConstructor
+public class ConsumeUser {
+
+    @Value("${endpoint.user}")
+    private String userEndpoint;
+----
+
+....
+open cmd
+
+jps
+// 34336 my-location-0.0.1-SNAPSHOT.jar
+// 33892 Jps
+
+taskkill -f /PID 34336
+// SUCCESS: The process with PID 34336 has been terminated.
+....
+
+[source,java]
+----
+package com.example.demo.service;
+
+import com.example.demo.entity.User;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface UserService {
+
+    List<User> findAll();
+
+    User save(User user);
+
+    void deleteById(int id);
+
+    Optional<User> findById(int id);
+}
+
+package com.example.demo.service;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import com.example.demo.entity.User;
+import com.example.demo.repository.UserRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+
+@Service
+@RequiredArgsConstructor
+public class UserServiceImpl implements UserService {
+    private final UserRepository userRepository;
+
+    @Override
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
+
+    @Override
+    public User save(User user) {
+        return userRepository.save(user);
+    }
+
+    @Override
+    public void deleteById(int id) {
+        userRepository.deleteById(id);
+
+    }
+
+    @Override
+    public Optional<User> findById(int id) {
+        return userRepository.findById(id);
+    }
+}
+----
+
+=== getController
+
+this is a get api
+
+[source,java]
+----
+/**
+ * this is a get api
+ *
+ * @param yearOfBirth first parameter
+ * @return ResponseEntity this will return response entity
+ */
+@GetMapping("/customHeader")
+ResponseEntity<String> getUser(@RequestParam("yearOfBirth") int yearOfBirth) {
+    return ResponseEntity.ok()
+            .header("Custom-Header", "foo")
+            .body("Custom header set");
+}
+----
+
+[source,html]
+----
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Flight Reservation Application</title>
+</head>
+<body>
+
+<h2>Welcome to the Flight Reservation Application:</h2>
+New Users click here to register - <a href="displayRegistrationPage">Register</a><br/>
+Existing Users Click her to login-<a href="displayLoginPage">Login</a>
+</body>
+</html>
+----
+
+== logback.xml
+
+....
+resources
+    logback.xml
+....
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <property name="LOG_DIR" value="D:/Temporary" />
+    <property name="FILE_PREFIX" value="flightreservation" />
+
+    <appender name="FILE"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/${FILE_PREFIX}.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>%d{yyyy-MM-dd HH:mm:ss} - %msg%n</Pattern>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/archived/${FILE_PREFIX}.%d{yyyy-MM-dd}.%i.log
+            </fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+    <root level="error">
+        <appender-ref ref="FILE" />
+    </root>
+
+</configuration>
+----
+
+....
+spring.datasource.url=jdbc:mysql://localhost:3306/reservation
+spring.datasource.username=root
+spring.datasource.password=root
+
+spring.jpa.show-sql=true
+
+spring.mvc.view.prefix=/WEB-INF/view/
+spring.mvc.view.suffix=.jsp
+
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+spring.mail.username=sakshamsangal99
+spring.mail.password=pYtHoN_1@6!9
+spring.mail.properties.mail.smtp.starttls.enable=true
+spring.mail.properties.mail.smtp.starttls.required=true
+spring.mail.properties.mail.smtp.auth=true
+
+logging.level.root=INFO
+logging.file.path=D:/Temporary
+com.flightreservation.itinerary.dirpath=D:/Temporary
+com.flightreservation.itinerary.email.subject=Itinerary for your Flight
+com.flightreservation.itinerary.email.body=Please find your Itinerary attached.
+....
+
+=== LocationController
+
+[source,java]
+----
+package com.mylocation.controller;
+
+import com.mylocation.modal.dao.LocationRepository;
+import com.mylocation.modal.dto.Location;
+import com.mylocation.modal.service.LocationService;
+import com.mylocation.modal.utility.Email;
+import com.mylocation.modal.utility.Report;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.servlet.ServletContext;
+import java.util.List;
+
+@Controller
+public class LocationController {
+
+    final LocationRepository locationRepository;
+    final LocationService service;
+    final Email email;
+    final Report report;
+    final ServletContext servletContext;
+
+    public LocationController(LocationRepository locationRepository, LocationService service, Email email, Report report, ServletContext servletContext) {
+        this.locationRepository = locationRepository;
+        this.service = service;
+        this.email = email;
+        this.report = report;
+        this.servletContext = servletContext;
+    }
+
+
+    @RequestMapping("/insertLocationPage")
+    public String showCreate() {
+        return "insertLocation";
+    }
+
+    @RequestMapping("/insertLocation")
+    public String saveLocation(@ModelAttribute("location") Location location, ModelMap modelMap) {
+        Location locationSaved = service.saveLocation(location);
+        String msg = "Location saved with id: " + locationSaved.getId();
+        modelMap.addAttribute("msg", msg);
+
+        // email sending
+        // email.sendEmail("sakshamsangal111@gmail.com", "Location saved", "Hi, Location saved");
+        return "insertLocation";
+    }
+
+    @RequestMapping("/displayLocations")
+    public String displayLocations(ModelMap modelMap) {
+        List<Location> locations = service.getAllLocations();
+        modelMap.addAttribute("locations", locations);
+        return "displayLocations";
+    }
+
+    @RequestMapping("deleteLocation")
+    public String deleteLocation(@RequestParam("id") int id, ModelMap modelMap) {
+        // Location location = service.getLocationById(id);
+        Location location = new Location();
+        location.setId(id);
+        service.deleteLocation(location);
+        List<Location> locations = service.getAllLocations();
+        modelMap.addAttribute("locations", locations);
+        return "displayLocations";
+    }
+
+    @RequestMapping("/updateLocationPage")
+    public String showUpdate(@RequestParam("id") int id, ModelMap modelMap) {
+        Location location = service.getLocationById(id);
+        modelMap.addAttribute("location", location);
+        return "updateLocation";
+    }
+
+    @RequestMapping("/updateLocation")
+    public String updateLocation(@ModelAttribute("location") Location location, ModelMap modelMap) {
+        service.updateLocation(location);
+        List<Location> locations = service.getAllLocations();
+        modelMap.addAttribute("locations", locations);
+        return "displayLocations";
+    }
+
+    @RequestMapping("/generateReport")
+    public String generateReport() {
+        String path = servletContext.getRealPath("/");
+        List<Object[]> data = locationRepository.findTypeAndTypeCount();
+        report.generatePieChart(path, data);
+        return "report";
+
+    }
+}
+----
+
+=== LocationRestController
+
+[source,java]
+----
+package com.mylocation.controller;
+
+import com.mylocation.modal.dao.LocationRepository;
+import com.mylocation.modal.dto.Location;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/locations")
+public class LocationRestController {
+
+    final LocationRepository locationRepository;
+
+    public LocationRestController(LocationRepository locationRepository) {
+        this.locationRepository = locationRepository;
+    }
+
+    @GetMapping
+    public List<Location> getLocations() {
+        return locationRepository.findAll();
+    }
+
+    @PostMapping
+    public Location createLocation(@RequestBody Location location) {
+        return locationRepository.save(location);
+    }
+
+    @PutMapping
+    public Location updateLocation(@RequestBody Location location) {
+        return locationRepository.save(location);
+
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteLocation(@PathVariable("id") int id) {
+        locationRepository.deleteById(id);
+    }
+
+    @GetMapping("/{id}")
+    public Location getLocation(@PathVariable("id") int id) {
+        Optional<Location> optionalLocation = locationRepository.findById(id);
+        return optionalLocation.orElse(null);
+    }
+}
+----
+
+[source,css]
+----
+
+body {
+    background-color: #222;
+    color: #aaa;
+    font-family: 'Google Sans', 'JetBrains Mono', serif;
+}
+----
+
+=== Location
+
+[source,java]
+----
+package com.mylocation.modal.dto;
+
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
+public class Location {
+
+    @Id
+    private int id;
+    private String code;
+    private String name;
+    private String type;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    @Override
+    public String toString() {
+        return "Location [id=" + id + ", code=" + code + ", name=" + name + ", type=" + type + "]";
+    }
+
+}
+----
+
+=== Main
+
+[source,java]
+----
+package com.mylocation;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
+
+@SpringBootApplication
+public class MyLocationApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(MyLocationApplication.class, args);
+    }
+
+}   
+----
+
+....
+src
+    main 
+        java
+        resources
+        webapp
+pom
+
+
+java
+    com.mylocation
+        controller
+        entity
+        repo
+        service
+        utility
+
+        
+resources/static/css/styles.css
+
+
+webapps
+    WEB-INF
+        views
+            .jsp
+....
+
+[source,xml]
+----
+
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.3.1.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>com</groupId>
+    <artifactId>locationweb</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>locationweb</name>
+    <description>Demo project for Spring Boot</description>
+
+    <properties>
+        <java.version>1.8</java.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-jasper</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.0.19</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
+----
+
+[source,java]
+----
+spring.datasource.url=jdbc:mysql://localhost:3306/projectdb
+spring.datasource.username=root
+spring.datasource.password=root
+
+spring.jpa.show-sql=true
+
+spring.mvc.view.prefix=/WEB-INF/views/
+spring.mvc.view.suffix=.jsp
+
+#server.context-path=/locationweb
+
+
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+spring.mail.username=sakshamsangal111
+spring.mail.password=pYtHoN_1@6!9
+spring.mail.properties.mail.smtp.starttls.enable=true
+spring.mail.properties.mail.smtp.starttls.required=true
+spring.mail.properties.mail.smtp.auth=true
+----
+
+=== LocationRepository
+
+[source,java]
+----
+package com.mylocation.modal.dao;
+
+
+import com.mylocation.modal.dto.Location;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
+
+public interface LocationRepository extends JpaRepository<Location, Integer> {
+
+    @Query("select type,count(type) from Location group by type")
+    public List<Object[]> findTypeAndTypeCount();
+}
+----
+
+=== LocationService
+
+[source,java]
+----
+package com.mylocation.modal.service;
+
+import com.mylocation.modal.dao.LocationRepository;
+import com.mylocation.modal.dto.Location;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+
+@Service
+public class LocationService {
+
+    private final LocationRepository repository;
+
+    public LocationService(LocationRepository repository) {
+        this.repository = repository;
+    }
+
+    public Location saveLocation(Location location) {
+        return repository.save(location);
+    }
+
+    public void updateLocation(Location location) {
+        repository.save(location);
+    }
+
+    public void deleteLocation(Location location) {
+        repository.delete(location);
+    }
+
+    public Location getLocationById(int id) {
+        Optional<Location> optionalLocation = repository.findById(id);
+        return optionalLocation.orElse(null);
+    }
+
+    public List<Location> getAllLocations() {
+        return repository.findAll();
+    }
+}
+    
+----
+
+use projectdb;
+
+create table location (id int PRIMARY KEY,code varchar(20),name
+varchar(20),type varchar(10));
+
+select * from location;
+
+drop table location;
+
+=== Email
+
+[source,java]
+----
+package com.mylocation.modal.utility;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Component;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+
+@Component
+public class Email {
+
+    private final JavaMailSender sender;
+
+    @Autowired
+    public Email(JavaMailSender sender) {
+        this.sender = sender;
+    }
+
+    public void sendEmail(String toAddress, String subject, String body) {
+
+        MimeMessage message = sender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+        try {
+            helper.setTo(toAddress);
+            helper.setSubject(subject);
+            helper.setText(body);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+
+        sender.send(message);
+    }
+}
+----
+
+=== Report
+
+[source,java]
+----
+package com.mylocation.modal.utility;
+
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.general.DefaultPieDataset;
+import org.springframework.stereotype.Component;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
+@Component
+public class Report {
+    public void generatePieChart(String path, List<Object[]> data) {
+        DefaultPieDataset dataset = new DefaultPieDataset();
+
+        for (Object[] objects : data) {
+            dataset.setValue(objects[0].toString(), new Double(objects[1].toString()));
+        }
+
+        JFreeChart chart = ChartFactory.createPieChart("Location Type Report", dataset);
+
+        try {
+            ChartUtilities.saveChartAsJPEG(new File(path + "/pieChart.jpeg"), chart, 300, 300);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+}
+----
+
+=== display
+
+[source,html]
+----
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@page isELIgnored="false" %>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <title>Insert title here</title>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">Navbar w/ text</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Features</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Pricing</a>
+            </li>
+        </ul>
+        <span class="navbar-text">
+        Navbar text with an inline element
+        </span>
+    </div>
+</nav>
+
+<div class="container">
+    <br><br>
+    <h3>Locations:</h3>
+    <table class="table table-dark table-striped table-sm">
+        <tr>
+            <th>id</th>
+            <th>code</th>
+            <th>name</th>
+            <th>type</th>
+            <th>Delete</th>
+            <th>Edit</th>
+        </tr>
+
+        <c:forEach items="${locations}" var="location">
+            <tr>
+                <td>${location.id}</td>
+                <td>${location.code}</td>
+                <td>${location.name}</td>
+                <td>${location.type}</td>
+                <td><a class="btn btn-danger btn-sm" href="deleteLocation?id=${location.id}">delete</a></td>
+                <td><a class="btn btn-info btn-sm" href="updateLocationPage?id=${location.id}">edit</a></td>
+            </tr>
+        </c:forEach>
+    </table>
+    <a href="insertLocationPage" class="btn btn-primary btn-sm float-right">Insert  Location</a>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+</body>
+</html>
+----
+
+=== insert
+
+[source,html]
+----
+
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page isELIgnored="false" %>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <title>Insert title here</title>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="insertLocation">Location</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
+            aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Features</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Pricing</a>
+            </li>
+        </ul>
+        <span class="navbar-text">
+        Navbar text with an inline element
+        </span>
+    </div>
+</nav>
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-md-8"></div>
+        <div class="col-md-4">
+            <br><br><br><br><br><br>
+            <h3>Insert location</h3>
+            <form action="insertLocation" method="post">
+                <div class="form-group">
+                    <label>Id</label>
+                    <input type="text" class="form-control form-control-sm" name="id">
+                </div>
+                <div class="form-group">
+                    <label>Code</label>
+                    <input type="text" class="form-control form-control-sm" name="code">
+                </div>
+
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" class="form-control form-control-sm" name="name">
+                </div>
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input type="radio" class="form-check-input" name="type" value="URBAN">URBAN
+                    </label>
+                </div>
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input type="radio" class="form-check-input" name="type" value="RURAL">RURAL
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block btn-sm">Submit</button>
+            </form>
+            <p>${msg}</p>
+            <a class="btn btn-primary btn-sm float-right" href="displayLocationsPage">View All</a>
+        </div>
+    </div>
+
+
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+</body>
+</html>
+----
+
+=== update
+
+[source,html]
+----
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@page isELIgnored="false" %>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <title>Insert title here</title>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">Navbar w/ text</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
+            aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Features</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Pricing</a>
+            </li>
+        </ul>
+        <span class="navbar-text">
+        Navbar text with an inline element
+        </span>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8"></div>
+        <div class="col-md-4">
+            <br><br><br><br><br><br>
+            <h3>Update location</h3>
+            <form action="updateLocation" method="post">
+                <div class="form-group">
+                    <label>Id</label>
+                    <input type="text" class="form-control form-control-sm" name="id" value="${location.id}" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Code</label>
+                    <input type="text" class="form-control form-control-sm" name="code" value="${location.code}">
+                </div>
+
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" class="form-control form-control-sm" name="name" value="${location.name}">
+                </div>
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input type="radio" class="form-check-input" name="type" value="URBAN" ${location.type=='URBAN'?'checked':''}>URBAN
+                    </label>
+                </div>
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input type="radio" class="form-check-input" name="type" value="RURAL" ${location.type=='RURAL'?'checked':''}>RURAL
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block btn-sm">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+</body>
+</html>
+----
+
+== Display page
+
+[source,jsp]
+----
+<div class="container">
+    <br><br>
+    <h3>Locations:</h3>
+    <table class="table table-dark table-striped table-sm">
+        <tr>
+            <th>id</th>
+            <th>code</th>
+            <th>name</th>
+            <th>type</th>
+            <th>Delete</th>
+            <th>Edit</th>
+        </tr>
+
+        <c:forEach items="${locations}" var="location">
+            <tr>
+                <td>${location.id}</td>
+                <td>${location.code}</td>
+                <td>${location.name}</td>
+                <td>${location.type}</td>
+                <td><a class="btn btn-danger btn-sm" href="deleteLocation?id=${location.id}">delete</a></td>
+                <td><a class="btn btn-info btn-sm" href="updateLocationPage?id=${location.id}">edit</a></td>
+            </tr>
+        </c:forEach>
+    </table>
+    <a href="insertLocationPage" class="btn btn-primary btn-sm float-right">Insert  Location</a>
+</div>
+----
+
+....
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page isELIgnored="false" %>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+
+</body>
+</html>
+....
+
+== Insert page
+
+=== include
+
+[source,jsp]
+----
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page isELIgnored="false" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+----
+
+=== HTML format
+
+[source,jsp]
+----
+----
+
+=== custom css
+
+[source,jsp]
+----
+<link rel="stylesheet" href="css/styles.css">
+----
+
+=== Form
+
+[source,jsp]
+----
+<div class="container">
+    <div class="row">
+        <div class="col-md-8"></div>
+        <div class="col-md-4">
+            <br><br><br><br><br><br>
+            <h3>Insert location</h3>
+            <form action="insertLocation" method="post">
+                <div class="form-group">
+                    <label>Id</label>
+                    <input type="text" class="form-control form-control-sm" name="id">
+                </div>
+                <div class="form-group">
+                    <label>Code</label>
+                    <input type="text" class="form-control form-control-sm" name="code">
+                </div>
+
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" class="form-control form-control-sm" name="name">
+                </div>
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input type="radio" class="form-check-input" name="type" value="URBAN">URBAN
+                    </label>
+                </div>
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input type="radio" class="form-check-input" name="type" value="RURAL">RURAL
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block btn-sm">Submit</button>
+            </form>
+            <p>${msg}</p>
+            <a class="btn btn-primary btn-sm float-right" href="displayLocations">View All</a>
+        </div>
+    </div>
+</div>
+----
+
+== Report page
+
+[source,jsp]
+----
+<img src="pieChart.jpeg"/>
+----
+
+== thymeleaf
+
+*location* `src/main/resources/templates/hello.html`
+
+*pom* `-thymeleaf`
+
+[width="100%",cols="14%,86%",options="header",]
+|===
+|character |means
+|@ |for writing url, uri e.g. in form action, for css @/css/temp.css`
+|$ |read data from controller
+|* |used in form input to bind the java object
+|===
+
+*show data from java controller* div th:text=``$\{message}''
+
+*to prevent html cache* `spring.thymeleaf.cache=false`
+
+*show list*
+
+[source,text]
+----
+ul th:each="student:${students}"
+    th:text="${student.name}"
+    th:text="${student.score}"
+----
+
+*to get the data from html form* `@ModelAttribute`
+
+*form data submit*
+
+[source,text]
+----
+form th:object="${student}" action="@{/insert-student}"
+input th:field="*{name}"
+input th:field="*{score}"
+----
+
+== Update page
+
+[source,jsp]
+----
+<div class="container">
+    <div class="row">
+        <div class="col-md-8"></div>
+        <div class="col-md-4">
+            <br><br><br><br><br><br>
+            <h3>Update location</h3>
+            <form action="updateLocation" method="post">
+                <div class="form-group">
+                    <label>Id</label>
+                    <input type="text" class="form-control form-control-sm" name="id" value="${location.id}" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Code</label>
+                    <input type="text" class="form-control form-control-sm" name="code" value="${location.code}">
+                </div>
+
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" class="form-control form-control-sm" name="name" value="${location.name}">
+                </div>
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input type="radio" class="form-check-input" name="type" value="URBAN" ${location.type=='URBAN'?'checked':''}>URBAN
+                    </label>
+                </div>
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input type="radio" class="form-check-input" name="type" value="RURAL" ${location.type=='RURAL'?'checked':''}>RURAL
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block btn-sm">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+----
+
+== Database caching
+
+=== pom
+
+* cache
+* hazelcast
+* hazelcast-spring
+
+=== Business logic
+
+[source,java]
+----
+----
+
+=== in main class
+
+=== in Product class
+
+`Product implements Serializable`
+
+=== in rest controller
+
+[source,java]
+----
+
+Product getProduct()
+
+deleteProduct() 
+----
+
+== Repository
+
+=== JPA
+
+[source,java]
+----
+package com.example.demo.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import com.example.demo.entity.User;
+
+public interface UserRepository extends JpaRepository<User, Integer> {
+}
+
+
+public interface LocationRepository extends JpaRepository<Location, Integer> {
+
+    @Query("select type,count(type) from Location group by type")
+    public List<Object[]> findTypeAndTypeCount();
+}
+----
+
+=== aop
+
+....
+implementation 'org.springframework.boot:spring-boot-starter-aop'
+compileOnly 'org.projectlombok:lombok'
+annotationProcessor 'org.projectlombok:lombok'
+implementation 'org.springframework.boot:spring-boot-starter-web'
+implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+runtimeOnly 'com.mysql:mysql-connector-j'
+testImplementation 'org.springframework.boot:spring-boot-starter-test'
+implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
+implementation 'org.springframework.boot:spring-boot-starter-webflux'
+....
+
+[source,xml]
+----
+<dependency>
+    <groupId>io.springfox</groupId>
+    <artifactId>springfox-swagger2</artifactId>
+    <version>2.9.2</version>
+</dependency>
+<dependency>
+    <groupId>io.springfox</groupId>
+    <artifactId>springfox-swagger-ui</artifactId>
+    <version>2.9.2</version>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-test</artifactId>
+    <scope>test</scope>
+</dependency>
+
+<!-- for API operations-->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-jpa</artifactId>
+</dependency>
+
+<!-- for mysql connection-->
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <scope>runtime</scope>
+</dependency>
+----
+
+=== global
+
+[source,java]
+----
+package com.example.demo.exception;
+
+import com.example.demo.model.ApiError;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Scope;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+@RestControllerAdvice
+@RequiredArgsConstructor
+public final class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+
+    private final MessageSource messageSource;
+
+
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> handleAllException(final Exception e) {
+        ApiError apiError = new ApiError();
+        apiError.setCode("500 INTERNAL_SERVER_ERROR");
+        apiError.addMessage(e.getMessage());
+        return ResponseEntity.internalServerError().body(apiError);
+    }
+
+
+}
+----
+
+....
+
+ <properties>
+        <java.version>17</java.version>
+        <spring-cloud.version>2022.0.0</spring-cloud.version>
+    </properties>
+....
+
+....
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-gateway</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+</dependency>
+....
+
+....
+
+spring:
+  cloud:
+    gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+      globalcors:
+          corsConfigurations:
+            '[/**]':
+              allowedOrigins: "*"
+              allowedMethods: "*"
+              allowedHeaders: "*"
+....
+
+....
+
+server.port=9090
+spring.application.name=API-GATEWAY
+eureka.instance.client.serviceUrl.defaultZone=http://localhost:8761/eureka/
+management.endpoints.web.exposure.include=*
+
+spring.cloud.gateway.routes[0].id=PRODUCT-SERVICE
+spring.cloud.gateway.routes[0].uri=lb://PRODUCT-SERVICE
+spring.cloud.gateway.routes[0].predicates[0]=Path=/prod
+
+spring.cloud.gateway.routes[1].id=INVOICE-SERVICE
+spring.cloud.gateway.routes[1].uri=lb://INVOICE-SERVICE
+spring.cloud.gateway.routes[1].predicates[0]=Path=/invoice
+
+
+....
+
+....
+
+@SpringBootApplication
+@EnableDiscoveryClient
+public class ApiGatewayApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(ApiGatewayApplication.class, args);
+    }
+
+}
+
+....
+
+....
+
+demo2
+....
+
+....
+
+ <properties>
+        <java.version>17</java.version>
+        <spring-cloud.version>2022.0.0</spring-cloud.version>
+    </properties>
+....
+
+....
+
+    <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+....
+
+....
+
+   <!-- for crud operations-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <!-- for mysql connection-->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+....
+
+....
+
+# database connection
+spring.datasource.url=jdbc:mysql://localhost:3306/mydb
+spring.datasource.username=root
+spring.datasource.password=root
+
+spring.jpa.hibernate.ddl-auto=update
+spring.main.banner-mode=off
+#logging.level.root=ERROR
+
+
+spring.application.name=INVOICE-SERVICE
+
+server.port=8080
+eureka.client.register-with-eureka=true
+eureka.client.fetch-registry=true
+eureka.client.service-url.defaultZone=http://localhost:8761/eureka/
+eureka.instance.hostname=localhost
+
+
+....
+
+....
+
+import com.example.war.model.Invoice;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface InvoiceRepository extends JpaRepository<Invoice, Integer> {
+
+}
+
+....
+
+....
+
+@Entity
+public class Invoice {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int invoice_no;
+    private String ship_add;
+    private String prod_name;
+    private double price;
+....
+
+....
+
+    @Autowired
+    public InvoiceRestController(InvoiceRepository invoiceRepository, RestTemplate restTemplate) {
+        this.invoiceRepository = invoiceRepository;
+        this.restTemplate = restTemplate;
+    }
+
+
+....
+
+....
+
+@CrossOrigin(origins = "*")
+@RestController
+public class InvoiceRestController {
+    private final InvoiceRepository invoiceRepository;
+    private final RestTemplate restTemplate;
+
+....
+
+....
+
+    @PostMapping("/invoice")
+    public Invoice postProduct(@RequestBody Invoice invoice) {
+        System.out.println("hello");
+        Object p = restTemplate.getForObject("http://PRODUCT-SERVICE/prod", Object.class);
+        System.out.println(p);
+        return invoiceRepository.save(invoice);
+    }
+
+....
+
+....
+
+@SpringBootApplication
+@EnableDiscoveryClient
+public class WarApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(WarApplication.class, args);
+    }
+
+    @Bean
+    @LoadBalanced
+    public RestTemplate restTemplate(){
+        return new RestTemplate();
+    }
+}
+....
+
+....
+
+ <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+....
+
+....
+
+ <properties>
+        <java.version>17</java.version>
+        <spring-cloud.version>2022.0.0</spring-cloud.version>
+    </properties>
+....
+
+....
+
+@SpringBootApplication
+@EnableDiscoveryClient
+public class ProductApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(ProductApplication.class, args);
+    }
+
+}
+
+....
+
+....
+
+@CrossOrigin(origins = "*")
+@RestController
+public class ProductRestController {
+
+    @GetMapping("/prod")
+    public Object postProduct() {
+        Map<String, String> map = new HashMap<>();
+        map.put("name", "akshu");
+        map.put("gender", "female");
+        return map;
+    }
+
+
+}
+
+....
+
+....
+
+server.port=8081
+
+spring.application.name=PRODUCT-SERVICE
+
+eureka.client.register-with-eureka=true
+eureka.client.fetch-registry=true
+eureka.client.service-url.defaultZone=http://localhost:8761/eureka/
+eureka.instance.hostname=localhost
+
+
+....
+
+....
+
+  <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+        </dependency>
+....
+
+....
+
+<properties>
+        <java.version>17</java.version>
+        <spring-cloud.version>2022.0.0</spring-cloud.version>
+    </properties>
+....
+
+....
+
+@SpringBootApplication
+@EnableEurekaServer
+public class SerRegApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(SerRegApplication.class, args);
+    }
+
+}
+
+....
+
+....
+
+server.port=8761
+eureka.client.register-with-eureka=false
+eureka.client.fetch-registry=false
+spring.application.name=EUREKA-SERVER
+
+
+....
+
+[source,java]
+----
+@Configuration
+@EnableWebSecurity
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Override
+    public void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+                .antMatchers("/showReg", "/", "/index.html", "/registerUser", "/login", "/showLogin", "/login/*")
+                .permitAll().antMatchers("/admin/showAddFlight").hasAnyAuthority("ADMIN").anyRequest().authenticated()
+                .and().csrf().disable();
+    }
+
+}
+----
+
+[source,text]
+----
+runwith springrunner.class
+@webmvctest
+Mvctest
+    @Autowired
+    Mockmvc
+
+    @mockbean
+    ProdRepo repo 
+
+    test()
+        new prod() with filled
+        add to list of product 
+        when(repo.findAll()).thenReturn(prod list)
+
+        objectwriter = new objectmapper().writer().pretty()
+
+
+        // get 
+        mockmvc.peform(get("/articles").contextPath("/prod"))
+        .andExcept(status().isok())
+        .andExcept(content().json(objectwriter.writevallueas string(prod list )))
+
+
+        // post 
+        when(repo.save(any())).thenReturn(prod list)
+        mockmvc.peform(
+            post("/articles")
+            .contextPath("/prod")
+            .contenttype(MediaType.app_json)
+            .content(objectmapper.writevallueas string(prod single))
+        )
+        .andExcept(status().isok())
+        .andExcept(content().json(objectwriter.writevallueas string(prod list )))
+
+        // put
+        when(repo.save(any())).thenReturn(prod list)
+
+        mockmvc.peform(
+            post("/articles")
+            .contextPath("/prod")
+            .contenttype(MediaType.app_json)
+            .content(objectmapper.writevallueas string(prod single))
+        )
+        .andExcept(status().isok())
+        .andExcept(content().json(objectwriter.writevallueas string(prod list )))
+
+
+
+        // delete
+        donothing.when(repo).deleteById(id);
+
+        mockmvc.peform(
+            delete("/articles")
+            .contextPath("/prod")           
+        )
+        .andExcept(status().isok())
+
+----
+
+[source,java]
+----
+@SpringBootTest
+class WarApplicationTests {
+
+    @Test
+    void test1() {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://localhost:8080/products/30";
+        Product product = restTemplate.getForObject(url, Product.class);
+        assertNotNull(product);
+        assertEquals("dog",product.getName());
+    }
+
+}
+----
+
+=== output
+
+....
+org.opentest4j.AssertionFailedError: 
+Expected :dog
+Actual   :cat
+....
+
+[source,java]
+----
+@Test
+void testPost() {
+    RestTemplate restTemplate = new RestTemplate();
+    String url = "http://localhost:8080/products/";
+    Product product = new Product();
+    product.setId(50);
+    product.setName("saksham");
+    product.setDescription("hello");
+    product.setPrice(500d);
+    Product savedProduct = restTemplate.postForObject(url, product, Product.class);
+
+    assertNotNull(savedProduct);
+    assertEquals("saksham",savedProduct.getName());
+}
+
+@Test
+void testPut() {
+    RestTemplate restTemplate = new RestTemplate();
+    String url = "http://localhost:8080/products/30";
+    Product product = restTemplate.getForObject(url, Product.class);
+    assert product != null;
+    product.setPrice(600d);
+    restTemplate.put("http://localhost:8080/products", product);
+}
+----
+
+....
+
+public interface StudentRepository extends CrudRepository<Student, Long> {
+
+}
+
+@Test
+public void testCreateStudent() {
+
+    Student student = new Student();
+    student.setName("John");
+    student.setCourse("Java Web Services");
+    student.setFee(30d);
+
+    studentRepository.save(student);
+}
+
+
+@Test
+public void testFindStudentById() {
+    Optional<Student> optionalStudent = studentRepository.findById(1l);
+    if (optionalStudent.isPresent()) {
+        Student student = optionalStudent.get();
+        System.out.println(student);
+    }
+}
+
+@Test
+public void testUpdateStudent() {
+    Optional<Student> optionalStudent = studentRepository.findById(3l);
+    if (optionalStudent.isPresent()) {
+        Student student = optionalStudent.get();
+        student.setFee(40d);
+        studentRepository.save(student);
+    }
+}
+
+@Test
+public void testDeleteStudent() {
+    Student student = new Student();
+    student.setId(1l);
+    studentRepository.delete(student);
+}
+....
+
+....
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Component;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+
+@Component
+public class Email {
+
+    private final JavaMailSender sender;
+
+    @Autowired
+    public Email(JavaMailSender sender) {
+        this.sender = sender;
+    }
+
+    public void sendEmail(String toAddress, String subject, String body) {
+
+        MimeMessage message = sender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+        try {
+            helper.setTo(toAddress);
+            helper.setSubject(subject);
+            helper.setText(body);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+
+        sender.send(message);
+    }
+}
+....
+
+[source,java]
+----
+package com.example.demo.controller;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import org.springframework.web.bind.annotation.*;
+
+import com.example.demo.service.UserService;
+
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
+
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+
+@RestController
+@RequestMapping("/api")
+@RequiredArgsConstructor
+@Slf4j
+public class UserController {
+    private final UserService userService;
+
+    //    upload:
+//    dir: D:/Temporary/upload
+    @PostMapping("/uploadFiles")
+    public ResponseEntity<List<String>> uploadFiles(@RequestParam("files") MultipartFile[] files) {
+
+        List<String> list = new ArrayList<>();
+        Arrays.stream(files).forEach(file -> {
+            String url = userService.uploadFiles(file);
+            list.add(url);
+        });
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+}
+
+package com.example.demo.service;
+
+import org.springframework.web.multipart.MultipartFile;
+
+
+public interface UserService {
+    String uploadFiles(MultipartFile file);
+}
+
+package com.example.demo.service;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import org.springframework.beans.factory.annotation.Value;
+
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Objects;
+
+
+@Service
+@Slf4j
+@RequiredArgsConstructor
+public class UserServiceImpl implements UserService {
+
+
+    @Value("${upload.dir}")
+    public String uploadDir;
+
+    @Override
+    public String uploadFiles(MultipartFile file) {
+        Path copyLocation;
+
+        String fileName = file.getOriginalFilename();
+        copyLocation = Paths.get(uploadDir + File.separator + StringUtils.cleanPath(Objects.requireNonNull(fileName)));
+
+        try {
+            Files.copy(file.getInputStream(), copyLocation);
+            return copyLocation.toString();
+        } catch (FileAlreadyExistsException e) {
+            String[] arr = fileName.split("\\.");
+            String finalFileName = arr[0] + "_" + System.currentTimeMillis() + "." + arr[1];
+            copyLocation = Paths.get(uploadDir + File.separator + StringUtils.cleanPath(finalFileName));
+
+            try {
+                Files.copy(file.getInputStream(), copyLocation);
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+            return copyLocation.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Could not store file " + file.getOriginalFilename() + ". Please try again!");
+        }
+
+
+    }
+}
+
+----
+
+[source,java]
+----
+package com.example.myupload811;
+
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+@ControllerAdvice
+public class AppExceptionHandler {
+
+    @ExceptionHandler(FileStorageException.class)
+    public ModelAndView handleException(FileStorageException exception, RedirectAttributes redirectAttributes) {
+
+        ModelAndView mav = new ModelAndView();
+        mav.addObject("message", exception.getMsg());
+        mav.setViewName("error");
+        return mav;
+
+    }
+}
+----
+
+[source,java]
+----
+package com.example.myupload811;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+
+@Service
+public class FileService {
+
+    // @Value("${app.upload.dir:${user.home}}")
+    public String uploadDir = "D:/Temporary/upload";
+
+    public void uploadFile(MultipartFile file) {
+
+        try {
+            Path copyLocation = Paths.get(uploadDir + File.separator + StringUtils.cleanPath(file.getOriginalFilename()));
+            Files.copy(file.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new FileStorageException("Could not store file " + file.getOriginalFilename() + ". Please try again!");
+        }
+    }
+}
+----
+
+[source,java]
+----
+package com.example.myupload811;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
+
+@Controller
+public class FileController {
+
+    @Autowired
+    FileService fileService;
+
+    @GetMapping("/")
+    public String index() {
+        return "upload";
+    }
+
+    @PostMapping("/uploadFile")
+    public String uploadFile(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
+
+        fileService.uploadFile(file);
+
+        redirectAttributes.addFlashAttribute("message",
+                "You successfully uploaded " + file.getOriginalFilename() + "!");
+
+        return "redirect:/";
+    }
+
+    @PostMapping("/uploadFiles")
+    public String uploadFiles(@RequestParam("files") MultipartFile[] files, RedirectAttributes redirectAttributes) {
+
+        Arrays.asList(files)
+                .stream()
+                .forEach(file -> fileService.uploadFile(file));
+
+        redirectAttributes.addFlashAttribute("message",
+                "You successfully uploaded all files!");
+
+        return "redirect:/";
+    }
+}
+----
+
+[source,java]
+----
+package com.example.myupload811;
+
+public class FileStorageException extends RuntimeException {
+
+    private static final long serialVersionUID = 1L;
+    private String msg;
+
+    public FileStorageException(String msg) {
+        this.msg = msg;
+
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+}
+----
+
+[source,html]
+----
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>ERROR</title>
+</head>
+<body>
+
+<h1>Error!!!</h1>
+
+<div th:if="${message}">
+    <h2 th:text="${message}"/>
+</div>
+
+
+</body>
+</html>
+----
+
+[source,html]
+----
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<h1>Spring Boot File Upload Example</h1>
+
+<hr/>
+
+<h4>Upload Single File:</h4>
+<form method="POST" th:action="@{/uploadFile}" enctype="multipart/form-data">
+    <input type="file" name="file"/> <br/><br/>
+    <button type="submit">Submit</button>
+</form>
+
+<hr/>
+
+<h4>Upload Multiple Files:</h4>
+<form method="POST" th:action="@{/uploadFiles}" enctype="multipart/form-data">
+    <input type="file" name="files" multiple/> <br/><br/>
+    <button type="submit">Submit</button>
+</form>
+
+<hr/>
+
+<div th:if="${message}">
+    <h2 th:text="${message}"/>
+</div>
+
+</body>
+</html>
+----
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-thymeleaf</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+----
+
+=== string to file object
+
+[source,java]
+----
+
+this.byteArrayResource = new ByteArrayResource(xmlString.getBytes()) {
+            @Override
+            public String getFilename() {
+                return "temp.xml";
+            }
+        };
+        new StreamSource(byteArrayResource.getInputStream());
+----
+
+[source,java]
+----
+
+[
+    {
+        "id": 1,
+        "name": "lavi",
+        "description": null,
+        "price": 0.0
+    },
+    {
+        "id": 2,
+        "name": "akshu",
+        "description": null,
+        "price": 0.0
+    }
+]
+----
+
+[source,java]
+----
+String message = "{0} has to go to {1} in {2,date,dd/MM/yyyy} / {3}";
+String formattedMessage = MessageFormat.format(message, "Richard", "School", new Date(), "1days");
+System.out.println(formattedMessage);
+----
+
+=== xml to pojo
+
+[source,java]
+----
+package org.example;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.dataformat.xml.*;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+
+import javax.xml.bind.annotation.XmlAttribute;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+
+public class POJOToXmlTest {
+    public static void main(String args[]) throws Exception {
+        try {
+            Person pojo = new Person();
+
+            XmlMapper xmlMapper = new XmlMapper();
+            xmlMapper.enable(SerializationFeature.INDENT_OUTPUT);
+            String str = "Helwewewelo jhguhg\n";
+            BufferedWriter writer = new BufferedWriter(new FileWriter("simple_bean.xml"));
+            writer.write(str);
+            xmlMapper.writeValue(writer, pojo);
+            writer.close();
+
+
+
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+// Person clas
+//
+@JacksonXmlRootElement( localName = "PersonData")
+class Person {
+
+    @JacksonXmlProperty(isAttribute = true)
+    private final String xmlns = "urn:stackify:jacksonxml";
+
+    @JacksonXmlProperty(isAttribute = true)
+    private final String xmlns2 = "akshu2";
+
+    @JacksonXmlProperty(localName="cc:myFN")
+    private String firstName;
+
+    @JacksonXmlProperty(localName = "cc:urn")
+    private String lastName;
+
+    @JacksonXmlProperty(isAttribute = true, localName = "_id")
+    private String address;
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+}
+----
+
+=== xml validation
+
+[source,java]
+----
+package org.example;
+
+import java.io.File;
+import java.io.IOException;
+
+import javax.xml.XMLConstants;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
+
+import org.xml.sax.SAXException;
+
+public class XMLValidation {
+
+    public static void main(String[] args) {
+        System.out.println(validateXMLSchema("src/main/java/org/example/person.xsd", "src/main/java/org/example/test.xml"));
+    }
+    public static boolean validateXMLSchema(String xsdPath, String xmlPath) {
+
+        try {
+            SchemaFactory factory =
+                    SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            Schema schema = factory.newSchema(new File(xsdPath));
+            Validator validator = schema.newValidator();
+            validator.validate(new StreamSource(new File(xmlPath)));
+        } catch (IOException | SAXException e) {
+            System.out.println("Exception: " + e.getMessage());
+            return false;
+        }
+        return true;
+    }
+}
+
+package org.example;
+
+import javax.xml.bind.annotation.*;
+
+@XmlRootElement(name = "Student")
+@XmlAccessorType(XmlAccessType.FIELD)
+class Student {
+
+    @XmlAttribute
+    private String type;
+
+    @XmlElement(name="Name")
+    private String name;
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+----
+
+=== jwt
+
+[source,java]
+----
+package com.example.jwt;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
+@RestController
+public class MyController {
+    @GetMapping("/")
+    public String welcome() {
+        return "welcome";
+    }
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
+
+    @Autowired
+    private CustomUserDetailService customUserDetailService;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+
+    @PostMapping("/token")
+    public String getToken(@RequestBody JWTRequest jwtRequest) throws Exception {
+        try {
+            System.out.println(jwtRequest);
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(jwtRequest.getUsername(), jwtRequest.getPassword()));
+        } catch (Exception e){
+            e.printStackTrace();
+            throw new Exception("bad credentials");
+        }
+
+        UserDetails userDetail = customUserDetailService.loadUserByUsername(jwtRequest.getUsername());
+        return jwtUtil.generateToken(userDetail);
+    }
+}
+
+
+@Configuration
+@EnableWebSecurity
+class SecurityConfig {
+    @Autowired
+    private JwtFilter jwtFilter;
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.csrf()
+                .disable()
+                .cors()
+                .disable()
+                .authorizeHttpRequests()
+                .requestMatchers("/token").permitAll()
+                .anyRequest().authenticated()
+                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+                http.addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        return http.build();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return NoOpPasswordEncoder.getInstance();
+    }
+
+}
+
+
+@Service
+class CustomUserDetailService implements UserDetailsService {
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        if (username.equals("sak")) {
+            return new User("sak", "123", new ArrayList<>());
+        } else {
+            throw new UsernameNotFoundException("User name not found");
+        }
+    }
+}
+
+class JWTRequest {
+    private String username;
+    private String password;
+
+    @Override
+    public String toString() {
+        return "JWTRequest{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+}
+
+@Component
+class JwtFilter extends OncePerRequestFilter {
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    @Autowired
+    private CustomUserDetailService customUserDetailService;
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String header = request.getHeader("Authorization");
+        if (header != null && header.startsWith("Bearer ")){
+            String token = header.substring(7);
+            String username = "";
+            try {
+                username = jwtUtil.extractUsername(token);
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+            UserDetails userDetails = customUserDetailService.loadUserByUsername(username);
+            if (SecurityContextHolder.getContext().getAuthentication() == null){
+                UsernamePasswordAuthenticationToken tok = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                tok.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(tok);
+            }
+        }
+        filterChain.doFilter(request,response);
+    }
+
+
+}
+
+package com.example.jwt;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+
+@Service
+public class JwtUtil {
+
+    private String SECRET_KEY = "secret";
+
+    public String extractUsername(String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
+
+    public Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
+    }
+
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
+    }
+    private Claims extractAllClaims(String token) {
+        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
+    }
+
+    private Boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
+    }
+
+    public String generateToken(UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+        return createToken(claims, userDetails.getUsername());
+    }
+
+    private String createToken(Map<String, Object> claims, String subject) {
+
+        return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
+    }
+
+    public Boolean validateToken(String token, UserDetails userDetails) {
+        final String username = extractUsername(token);
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    }
+}
+----
+
+[source,java]
+----
+
+
+#if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end
+#set( $CamelCaseName = "$NAME.substring(0,1).toLowerCase()$NAME.substring(1)" )
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import org.springframework.beans.factory.annotation.Value;
+
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Objects;
+
+
+@Service
+@Slf4j
+@RequiredArgsConstructor
+public class ${NAME}ServiceImpl implements ${NAME}Service{
+  
+    
+  @Value("${upload.dir}")
+    public String uploadDir;
+
+    @Override
+    public String uploadFiles(MultipartFile file) {
+        Path copyLocation;
+
+        String fileName = file.getOriginalFilename();
+        copyLocation = Paths.get(uploadDir + File.separator + StringUtils.cleanPath(Objects.requireNonNull(fileName)));
+
+        try {
+            Files.copy(file.getInputStream(), copyLocation);
+            return copyLocation.toString();
+        } catch (FileAlreadyExistsException e) {
+            String[] arr = fileName.split("\\.");
+            String finalFileName = arr[0] + "_" + System.currentTimeMillis() + "." + arr[1];
+            copyLocation = Paths.get(uploadDir + File.separator + StringUtils.cleanPath(finalFileName));
+
+            try {
+                Files.copy(file.getInputStream(), copyLocation);
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return copyLocation.toString();
+
+    }
+}
+----
+
+[source,java]
+----
+#if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end
+#set( $CamelCaseName = "$NAME.substring(0,1).toLowerCase()$NAME.substring(1)" )
+
+import org.springframework.web.multipart.MultipartFile;
+
+
+public interface ${NAME}Service {
+    String uploadFiles(MultipartFile file);
+}
+----
+
+....
+Logger LOGGER = LoggerFactory.getLogger(ReservationController.class);
+
+LOGGER.info("completeReservation()  " + request);
+....
+
+....
+package com.bharath.flightreservation.util;
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
+import com.bharath.flightreservation.entities.Reservation;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+
+@Component
+public class PDFGenerator {
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(PDFGenerator.class);
+
+
+    public void generateItinerary(Reservation reservation, String filePath) {
+        LOGGER.info("generateItinerary()");
+        Document document = new Document();
+
+        try {
+            PdfWriter.getInstance(document, new FileOutputStream(filePath));
+
+            document.open();
+
+            document.add(generateTable(reservation));
+
+            document.close();
+
+        } catch (FileNotFoundException | DocumentException e) {
+            LOGGER.error("Exception in generateItinerary " +e);
+        }
+
+    }
+
+    private PdfPTable generateTable(Reservation reservation) {
+        PdfPTable table = new PdfPTable(2);
+
+        PdfPCell cell;
+
+        cell = new PdfPCell(new Phrase("Flight Itinerary"));
+        cell.setColspan(2);
+        table.addCell(cell);
+
+        cell = new PdfPCell(new Phrase("Flight Details"));
+        cell.setColspan(2);
+        table.addCell(cell);
+
+        table.addCell("Airlines ");
+        table.addCell(reservation.getFlight().getOperatingAirlines());
+
+        table.addCell("Departure City");
+        table.addCell(reservation.getFlight().getDepartureCity());
+
+        table.addCell("Arrival City");
+        table.addCell(reservation.getFlight().getArrivalCity());
+
+        table.addCell("Flight Number");
+        table.addCell(reservation.getFlight().getFlightNumber());
+
+        table.addCell("Departure Date");
+        table.addCell(reservation.getFlight().getDepartureCity());
+
+        table.addCell("Departure Time");
+        table.addCell(reservation.getFlight().getEstimatedDepartureTime().toString());
+
+        cell = new PdfPCell(new Phrase("Passenger Details"));
+        cell.setColspan(2);
+        table.addCell(cell);
+
+        table.addCell("First Name");
+        table.addCell(reservation.getPassenger().getFirstName());
+
+        table.addCell("Last Name");
+        table.addCell(reservation.getPassenger().getLastName());
+
+        table.addCell("Email");
+        table.addCell(reservation.getPassenger().getEmail());
+
+        table.addCell("Phone");
+        table.addCell(reservation.getPassenger().getPhone());
+
+        return table;
+    }
+
+}
+....
+
+import org.jfree.chart.ChartFactory; import
+org.jfree.chart.ChartUtilities; import org.jfree.chart.JFreeChart;
+import org.jfree.data.general.DefaultPieDataset; import
+org.springframework.stereotype.Component;
+
+import java.io.File; import java.io.IOException; import java.util.List;
+
+@Component public class Report \{ public void generatePieChart(String
+path, List<Object[]> data) \{ DefaultPieDataset dataset = new
+DefaultPieDataset();
+
+....
+    for (Object[] objects : data) {
+        dataset.setValue(objects[0].toString(), new Double(objects[1].toString()));
+    }
+
+    JFreeChart chart = ChartFactory.createPieChart("Location Type Report", dataset);
+
+    try {
+        ChartUtilities.saveChartAsJPEG(new File(path + "/pieChart.jpeg"), chart, 300, 300);
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+
+}
+....
+
+}
+
+== Service design pattern
+
+=== Imports
+
+[source,java]
+----
+import org.springframework.stereotype.Service;
+----
+
+=== Class
+
+[source,java]
+----
+@Service
+public class LocationService { }
+----
+
+=== Field
+
+[source,java]
+----
+private final LocationRepository repository;
+----
+
+=== constructor
+
+[source,java]
+----
+public LocationService(LocationRepository repository) {
+    this.repository = repository;
+}
+----
+
+== Service methods
+
+=== insert
+
+[source,java]
+----
+public Location saveLocation(Location location) {
+    return repository.save(location);
+}
+----
+
+=== display
+
+[source,java]
+----
+public Location getLocationById(int id) {
+    Optional<Location> optionalLocation = repository.findById(id);
+    return optionalLocation.orElse(null);
+}
+
+public List<Location> getAllLocations() {
+    return repository.findAll();
+}
+----
+
+=== delete
+
+[source,java]
+----
+public void deleteLocation(Location location) {
+    repository.delete(location);
+}
+----
+
+=== update
+
+[source,java]
+----
+public void updateLocation(Location location) {
+    repository.save(location);
+}
+----
+
+[source,java]
+----
+package com.example.war;
+
+import org.springframework.stereotype.Service;
+
+import javax.persistence.EntityManager;
+import javax.persistence.ParameterMode;
+import javax.persistence.PersistenceContext;
+import javax.persistence.StoredProcedureQuery;
+
+@Service
+public class LoginServiceImpl {
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    public int checkUsernameAndPassword(String username, String password, int price) {
+
+        //"login" this is the name of your procedure
+        StoredProcedureQuery query = entityManager.createStoredProcedureQuery("product");
+
+        //Declare the parameters in the same order
+        query.registerStoredProcedureParameter(1, String.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter(2, String.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter(3, Integer.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter(4, Integer.class, ParameterMode.OUT);
+
+        //Pass the parameter values
+        query.setParameter(1, username);
+        query.setParameter(2, password);
+        query.setParameter(3, price);
+
+        //Execute query
+        query.execute();
+
+        //Get output parameters
+        return (int) query.getOutputParameterValue(4);
+    }
+}
+----
+
+== swagger
+
+=== pom
+
+[source,xml]
+----
+<dependency>
+    <groupId>io.springfox</groupId>
+    <artifactId>springfox-swagger2</artifactId>
+    <version>2.9.2</version>
+</dependency>
+<dependency>
+    <groupId>io.springfox</groupId>
+    <artifactId>springfox-swagger-ui</artifactId>
+    <version>2.9.2</version>
+</dependency>
+----
+
+=== url
+
+[source,text]
+----
+http://localhost:8080/swagger-ui.html
+http://localhost:8080/v2/api-docs
+----
+
+=== SwaggerConfig
+
+[source,java]
+----
+
+@Configuration
+public class SwaggerConfig {
+    @Bean
+    public Docket api() {
+        return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo())
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("com.example.war.entity"))
+                .paths(PathSelectors.regex("/products.*"))
+                .build();
+    }
+
+    @Bean
+    public ApiInfo apiInfo() {
+        return new ApiInfoBuilder().title("Product API")
+                .description("Product crud operations")
+                .termsOfServiceUrl("open source")
+                .license("Saksham license")
+                .licenseUrl("www.google.com")
+                .version("2.0")
+                .build();
+    }
+}
+----
+
+=== ApiOperation
+
+[source,java]
+----
+@ApiOperation(value = "get all products provided by saksham",
+        notes = "hello",
+        response = Product.class,
+        responseContainer = "List",
+        produces = "application/json"
+
+)
+@GetMapping("/products")
+public List<Product> getProducts() {
+    return productRepository.findAll();
+}
+----
+
+=== Main
+
+[source,java]
+----
+@SpringBootApplication
+@EnableSwagger2
+public class WarApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(WarApplication.class, args);
+    }
+
+}
+----
+
+....
+-validation
+    validation-api
+    hiberanate-validator
+
+insert 
+insert(@Valid @ReqestBody Product product)
+
+@NotNull 
+@size(max = 100)
+@min(value = 1, message="must be more than 1")
+....
+
+== XML validation in java
+
+=== input
+
+* xml
+* xsd
+
+=== output
+
+* valid
+* invalid - list of errors
+
+=== solution
+
+* no external library
+* java17 spring boot
+
+==== ide shortcut
+
+* file:xmlValidation
+
+==== Step 1. test
+
+[source,java]
+----
+
+
+import com.example.demo.exception.XSDValidationFailed;
+import com.example.demo.model.ApiError;
+import org.junit.jupiter.api.Test;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+
+import java.io.IOException;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class XmlValidatorUnitTest {
+
+    private static final String BAELDUNG_XML_PATH = "xml/validation/baeldung.xml";
+    private static final String PERSON_XSD_PATH = "xml/validation/person.xsd";
+    private static final String FULL_PERSON_XSD_PATH = "xml/validation/full-person.xsd";
+
+
+    @Test
+    public void givenInvalidXML_WhenListParsingExceptions_ThenHasThree() throws IOException, SAXException {
+        List<String> errorMsg = new XmlValidator(FULL_PERSON_XSD_PATH, BAELDUNG_XML_PATH).listParsingExceptions();
+        if (errorMsg.size() != 0){
+            throw new XSDValidationFailed( errorMsg);
+        }
+    }
+
+}
+----
+
+==== Step 2. validator
+
+[source,java]
+----
+
+
+import com.example.demo.model.ApiError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+
+import javax.xml.XMLConstants;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class XmlValidator {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(XmlValidator.class);
+
+    private final String xsdPath;
+    private final String xmlPath;
+
+    public XmlValidator(String xsdPath, String xmlPath) {
+        this.xsdPath = xsdPath;
+        this.xmlPath = xmlPath;
+    }
+
+    public boolean isValid() throws IOException, SAXException {
+        Validator validator = initValidator(xsdPath);
+        try {
+            validator.validate(new StreamSource(getFile(xmlPath)));
+            return true;
+        } catch (SAXException e) {
+            return false;
+        }
+    }
+
+    public List<String> listParsingExceptions() throws IOException, SAXException {
+        XmlErrorHandler xsdErrorHandler = new XmlErrorHandler();
+        Validator validator = initValidator(xsdPath);
+        validator.setErrorHandler(xsdErrorHandler);
+        try {
+            validator.validate(new StreamSource(getFile(xmlPath)));
+        } catch (SAXParseException e) {}
+        ArrayList<String> msg = new ArrayList<>();
+        xsdErrorHandler.getExceptions().forEach(e -> {
+            msg.add(e.getMessage());
+            LOGGER.info(e.getMessage());
+        });
+        return msg;
+    }
+
+    private Validator initValidator(String xsdPath) throws SAXException {
+        SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        Source schemaFile = new StreamSource(getFile(xsdPath));
+        Schema schema = factory.newSchema(schemaFile);
+        return schema.newValidator();
+    }
+
+    private File getFile(String location) {
+        return new File(getClass().getClassLoader().getResource(location).getFile());
+    }
+
+}
+----
+
+==== 2.1
+
+[source,java]
+----
+package com.example.demo;
+
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ByteArrayResource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+
+import javax.xml.XMLConstants;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class XmlValidator {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(XmlValidator.class);
+
+    private final String xsdPath;
+    private final String xmlString;
+    private final ByteArrayResource byteArrayResource;
+
+    public XmlValidator(String xsdPath, String xmlString) {
+        this.xsdPath = xsdPath;
+        this.xmlString = xmlString;
+        this.byteArrayResource = new ByteArrayResource(xmlString.getBytes()) {
+            @Override
+            public String getFilename() {
+                return "temp.xml";
+            }
+        };
+    }
+
+    public boolean isValid() throws IOException, SAXException {
+        Validator validator = initValidator(xsdPath);
+        try {
+            validator.validate(new StreamSource(byteArrayResource.getInputStream()));
+            return true;
+        } catch (SAXException e) {
+            return false;
+        }
+    }
+
+    public List<String> listParsingExceptions() throws IOException, SAXException {
+        XmlErrorHandler xsdErrorHandler = new XmlErrorHandler();
+        Validator validator = initValidator(xsdPath);
+        validator.setErrorHandler(xsdErrorHandler);
+        try {
+            validator.validate(new StreamSource(byteArrayResource.getInputStream()));
+        } catch (SAXParseException e) {}
+        ArrayList<String> msg = new ArrayList<>();
+        xsdErrorHandler.getExceptions().forEach(e -> {
+            msg.add(e.getMessage());
+            LOGGER.info(e.getMessage());
+        });
+        return msg;
+    }
+
+    private Validator initValidator(String xsdPath) throws SAXException {
+        SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        Source schemaFile = new StreamSource(getFile(xsdPath));
+        Schema schema = factory.newSchema(schemaFile);
+        return schema.newValidator();
+    }
+
+    private File getFile(String location) {
+        return new File(getClass().getClassLoader().getResource(location).getFile());
+    }
+
+}
+----
+
+==== Step 3. error handler
+
+[source,java]
+----
+
+
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXParseException;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class XmlErrorHandler implements ErrorHandler {
+
+    private final List<SAXParseException> exceptions;
+
+    public XmlErrorHandler() {
+        this.exceptions = new ArrayList<>();
+    }
+
+    public List<SAXParseException> getExceptions() {
+        return exceptions;
+    }
+
+    @Override
+    public void warning(SAXParseException exception) {
+        exceptions.add(exception);
+    }
+
+    @Override
+    public void error(SAXParseException exception) {
+        exceptions.add(exception);
+    }
+
+    @Override
+    public void fatalError(SAXParseException exception) {
+        exceptions.add(exception);
+    }
+}
+----
+
+==== Step 4. xml
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8" ?>
+<individual>
+    <name>Baeldung</name>
+    <address>
+        <zip>00001</zip>
+        <city>New York</city>
+    </address>
+</individual>
+----
+
+==== Step 5. xsd
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8" ?>
+<individual>
+    <name>Baeldung</name>
+    <address>
+        <zip>00001</zip>
+        <city>New York</city>
+    </address>
+</individual>
+----
+
+[source,java]
+----
+    @ExceptionHandler(XSDValidationFailed.class)
+    public ResponseEntity<ApiError> xSDValidationFailed(final XSDValidationFailed e) {
+        ApiError apiError = new ApiError();
+        apiError.setCode("500 XSD_VALIDATION_FAILED");
+        e.getInvalidAges().forEach(apiError::addMessage);
+        return ResponseEntity.internalServerError().body(apiError);
+    }
+----

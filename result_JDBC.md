@@ -1,0 +1,406 @@
+```
+// database name = localhost:port:SID
+// localhost = hostname
+// 1521 = port 
+// xe = SID
+```
+
+## oracle database connection
+
+```
+try {
+    Class.forName("oracle.jdbc.driver.OracleDriver");
+    String url = "jdbc:oracle:thin:@localhost:1521:xe"; 
+    String username = "SYSTEM"; 
+    String password = "Mayankbagga@10"; 
+
+    con = DriverManager.getConnection(url, username, password);
+    System.out.println("connection established");
+} catch(Exception e){
+    System.out.println(e);
+}
+```
+
+## mysql connection
+
+```
+try {
+    Class.forName("com.mysql.cj.jdbc.Driver");
+    String url = "jdbc:mysql://localhost:3306/springjdbctemplate";
+    String username = "root"; 
+    String password = "root"; 
+
+    con = DriverManager.getConnection(url, username, password);
+    System.out.println("connection established");
+}
+catch(Exception e){
+    System.out.println(e);
+}
+```
+
+## Database class
+
+```
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+public class Database {
+    public static Connection getConnection() {
+        Connection connection = null;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            String url = "jdbc:mysql://localhost:3306/school";
+            String username = "root";
+            String password = "root";
+            connection = DriverManager.getConnection(url, username, password);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return connection;
+    }
+}
+
+```
+
+```
+public class Crud {
+
+    public static Statement statement;
+
+    public static void delete(int studentRollNumber) throws SQLException {
+        String sql = "DELETE FROM student WHERE student_roll_number = " + studentRollNumber;
+        statement.executeUpdate(sql);
+    }
+
+    public static void insert(long studentRollNumber, String studentName) throws SQLException {
+        String sql = "INSERT INTO student VALUES (" + studentRollNumber + ", '" + studentName + "')";
+        statement.executeUpdate(sql);
+    }
+
+    public static void update(int studentRollNumber, String studentName) throws SQLException {
+        String sql = "UPDATE student SET student_name = '" + studentName + "' " + " WHERE student_roll_number = " + studentRollNumber;
+        statement.executeUpdate(sql);
+    }
+
+    public static Student search(int studentRollNumber) throws SQLException {
+        String sql = "SELECT * FROM student WHERE student_roll_number = " + studentRollNumber;
+        ResultSet resultSet = statement.executeQuery(sql);
+
+        Student student = new Student();
+        if (resultSet.next()) {
+            student.setRollNumber(resultSet.getInt(1));
+            student.setStudentName(resultSet.getString(2));
+        }
+        return student;
+    }
+
+    public static List<Student> view() throws Exception {
+        String sql = "SELECT * FROM student";
+        ResultSet resultSet = statement.executeQuery(sql);
+
+        List<Student> students = new ArrayList<>();
+        while (resultSet.next()) {
+            Student student = new Student();
+            student.setRollNumber(resultSet.getInt(1));
+            student.setStudentName(resultSet.getString(2));
+            students.add(student);
+        }
+        return students;
+    }
+
+    static {
+        try {
+            Crud.statement = Database.getConnection().createStatement();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
+}
+
+
+```
+
+```
+// default is get
+
+// embedded tomcat
+<plugin>
+    <groupId>org.apache.tomcat.maven</groupId>
+    <artifactId>tomcat7-maven-plugin</artifactId>
+    <version>2.2</version>
+    <configuration>
+    <port>8080</port>
+    <path>/</path>
+    </configuration>
+</plugin>
+
+// mysql
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <version>8.0.13</version>
+</dependency>
+
+// servlet
+<dependency>
+    <groupId>javax</groupId>
+    <artifactId>javaee-api</artifactId>
+    <version>8.0.1</version>
+    <scope>provided</scope>
+</dependency>
+```
+
+## DateTimeFormatter
+
+```
+<%=DateTimeFormatter.format((postDTOS.get(i).getTimestamp()))%>
+```
+
+package org.example;
+
+import java.io.FileOutputStream;
+import java.sql.*;
+
+class JDBCTest {
+public static void main(String args[]) {
+Connection conn = null;
+PreparedStatement preparedStatement = null;
+
+        String query = "select * from table1 where c1 = 1";
+
+        try {
+            //get connection
+            conn = Database.getConnection();
+
+            //create preparedStatement
+            preparedStatement = conn.prepareStatement(query);
+
+            //execute query
+            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+
+            Blob clob = resultSet.getBlob(2);
+            byte[] byteArr = clob.getBytes(1, (int) clob.length());
+
+            FileOutputStream fileOutputStream =
+                    new FileOutputStream("D:\\Temporary\\savedImage.jpg");
+            fileOutputStream.write(byteArr);
+
+            System.out.println("Image retrieved successfully.");
+
+            //close connection
+            fileOutputStream.close();
+            preparedStatement.close();
+            conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+}
+
+class Database {
+public static Connection getConnection() {
+Connection connection = null;
+try {
+Class.forName("com.mysql.cj.jdbc.Driver");
+String url = "jdbc:mysql://localhost:3306/sms";
+String username = "root";
+String password = "root";
+connection = DriverManager.getConnection(url, username, password);
+} catch (Exception e) {
+e.printStackTrace();
+}
+return connection;
+}
+}
+
+package org.example;
+
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+class InsertImageToMySqlDB {
+public static void main(String args[]) throws Exception{
+//Registering the Driver
+DriverManager.registerDriver(new com.mysql.jdbc.Driver());
+//Getting the connection
+String mysqlUrl = "jdbc:mysql://localhost/sms";
+Connection con = DriverManager.getConnection(mysqlUrl, "root", "root");
+System.out.println("Connection established......");
+PreparedStatement pstmt = con.prepareStatement("INSERT INTO table1 VALUES(1,?)");
+InputStream in = new FileInputStream("D:\\Temporary\\images.png");
+pstmt.setBlob(1, in);
+//Executing the statement
+pstmt.execute();
+System.out.println("Record inserted......");
+}
+}
+
+## JSP template in servlet
+
+```
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@page isELIgnored="false" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="<%=request.getContextPath()%>/css/styles.css">
+</head>
+<body>
+
+
+
+</body>
+</html>
+```
+
+## scriptlets
+
+```
+<%!   
+ // java code 
+%>  
+
+<%= // direct print %>  
+
+<% out.print("Today is:"+java.util.Calendar.getInstance().getTime()); %>  
+
+<%   
+  // used for writing servlet code.
+%>  
+```
+
+## for loop in JSP using JSTL
+
+```
+<table>
+    <tr>
+        <th>Airlines</th>
+        <th>Departure City</th>
+        <th>Arrival City</th>
+        <th>Departure Time</th>
+
+    </tr>
+
+    <c:forEach items="${flights}" var="flight">
+        <tr>
+            <td>${flight.operatingAirlines}</td>
+            <td>${flight.departureCity}</td>
+            <td>${flight.arrivalCity}</td>
+            <td>${flight.estimatedDepartureTime}</td>
+            <td><a href="showCompleteReservation?flightId=${flight.id}">Select</a></td>
+        </tr>
+
+    </c:forEach>
+</table>
+```
+
+```
+${msg} // direct print variable in jsp
+
+request.getContextPath() // return root directory of project
+```
+
+## If user is not logged in then redirect him to default page i.e. index.jsp
+
+```
+try {
+    if (session.getAttribute("emailId").equals(null)) {
+        response.sendRedirect(request.getContextPath());
+    }
+} catch (NullPointerException e) {
+    response.sendRedirect(request.getContextPath());
+}
+```
+
+## Logged In as
+
+```
+Logged In as <%
+try {
+    out.print(session.getAttribute("emailId").toString().split("@")[0]);
+} catch (NullPointerException e) {}
+%>
+```
+
+```
+<form id="post_form" method="post" action="<%=request.getContextPath()%>/blog/post">
+<span><%=session.getAttribute("emailId")%></span>
+```
+
+## @WebServlet("/blog/post")
+
+```
+public class PostServlet extends HttpServlet 
+```
+
+## log out
+
+```
+<%
+    session.invalidate();
+    response.sendRedirect(request.getContextPath());
+%>
+```
+
+## Write java code to populate all the tag options in the drop-down menu.
+
+```
+<%
+    HashSet<String> tagList = new DAOFactory().getPostCRUDS().findAllTags();
+    Object[] array = tagList.toArray();
+    for (int i = 0; i < array.length; i++) { %>
+<option value="<%=array[i]%>"><%=array[i]%>
+</option>
+<%
+    }
+%>
+```
+
+## TODO: 7.15. Write code to get posts for the selected "tag" and render the search result on the web page.
+
+```
+
+<%
+    if (request.getMethod().equals("POST")) {
+        List<PostDTO> postDTOS = new DAOFactory().getPostCRUDS().findByTag(request.getParameter("tag"));
+        for (int i = 0; i < postDTOS.size(); i++) { %>
+            <div class="post-list">
+                <div>Post Id: <%=postDTOS.get(i).getPostId()%>
+                </div>
+                <div>Email Id: <%=postDTOS.get(i).getEmailId()%>
+                </div>
+                <div>Title: <%=postDTOS.get(i).getTitle()%></div>
+                <div>Tag: <%=postDTOS.get(i).getTag()%>
+                </div>
+                <div>Description: <%=postDTOS.get(i).getDescription()%>
+                </div>
+                <div>Time: <%=DateTimeFormatter.format(postDTOS.get(i).getTimestamp())%>
+                </div>
+            </div>
+<%
+        }
+        if (postDTOS.size() < 1) {
+            out.print("Sorry no posts exists for this tag");
+        }
+
+    }
+%>
+```
+
+## If user tries to click on browser bac k button then he/ she should not be able to access this page*/
+
+```
+response.setHeader("Cache-Control", "no-cache");
+response.setHeader("Cache-Control", "no-store");
+response.setHeader("Pragma", "no-cache");
+response.setDateHeader("Expires", 0);
+```
+

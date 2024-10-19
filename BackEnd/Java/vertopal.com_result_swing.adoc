@@ -1,0 +1,1301 @@
+:toc: left
+== crud
+
+=== Algorithm
+
+....
+create a maven quick start project
+add mysql dependency
+create design pattern
+create database class 
+create crud class 
+create util class 
+create swing form
+....
+
+=== design pattern
+
+....
+org.example
+    db 
+        Database.java
+    frames
+        MyFrame1 swing form 
+    repo 
+        UserCrud.java
+    util 
+        Util.java
+    Main 
+....
+
+[source,java]
+....
+public class MyFrame1 extends JFrame {
+    public MyFrame1() throws Exception {
+        super("CRUD");
+
+        Util.setUpTable(this);
+        Util.setUpListener(this);
+        Util.setUpComboBox(this);
+
+        Defualt frame code 
+    }
+}
+....
+
+=== Defualt frame code (place at the end)
+
+....
+setContentPane(panel1);
+setMinimumSize(new Dimension(1000, 650));
+setLocationRelativeTo(null);
+setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
+setVisible(true);
+setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+....
+
+=== Util methods
+
+....
+Util.setUpTable(this);
+Util.setUpListener(this);
+Util.setUpComboBox(this);
+....
+
+=== MyFrame1
+
+[source,java]
+....
+public class MyFrame1 extends JFrame {
+    declare JComponents; 
+    make default table model
+    make table row sorter
+    make array list of component
+
+    public MyFrame1() {
+        call util methods
+        Defualt frame code
+    }
+}
+....
+
+== UserCrud
+
+[source,java]
+....
+public class UserCrud {
+    initailise static block
+    select
+    insert
+    update
+    delete
+}
+....
+
+=== make static block to initailise statement of database
+
+....
+static {
+    try {
+        statement = Database.getConnection().createStatement();
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
+....
+
+=== define select method
+
+[source,java]
+....
+public static void select(MyFrame1 myFrame1) throws Exception {
+    MyFrame1.model.setRowCount(0);
+    String sql = "SELECT * FROM user";
+    ResultSet resultSet = statement.executeQuery(sql);
+    while (resultSet.next()) {
+        Object[] row = new Object[11];
+        row[0] = resultSet.getString(1);
+        row[1] = resultSet.getString(2);
+        row[2] = resultSet.getString(3);
+        row[3] = resultSet.getString(4);
+        row[4] = resultSet.getString(5);
+        row[5] = resultSet.getString(6);
+        row[6] = resultSet.getString(7);
+        row[7] = resultSet.getString(8);
+        row[8] = resultSet.getString(9);
+        row[9] = resultSet.getString(10);
+        row[10] = resultSet.getString(11);
+        MyFrame1.model.addRow(row);
+    }
+
+}
+....
+
+=== insert method
+
+[source,java]
+....
+public static void insert() throws SQLException {
+    ArrayList<String> l = MyFrame1.componentList;
+    String sql = "select 1 from user where id=" + l.get(0);
+    ResultSet rs = statement.executeQuery(sql);
+    if (rs.first()) {
+        Util.alert("Please provide a different id number", "Similar id found");
+    } else {
+        sql = "INSERT INTO user VALUES (" + l.get(0) + ", '" + l.get(1) + "', '" + l.get(2) + "', '" + l.get(3) + "', '" + l.get(4) + "', '" + l.get(5) + "', " + l.get(6) + ", " + l.get(7) + ", " + l.get(8) + ", '"  + l.get(9) + "', '"+ l.get(10) + "')";
+        statement.executeUpdate(sql);
+        ArrayList<Object> row = new ArrayList<>(l);
+        MyFrame1.model.addRow(row.toArray());
+        // Dialog.clear(TF1, TF2, TF3);
+    }
+}
+....
+
+=== update method
+
+[source,java]
+....
+public static void update(MyFrame1 myFrame1) throws SQLException {
+    ArrayList<String> l = MyFrame1.componentList;
+
+    String sql = "UPDATE user SET name='" + l.get(1) + "',email='" + l.get(2) + "',mobile_number='" + l.get(3) + "',city='" + l.get(4) + "',address='" + l.get(5) + "',hindi=" + l.get(6) + ",english=" + l.get(7) + ",telugu=" + l.get(8) + ",gender='" + l.get(9) + "', image_path='" + l.get(10) + "' WHERE id=" + l.get(0);
+    statement.execute(sql);
+
+    int rowIndex = myFrame1.getTable1().getSelectedRow();
+
+    DefaultTableModel tableModel = (DefaultTableModel) myFrame1.getTable1().getModel();
+    ArrayList<Object> row = new ArrayList<>(l);
+
+    int actualIndex = myFrame1.getTable1().convertRowIndexToModel(rowIndex);
+    tableModel.removeRow(actualIndex);
+    tableModel.insertRow(actualIndex, row.toArray());
+    // Dialog.clear(TF1, TF2, TF3);
+}
+....
+
+=== delete method
+
+[source,java]
+....
+public static void delete(MyFrame1 myFrame1) throws Exception {
+    int length = myFrame1.getTable1().getSelectedRows().length;
+    if (length == 1) {
+        if (Util.getDeleteConfirmation() == 0) {
+            int i = myFrame1.getTable1().getSelectedRow();
+            String s = myFrame1.getTable1().getValueAt(i, 0).toString();
+            String sql = "DELETE FROM user WHERE id=" + s;
+            statement.execute(sql);
+            int actualIndex = myFrame1.getTable1().convertRowIndexToModel(i);
+            MyFrame1.model.removeRow(actualIndex);
+        }
+    } else {
+        Util.alert("Please select a single row to delete");
+    }
+}
+....
+
+== Util
+
+[source,java]
+....
+public class Util {
+    static ButtonGroup buttonGroup;
+    public static File f = new File("C:/Users/DELL/Documents/noPic.png");
+}
+....
+
+=== alert
+
+[source,java]
+....
+public static void alert(String msg, String title) {
+    JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), msg, title, JOptionPane.ERROR_MESSAGE);
+}
+
+public static void alert(String msg) {
+    JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), msg);
+}
+....
+
+=== get delete confirmation
+
+[source,java]
+....
+public static int getDeleteConfirmation() {
+    return JOptionPane.showConfirmDialog(JOptionPane.getRootFrame(), "Are you sure you want to Delete?", "Delete confirmation", JOptionPane.YES_NO_OPTION);
+}
+....
+
+=== refresh search TF
+
+[source,java]
+....
+public static void refresh(MyFrame1 myFrame1) {
+    myFrame1.getTFRefresh().setText("");
+}
+....
+
+=== clear
+
+[source,java]
+....
+public static void clear(MyFrame1 myFrame1) {
+    set text empty
+}
+....
+
+=== set text empty
+
+....
+myFrame1.getImageLabel().setIcon(null);
+myFrame1.getTFId().setText("");
+myFrame1.getTFName().setText("");
+myFrame1.getTFEmail().setText("");
+myFrame1.getTFMobile().setText("");
+myFrame1.getComboBox1().setSelectedIndex(0);
+myFrame1.getTA1().setText("");
+myFrame1.getHindiCheckBox().setSelected(false);
+myFrame1.getEnglishCheckBox().setSelected(false);
+myFrame1.getTeluguCheckBox().setSelected(false);
+buttonGroup.clearSelection();
+....
+
+=== checkForEmptyField
+
+[source,java]
+....
+public static boolean checkForEmptyField(MyFrame1 myFrame1) {
+    clear list
+    check JComponents
+    return true;
+}
+....
+
+=== image check
+
+[source,java]
+....
+if (f.getAbsolutePath().equals("C:/Users/DELL/Documents/noPic.png")) {
+    MyFrame1.componentList.add("C:/Users/DELL/Documents/noPic.png");
+} else {
+    String[] arr = Util.f.getAbsolutePath().split("\\\\");
+    String join = String.join("/", arr);
+    MyFrame1.componentList.add(join);
+}
+....
+
+=== comboBox1 check
+
+[source,java]
+....
+if (Objects.equals(myFrame1.getComboBox1().getSelectedItem(), "Select a city")) {
+    alert("fill city");
+    return false;
+} else {
+    MyFrame1.componentList.add(myFrame1.getComboBox1().getSelectedItem().toString());
+}
+....
+
+=== TA check
+
+[source,java]
+....
+if (myFrame1.getTA1().getText().equals("")) {
+    alert("fill address");
+    return false;
+} else {
+    MyFrame1.componentList.add(myFrame1.getTA1().getText());
+}
+....
+
+=== TF check
+
+[source,java]
+....
+if (myFrame1.getTFId().getText().equals("")) {
+    alert("fill id");
+    return false;
+} else {
+    MyFrame1.componentList.add(myFrame1.getTFId().getText());
+}
+....
+
+=== checkbox check
+
+[source,java]
+....
+if (myFrame1.getHindiCheckBox().isSelected()) {
+    MyFrame1.componentList.add("1");
+} else {
+    MyFrame1.componentList.add("0");
+}
+
+if (myFrame1.getEnglishCheckBox().isSelected()) {
+    MyFrame1.componentList.add("1");
+} else {
+    MyFrame1.componentList.add("0");
+}
+....
+
+=== Radio button check
+
+[source,java]
+....
+if (!myFrame1.getMaleRadioButton().isSelected() && !myFrame1.getFemaleRadioButton().isSelected()) {
+    alert("fill gender");
+    return false;
+} else {
+    if (myFrame1.getMaleRadioButton().isSelected()) {
+        MyFrame1.componentList.add("male");
+    } else {
+        MyFrame1.componentList.add("female");
+    }
+}
+....
+
+=== whenRowIsSelected
+
+[source,java]
+....
+public static void whenRowIsSelected(MyFrame1 myFrame1) throws IOException {
+    int i = myFrame1.getTable1().getSelectedRow();
+
+
+    myFrame1.getTFId().setText(myFrame1.getTable1().getValueAt(i, 0).toString());
+    myFrame1.getTFName().setText(myFrame1.getTable1().getValueAt(i, 1).toString());
+    myFrame1.getTFEmail().setText(myFrame1.getTable1().getValueAt(i, 2).toString());
+    myFrame1.getTFMobile().setText(myFrame1.getTable1().getValueAt(i, 3).toString());
+    switch (myFrame1.getTable1().getValueAt(i, 4).toString()) {
+        case "Mumbai":
+            myFrame1.getComboBox1().setSelectedIndex(1);
+            break;
+        case "Pune":
+            myFrame1.getComboBox1().setSelectedIndex(2);
+            break;
+        case "Chennai":
+            myFrame1.getComboBox1().setSelectedIndex(3);
+            break;
+        case "Hyderabad":
+            myFrame1.getComboBox1().setSelectedIndex(4);
+            break;
+    }
+    myFrame1.getTA1().setText(myFrame1.getTable1().getValueAt(i, 5).toString());
+    if (myFrame1.getTable1().getValueAt(i, 6).toString().equals("1")) myFrame1.getHindiCheckBox().setSelected(true);
+    else myFrame1.getHindiCheckBox().setSelected(false);
+
+    if (myFrame1.getTable1().getValueAt(i, 7).toString().equals("1"))
+        myFrame1.getEnglishCheckBox().setSelected(true);
+    else myFrame1.getEnglishCheckBox().setSelected(false);
+
+    if (myFrame1.getTable1().getValueAt(i, 8).toString().equals("1"))
+        myFrame1.getTeluguCheckBox().setSelected(true);
+    else myFrame1.getTeluguCheckBox().setSelected(false);
+
+    buttonGroup = new ButtonGroup();
+
+    buttonGroup.add(myFrame1.getMaleRadioButton());
+    buttonGroup.add(myFrame1.getFemaleRadioButton());
+
+    if (myFrame1.getTable1().getValueAt(i, 9).toString().equals("male"))
+        myFrame1.getMaleRadioButton().setSelected(true);
+    else myFrame1.getFemaleRadioButton().setSelected(true);
+
+    String path = myFrame1.getTable1().getValueAt(i, 10).toString();
+    f = new File(path);
+    ImageIcon imageIcon = new ImageIcon(new ImageIcon(ImageIO.read(f.getAbsoluteFile())).getImage().getScaledInstance(200, 200, Image.SCALE_DEFAULT));
+    myFrame1.getImageLabel().setIcon(imageIcon);
+
+}
+....
+
+=== setUpTable
+
+[source,java]
+....
+public static void setUpTable(MyFrame1 myFrame1) throws Exception {
+    JTable table1 = myFrame1.getTable1();
+    String[] columnNames = {"Id", "Name", "Email", "Mobile number", "City", "Address", "Hindi", "English", "Telugu", "Gender" , "Image path"};
+    Object[][] rowData = {};
+    MyFrame1.model = new DefaultTableModel(rowData, columnNames);
+    UserCrud.select(myFrame1);
+    table1.setModel(MyFrame1.model);
+    MyFrame1.sorter = new TableRowSorter<>(MyFrame1.model);
+    table1.setRowSorter(MyFrame1.sorter);
+
+    table1.getColumnModel().getColumn(1).setPreferredWidth(180);
+    table1.getColumnModel().getColumn(3).setPreferredWidth(100);
+    table1.getColumnModel().getColumn(2).setPreferredWidth(300);
+    table1.getColumnModel().getColumn(5).setPreferredWidth(250);
+}
+....
+
+=== setUpListener: insert
+
+....
+myFrame1.getInsertButton().addActionListener(e -> {
+    try {
+        if (checkForEmptyField(myFrame1)) {
+            UserCrud.insert();
+        }
+    } catch (Exception ex) {
+        ex.printStackTrace();
+    }
+});
+....
+
+=== setUpListener: update
+
+....
+myFrame1.getUpdateButton().addActionListener(e -> {
+    try {
+        if (myFrame1.getTable1().getSelectedRows().length == 0) {
+            alert("Please select a row");
+        } else if (checkForEmptyField(myFrame1)) {
+            UserCrud.update(myFrame1);
+        }
+    } catch (Exception ex) {
+        ex.printStackTrace();
+    }
+});
+....
+
+=== setUpListener: delete
+
+....
+myFrame1.getDeleteButton().addActionListener(e -> {
+    try {
+        UserCrud.delete(myFrame1);
+    } catch (Exception ex) {
+        ex.printStackTrace();
+    }
+});
+....
+
+=== setUpListener: table
+
+....
+myFrame1.getTable1().addMouseListener(new MouseAdapter() {
+    @Override
+    public void mousePressed(MouseEvent e) {
+        super.mousePressed(e);
+        try {
+            whenRowIsSelected(myFrame1);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+});
+....
+
+=== setUpListener: getTFRefresh
+
+....
+myFrame1.getTFRefresh().getDocument().addDocumentListener(new DocumentListener() {
+    @Override
+    public void insertUpdate(DocumentEvent e) {
+        search(myFrame1.getTFRefresh().getText());
+    }
+
+    @Override
+    public void removeUpdate(DocumentEvent e) {
+        search(myFrame1.getTFRefresh().getText());
+    }
+
+    @Override
+    public void changedUpdate(DocumentEvent e) {
+        search(myFrame1.getTFRefresh().getText());
+    }
+
+    public void search(String str) {
+        if (str.length() == 0) {
+            MyFrame1.sorter.setRowFilter(null);
+        } else {
+            MyFrame1.sorter.setRowFilter(RowFilter.regexFilter(str));
+        }
+    }
+});
+....
+
+=== make table non-editable
+[source,java]
+....
+myFrame1.getTable1().setDefaultEditor(Object.class, null);
+....
+
+=== setUpListener: getRefreshButton
+
+[source,java]
+....
+myFrame1.getRefreshButton().addActionListener(e -> refresh(myFrame1));
+....
+
+=== setUpListener: getRefreshFormButton
+
+[source,java]
+....
+myFrame1.getRefreshFormButton().addActionListener(e -> clear(myFrame1));
+....
+
+=== setUpListener: getChooseImageButton
+
+[source,java]
+....
+myFrame1.getChooseImageButton().addActionListener(new ActionListener() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        JFileChooser chooser = new JFileChooser();
+        chooser.showSaveDialog(null);
+        f = chooser.getSelectedFile();
+        ImageIcon imageIcon = null;
+        try {
+            imageIcon = new ImageIcon(new ImageIcon(ImageIO.read(new File(f.getAbsolutePath()))).getImage().getScaledInstance(200, 200, Image.SCALE_DEFAULT));
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        myFrame1.getImageLabel().setIcon(imageIcon);
+    }
+});
+....
+
+=== setUpListener
+
+[source,java]
+....
+public static void setUpListener(MyFrame1 myFrame1) { }
+....
+
+=== setUpComboBox
+
+[source,java]
+....
+public static void setUpComboBox(MyFrame1 myFrame1) {
+    DefaultComboBoxModel<String> dcm = new DefaultComboBoxModel<>(new String[]{"Select a city", "Mumbai", "Pune", "Chennai", "Hyderabad"});
+    myFrame1.getComboBox1().setModel(dcm);
+}
+....
+
+=== Main
+
+[source,java]
+....
+public class Main {
+    public static void main(String[] args) throws Exception {
+
+        new MyFrame1();
+        
+    }
+}
+....
+
+
+[source,java]
+....
+package org.example;
+
+import javax.swing._; import javax.swing.table.DefaultTableModel; import
+java.awt._; import java.awt.event.ActionEvent; import
+java.awt.event.ActionListener;
+
+public class Form1 \{ private JTable table1; private JPanel panel1;
+private JButton button1; private DefaultTableModel model;
+....
+
+[source,java]
+....
+public Form1() {
+    Object[][] data = new Object[][]{{"101", "Ramesh"}, {"102", "Adithya"}, {"103", "Jai"}, {"104", "Sai"}};
+    String[] columnNames = new String[]{"ID", "Name"};
+    model = new DefaultTableModel(data, columnNames);
+    table1.setModel(model);
+
+    button1.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            model.removeRow(2);
+            model.insertRow(2, new Object[] {"107", "ExpressJS" });
+        }
+    });
+}
+
+public static void main(String[] args) {
+    JFrame jFrame = new JFrame("Student Management System");
+
+    jFrame.setContentPane(new Form1().panel1);
+    jFrame.setMinimumSize(new Dimension(700, 650));
+    jFrame.setLocationRelativeTo(null);
+    jFrame.setVisible(true);
+    jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+}
+....
+
+}
+
+== jTable
+
+[source,java]
+....
+private static JTable table(String[] column, String[][] data) {
+    final JTable jt = new JTable(data, column);
+    jt.setCellSelectionEnabled(true);
+    ListSelectionModel select = jt.getSelectionModel();
+    select.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    select.addListSelectionListener(e -> {
+        String Data = null;
+        int[] row = jt.getSelectedRows();
+        int[] columns = jt.getSelectedColumns();
+        for (int value : row) {
+            for (int i : columns) {
+                Data = (String) jt.getValueAt(value, i);
+            }
+        }
+        System.out.println("Table  element  selected  is:  " + Data);
+    });
+    return jt;
+}
+....
+
+[source,java]
+....
+String[] column = {"ID", "NAME", "SALARY"};
+String[][] data = {
+        {"101", "Amit", "670000"},
+        {"102", "Jai", "780000"},
+        {"101", "Sachin", "700000"}
+};
+
+f.add(new JScrollPane(table(column, data)));
+....
+
+[source,java]
+....
+
+package com.company;
+
+import javax.swing._; import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener; import
+javax.swing.tree.DefaultMutableTreeNode; import
+javax.swing.tree.DefaultTreeModel; import javax.swing.tree.TreeModel;
+import java.awt._; import java.io.IOException; import java.net.URL;
+
+public class MyFrame1 extends JFrame \{ private JTree tree1; private
+JPanel panel1; private JLabel label1; private JEditorPane editorPane1;
+
+....
+
+[source,java]
+....
+public MyFrame1() throws HeadlessException {
+    setContentPane(panel1);
+
+
+
+
+    DefaultMutableTreeNode root = new DefaultMutableTreeNode("Style");
+    DefaultMutableTreeNode color = new DefaultMutableTreeNode("color");
+    DefaultMutableTreeNode font = new DefaultMutableTreeNode("font");
+
+    root.add(color);
+    root.add(font);
+    TreeModel treeModel = new DefaultTreeModel(root);
+
+    tree1.setModel(treeModel);
+    setMinimumSize(new Dimension(1000, 650));
+    setLocationRelativeTo(null);
+    setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
+    setVisible(true);
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    tree1.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
+        @Override
+        public void valueChanged(TreeSelectionEvent e) {
+            DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
+            label1.setText(selectedNode.getUserObject().toString());
+            URL url = null;
+            if (label1.getText().equals("Style")) {
+                url= MyFrame1.class.getResource("test.htm");
+            } else if (label1.getText().equals("color")) {
+                url= MyFrame1.class.getResource("color.htm");
+            }
+            try {
+                editorPane1.setPage(url);
+            } catch (IOException e1) {
+                editorPane1.setContentType("text/html");
+                editorPane1.setText("<html>Page not found.</html>");
+            }
+        }
+    });
+    // tree1.addTreeSelectionListener(new TreeSelectionListener() {
+    //     @Override
+    //     public void valueChanged(TreeSelectionEvent e) {
+    //         JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "msg", "title", JOptionPane.ERROR_MESSAGE);
+    //     }
+    // });
+}
+
+public static void main(String[] args) {
+
+    new MyFrame1();
+}
+....
+
+}
+
+Swing Tester
+
+Swing API is a set of extensible GUI Components to ease the developer’s
+life to create JAVA based Front End/GUI Applications. It is build on top
+of AWT API and acts as a replacement of AWT API, since it has almost
+every control corresponding to AWT controls. Swing component follows a
+Model-View-Controller architecture to fulfill the following criterias.
+
+A single API is to be sufficient to support multiple look and feel.
+
+API is to be model driven so that the highest level API is not required
+to have data.
+
+API is to use the Java Bean model so that Builder Tools and IDE can
+provide better services to the developers for use.
+
+MVC Architecture
+
+Swing API architecture follows loosely based MVC architecture in the
+following manner.
+
+Model represents component’s data.
+
+View represents visual representation of the component’s data.
+
+Controller takes the input from the user on the view and reflects the
+changes in Component’s data.
+
+Swing component has Model as a seperate element, while the View and
+Controller part are clubbed in the User Interface elements. Because of
+which, Swing has a pluggable look-and-feel architecture.
+
+Swing Features
+
+Light Weight − Swing components are independent of native Operating
+System’s API as Swing API controls are rendered mostly using pure JAVA
+code instead of underlying operating system calls.
+
+Rich Controls − Swing provides a rich set of advanced controls like
+Tree, TabbedPane, slider, colorpicker, and table controls.
+
+Highly Customizable − Swing controls can be customized in a very easy
+way as visual apperance is independent of internal representation.
+
+Pluggable look-and-feel − SWING based GUI Application look and feel can
+be changed at run-time, based on available values.
+
+....
+package org.example;
+
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class Form1 {
+    private JTable table1;
+    private JPanel panel1;
+    private JButton button1;
+    private DefaultTableModel model;
+
+    public Form1() {
+        Object[][] data = new Object[][]{{"101", "Ramesh"}, {"102", "Adithya"}, {"103", "Jai"}, {"104", "Sai"}};
+        String[] columnNames = new String[]{"ID", "Name"};
+        model = new DefaultTableModel(data, columnNames);
+        table1.setModel(model);
+
+        button1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                if (table1.getSelectedRow() != -1) {
+                    model.removeRow(table1.getSelectedRow());
+                    JOptionPane.showMessageDialog(null, "Selected row deleted successfully");
+                }
+            }
+        });
+    }
+
+    public static void main(String[] args) {
+        JFrame jFrame = new JFrame("Student Management System");
+
+        jFrame.setContentPane(new Form1().panel1);
+        jFrame.setMinimumSize(new Dimension(700, 650));
+        jFrame.setLocationRelativeTo(null);
+        jFrame.setVisible(true);
+        jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+}
+
+....
+
+=== JSP template in servlet
+
+....
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@page isELIgnored="false" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="<%=request.getContextPath()%>/css/styles.css">
+</head>
+<body>
+
+
+
+</body>
+</html>
+....
+
+=== scriptlets
+
+....
+<%!   
+ // java code 
+%>  
+
+<%= // direct print %>  
+
+<% out.print("Today is:"+java.util.Calendar.getInstance().getTime()); %>  
+
+<%   
+  // used for writing servlet code.
+%>  
+....
+
+=== for loop in JSP using JSTL
+
+[source,html]
+....
+<table>
+    <tr>
+        <th>Airlines</th>
+        <th>Departure City</th>
+        <th>Arrival City</th>
+        <th>Departure Time</th>
+
+    </tr>
+
+    <c:forEach items="${flights}" var="flight">
+        <tr>
+            <td>${flight.operatingAirlines}</td>
+            <td>${flight.departureCity}</td>
+            <td>${flight.arrivalCity}</td>
+            <td>${flight.estimatedDepartureTime}</td>
+            <td><a href="showCompleteReservation?flightId=${flight.id}">Select</a></td>
+        </tr>
+
+    </c:forEach>
+</table>
+....
+
+....
+${msg} // direct print variable in jsp
+
+request.getContextPath() // return root directory of project
+....
+
+=== If user is not logged in then redirect him to default page i.e index.jsp
+
+[source,java]
+....
+try {
+    if (session.getAttribute("emailId").equals(null)) {
+        response.sendRedirect(request.getContextPath());
+    }
+} catch (NullPointerException e) {
+    response.sendRedirect(request.getContextPath());
+}
+....
+
+=== Logged In as
+
+....
+Logged In as <%
+try {
+    out.print(session.getAttribute("emailId").toString().split("@")[0]);
+} catch (NullPointerException e) {}
+%>
+....
+
+....
+<form id="post_form" method="post" action="<%=request.getContextPath()%>/blog/post">
+<span><%=session.getAttribute("emailId")%></span>
+....
+
+=== @WebServlet(``/blog/post'')
+
+[source,java]
+....
+public class PostServlet extends HttpServlet 
+....
+
+=== log out
+
+....
+<%
+    session.invalidate();
+    response.sendRedirect(request.getContextPath());
+%>
+....
+
+=== Write java code to populate all the tag options in the drop down menu.
+
+....
+<%
+    HashSet<String> tagList = new DAOFactory().getPostCRUDS().findAllTags();
+    Object[] array = tagList.toArray();
+    for (int i = 0; i < array.length; i++) { %>
+<option value="<%=array[i]%>"><%=array[i]%>
+</option>
+<%
+    }
+%>
+....
+
+=== TODO: 7.15. Write code to get posts for the selected ``tag'' and render the search result on the web page.
+
+....
+
+<%
+    if (request.getMethod().equals("POST")) {
+        List<PostDTO> postDTOS = new DAOFactory().getPostCRUDS().findByTag(request.getParameter("tag"));
+        for (int i = 0; i < postDTOS.size(); i++) { %>
+            <div class="post-list">
+                <div>Post Id: <%=postDTOS.get(i).getPostId()%>
+                </div>
+                <div>Email Id: <%=postDTOS.get(i).getEmailId()%>
+                </div>
+                <div>Title: <%=postDTOS.get(i).getTitle()%></div>
+                <div>Tag: <%=postDTOS.get(i).getTag()%>
+                </div>
+                <div>Description: <%=postDTOS.get(i).getDescription()%>
+                </div>
+                <div>Time: <%=DateTimeFormatter.format(postDTOS.get(i).getTimestamp())%>
+                </div>
+            </div>
+<%
+        }
+        if (postDTOS.size() < 1) {
+            out.print("Sorry no posts exists for this tag");
+        }
+
+    }
+%>
+....
+
+=== If user tries to click on browser bac k button then he/ she should not be able to access this page*/
+
+....
+response.setHeader("Cache-Control", "no-cache");
+response.setHeader("Cache-Control", "no-store");
+response.setHeader("Pragma", "no-cache");
+response.setDateHeader("Expires", 0);
+....
+
+....
+package com.company.view;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class AddView implements ActionListener {
+    JTextField tf1, tf2, tf3;
+    JButton b1, b2;
+
+    public AddView() {
+        JFrame f = new JFrame();
+        f.getContentPane().setLayout(new BorderLayout());
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        f.setSize(500, 500);
+        f.setLocationRelativeTo(null);
+        f.setVisible(true);
+
+        tf1 = new JTextField();
+        tf1.setBounds(50, 50, 150, 20);
+        tf2 = new JTextField();
+        tf2.setBounds(50, 100, 150, 20);
+        tf3 = new JTextField();
+        tf3.setBounds(50, 150, 150, 20);
+        tf3.setEditable(false);
+        b1 = new JButton("+");
+        b1.setBounds(50, 200, 50, 50);
+        b2 = new JButton("-");
+        b2.setBounds(120, 200, 50, 50);
+        b1.addActionListener(this);
+        b2.addActionListener(this);
+
+        f.add(tf1);
+        f.add(tf2);
+        f.add(tf3);
+        f.add(b1);
+        f.add(b2);
+    }
+    public void actionPerformed(ActionEvent e) {
+        String s1 = tf1.getText();
+        String s2 = tf2.getText();
+        int a = Integer.parseInt(s1);
+        int b = Integer.parseInt(s2);
+        int c = 0;
+        if (e.getSource() == b1) {
+            c = a + b;
+        } else if (e.getSource() == b2) {
+            c = a - b;
+        }
+        String result = String.valueOf(c);
+        tf3.setText(result);
+    }
+}
+....
+
+package com.company;
+
+import java.awt._; import javax.swing._;
+
+class Border \{ JFrame f;
+
+....
+Border() {
+    f = new JFrame();
+
+    JButton b1 = new JButton("NORTH");
+    JButton b2 = new JButton("SOUTH");
+    JButton b3 = new JButton("EAST");
+    JButton b4 = new JButton("WEST");
+    JButton b5 = new JButton("CENTER");
+
+    f.add(b1, BorderLayout.NORTH);
+    f.add(b2, BorderLayout.SOUTH);
+    f.add(b3, BorderLayout.EAST);
+    f.add(b4, BorderLayout.WEST);
+    f.add(b5, BorderLayout.CENTER);
+
+    f.setSize(300, 300);
+    f.setVisible(true);
+}
+
+public static void main(String[] args) {
+    new Border();
+}
+....
+
+}
+
+package com.company;
+
+import java.awt._; import javax.swing._;
+
+class BoxLayoutExample1 extends Frame \{ Button buttons[];
+
+....
+public BoxLayoutExample1() {
+    buttons = new Button[5];
+
+    for (int i = 0; i < 5; i++) {
+        buttons[i] = new Button("Button  " + (i + 1));
+        add(buttons[i]);
+    }
+
+    setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+    setSize(400, 400);
+    setVisible(true);
+}
+
+public static void main(String args[]) {
+    BoxLayoutExample1 b = new BoxLayoutExample1();
+}
+....
+
+}
+
+package com.company;
+
+import java.awt._; import java.awt.event._;
+
+import javax.swing.*;
+
+class CardLayoutExample extends JFrame implements ActionListener \{
+CardLayout card; JButton b1, b2, b3; Container c;
+
+....
+CardLayoutExample() {
+
+    c = getContentPane();
+    card = new CardLayout(100, 30);
+    //create  CardLayout  object  with  40  hor  space  and  30  ver  space    
+    c.setLayout(card);
+
+    b1 = new JButton("Apple");
+    b2 = new JButton("Boy");
+    b3 = new JButton("Cat");
+    b1.addActionListener(this);
+    b2.addActionListener(this);
+    b3.addActionListener(this);
+
+    c.add("a", b1);
+    c.add("b", b2);
+    c.add("c", b3);
+
+}
+
+public void actionPerformed(ActionEvent e) {
+    card.next(c);
+}
+
+public static void main(String[] args) {
+    CardLayoutExample cl = new CardLayoutExample();
+    cl.setSize(400, 400);
+    cl.setVisible(true);
+    cl.setDefaultCloseOperation(EXIT_ON_CLOSE);
+}
+....
+
+}
+
+package com.company;
+
+import java.awt._; import javax.swing._;
+
+class MyFlowLayout \{ JFrame f;
+
+....
+MyFlowLayout() {
+    f = new JFrame();
+
+    JButton b1 = new JButton("1");
+    JButton b2 = new JButton("2");
+    JButton b3 = new JButton("3");
+    JButton b4 = new JButton("4");
+    JButton b5 = new JButton("5");
+
+    f.add(b1);
+    f.add(b2);
+    f.add(b3);
+    f.add(b4);
+    f.add(b5);
+
+    f.setLayout(new FlowLayout(FlowLayout.LEFT));
+    //setting  flow  layout  of  right  alignment
+
+    f.setSize(150, 200);
+    f.setVisible(true);
+}
+
+public static void main(String[] args) {
+    new MyFlowLayout();
+}
+....
+
+}
+
+package com.company;
+
+import javax.swing.*; import java.awt.GridLayout;
+
+class MyGridLayout \{ JFrame f;
+
+....
+MyGridLayout() {
+    f = new JFrame();
+
+    JButton b1 = new JButton("1");
+    JButton b2 = new JButton("2");
+    JButton b3 = new JButton("3");
+    JButton b4 = new JButton("4");
+    JButton b5 = new JButton("5");
+    JButton b6 = new JButton("6");
+    JButton b7 = new JButton("7");
+    JButton b8 = new JButton("8");
+    JButton b9 = new JButton("9");
+
+    f.add(b1);
+    f.add(b2);
+    f.add(b3);
+    f.add(b4);
+    f.add(b5);
+    f.add(b6);
+    f.add(b7);
+    f.add(b8);
+    f.add(b9);
+
+    f.setLayout(new GridLayout(3, 3));
+
+    f.setSize(300, 300);
+    f.setVisible(true);
+}
+
+public static void main(String[] args) {
+    new MyGridLayout();
+}
+....
+
+}
+
+import javax.swing.JOptionPane; public class Controller \{ private Model
+model; private View view;
+
+....
+public Controller(Model m, View v) {
+    model = m;
+    view = v;
+    initView();
+}
+public void initView() {
+    view.getFirstnameTextfield().setText(model.getFirstname());
+    view.getLastnameTextfield().setText(model.getLastname());
+}
+public void initController() {
+    view.getFirstnameSaveButton().addActionListener(e -> saveFirstname());
+    view.getLastnameSaveButton().addActionListener(e -> saveLastname());
+    view.getHello().addActionListener(e -> sayHello());
+    view.getBye().addActionListener(e -> sayBye());
+}
+private void saveFirstname() {
+    model.setFirstname(view.getFirstnameTextfield().getText());
+    JOptionPane.showMessageDialog(null, "Firstname saved : " + model.getFirstname(), "Info", JOptionPane.INFORMATION_MESSAGE);
+}
+private void saveLastname() {
+    model.setLastname(view.getLastnameTextfield().getText());
+    JOptionPane.showMessageDialog(null, "Lastname saved : " + model.getLastname(), "Info", JOptionPane.INFORMATION_MESSAGE);
+}
+private void sayHello() {
+    JOptionPane.showMessageDialog(null, "Hello " + model.getFirstname() + " " + model.getLastname(), "Info", JOptionPane.INFORMATION_MESSAGE);
+}
+private void sayBye() {
+    System.exit(0);
+}
+....
+
+}
+
+import javax.swing._; import java.awt._; import java.awt.event.*;
+
+public class Main \{
+
+[source,java]
+....
+public static void main(String[] args) {
+    // Assemble all the pieces of the MVC
+    Model m = new Model("Sylvain", "Saurel");
+    View v = new View("MVC with SSaurel");
+    Controller c = new Controller(m, v);
+    c.initController();
+}
+....
+
+}
+
+public class Model \{ private String firstname; private String lastname;
+public Model(String firstname, String lastname) \{ this.firstname =
+firstname; this.lastname = lastname; } public String getFirstname() \{
+return firstname; } public void setFirstname(String firstname) \{
+this.firstname = firstname; } public String getLastname() \{ return
+lastname; } public void setLastname(String lastname) \{ this.lastname =
+lastname; } }

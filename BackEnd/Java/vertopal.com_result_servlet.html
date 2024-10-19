@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.23">
-<title>Notes</title>
+<title>file system</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -546,16 +546,676 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 }
 </style>
 </head>
-<body class="article">
+<body class="article toc2 toc-left">
 <div id="header">
-<h1>Notes</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_file_system">file system</a></li>
+<li><a href="#_web_xml">web.xml</a></li>
+<li><a href="#_index_jsp">index.jsp</a></li>
+<li><a href="#_servlet_class">servlet class</a></li>
+<li><a href="#_servlet_method">servlet method</a></li>
+<li><a href="#_get_value_from_web_page">get value from web page</a></li>
+<li><a href="#_print_to_browser">print to browser</a></li>
+<li><a href="#_setting_and_getting_value_in_req_object">setting and getting value in req object</a></li>
+<li><a href="#_navigation_using_requestdispatcher">navigation using RequestDispatcher</a></li>
+<li><a href="#_navigation_using_sendredirect">navigation using sendRedirect</a></li>
+<li><a href="#_session">session</a></li>
+<li><a href="#_cookie">cookie</a></li>
+<li><a href="#_index_jsp_2">index.jsp</a></li>
+<li><a href="#_home_jsp">Home.jsp</a></li>
+<li><a href="#_createpost_jsp">CreatePost.jsp</a></li>
+<li><a href="#_search_jsp">Search.jsp</a></li>
+<li><a href="#_logout_jsp">Logout.jsp</a></li>
+<li><a href="#_filter_jsp">Filter.jsp</a></li>
+<li><a href="#_index_jsp_3">index.jsp</a></li>
+<li><a href="#_studentservlet_java">StudentServlet.java</a></li>
+<li><a href="#_database_java">Database.java</a></li>
+<li><a href="#_student_java">Student.java</a></li>
+<li><a href="#_crud_java">Crud.java</a></li>
+<li><a href="#_pom_xml">pom.xml</a></li>
+<li><a href="#_run">run</a></li>
+</ul>
+</div>
 </div>
 <div id="content">
+<div class="sect1">
+<h2 id="_file_system">file system</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre>main
+    webapp
+        WEB-INF
+            web.xml
+        index.jsp</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_web_xml">web.xml</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre>&lt;servlet&gt;
+    &lt;servlet-name&gt;employeeRegisterServlet&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;com.upgrad.controllers.EmployeeRegisterServlet&lt;/servlet-class&gt;
+&lt;/servlet&gt;
 
+&lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;employeeRegisterServlet&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;/register&lt;/url-pattern&gt;
+&lt;/servlet-mapping&gt;</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_index_jsp">index.jsp</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre>&lt;form action="/register" method="post"&gt;
+    &lt;input type="text" placeholder="name" name="name"/&gt;
+    &lt;input type="text" placeholder="department" name="department"&gt;
+    &lt;input type="text" placeholder="company" name="company"&gt;
+    &lt;button type="submit"&gt;submit&lt;/button&gt;
+&lt;/form&gt;</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_servlet_class">servlet class</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre>import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+public class UserServlet extends HttpServlet {
+    // Override doGet, doPost
+}</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_servlet_method">servlet method</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre>// doGet method
+@Override
+protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+
+}
+
+
+// doPost method
+@Override
+protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+
+}</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_get_value_from_web_page">get value from web page</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre>req.getParameter("department") // &lt;input type="text" name="department"&gt;</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_print_to_browser">print to browser</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre>PrintWriter printWriter = resp.getWriter();
+printWriter.println("saksham"); // saksham</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_setting_and_getting_value_in_req_object">setting and getting value in req object</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre>// setting value in req object
+req.setAttribute("username", "saksham");
+
+// getting value in req object
+req.getAttribute("username"); // saksham</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_navigation_using_requestdispatcher">navigation using RequestDispatcher</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre>RequestDispatcher requestDispatcher = req.getRequestDispatcher("/square"); // this path is defined in web.xml
+requestDispatcher.forward(req, resp); // send us to other servlet</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_navigation_using_sendredirect">navigation using sendRedirect</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre>// redirecting to another servlet
+resp.sendRedirect("/square"); // reciever should be doGet
+
+// sending data in sendRedirect
+resp.sendRedirect("/square?id=" + id); // reciever should be doGet</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_session">session</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre>// make session object
+    // create session if not pressent
+    // if session present return the value / null
+    HttpSession httpSession = req.getSession();
+
+    // does not create session
+    // if session present return the value / null
+    HttpSession httpSession = req.getSession(false);
+
+// set value in session object
+httpSession.setAttribute("username", "saksham");
+
+// to receive session
+httpSession.getAttribute("username")
+
+// removing session
+httpSession.removeAttribute("username");
+
+// never expire session
+&lt;web-app&gt;
+    &lt;session-config&gt;
+        &lt;session-timeout&gt;-1&lt;/session-timeout&gt;
+    &lt;/session-config&gt;
+&lt;/web-app&gt;
+
+// expire session after 10 minutes
+&lt;web-app&gt;
+    &lt;session-config&gt;
+        &lt;session-timeout&gt;10&lt;/session-timeout&gt;
+    &lt;/session-config&gt;
+&lt;/web-app&gt;
+
+
+// session timeout after 600 seconds
+httpSession.setMaxInactiveInterval(10*60); // 10 minutes</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_cookie">cookie</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre>// cookie object
+Cookie cookie = new Cookie("username", "saksham");
+
+// add cookie
+resp.addCookie(cookie);
+
+// receive cookie
+Cookie[] cookies = req.getCookies();
+for (Cookie cookie : cookies) {
+    if (cookie.getName().equals("username")) System.out.println(cookie.getValue());
+}</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_index_jsp_2">index.jsp</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>if (log in) redirect to home.jsp else \{ form[post, Home.jsp]
+email[email] password[password] signin[submit] signup[submit] }</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_home_jsp">Home.jsp</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>if (not log in) redirect to index.jsp else \{ email Create Post link &#8658;
+CreatePost.jsp Search Post link &#8658; Search.jsp Delete Post link &#8658;
+Delete.jsp Filter Post link &#8658; Filter.jsp Logout Post link &#8658; Logout.jsp
+}</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_createpost_jsp">CreatePost.jsp</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>if (not log in) redirect to index.jsp else \{ email form[post,
+ViewPostByID.jsp] title[text] tag[text] description[textarea] home.jsp
+link<br>
+}</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_search_jsp">Search.jsp</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>if (not log in) redirect to index.jsp else \{ email list by email
+home.jsp link<br>
+}</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_logout_jsp">Logout.jsp</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Delete session redirect to index.jsp</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_filter_jsp">Filter.jsp</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>if (not log in) redirect to index.jsp else \{ email dropdown[tags] list
+by tag home.jsp link }</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_index_jsp_3">index.jsp</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre>&lt;%@ page import="com.saksham.Crud" %&gt;
+&lt;%@ page import="com.saksham.Student" %&gt;
+&lt;%@ page import="java.util.List" %&gt;
+&lt;%@ page contentType="text/html;charset=UTF-8" language="java" %&gt;
+&lt;html&gt;
+&lt;header&gt;
+    &lt;style&gt;
+        input, button {
+            background-color: black;
+            color: #c4c4c4;
+        }
+
+        body {
+            margin: 50px auto;
+            width: 60%;
+            background-color: #222;
+            color: #aaa;
+        }
+    &lt;/style&gt;
+&lt;/header&gt;
+&lt;body&gt;
+&lt;h2&gt;Welcome to student management system!&lt;/h2&gt;
+&lt;%
+    Student student= (Student) request.getAttribute("student");
+    String studentRollNumber = "";
+    String studentName = "";
+    if (student != null) {
+        studentRollNumber = String.valueOf(student.getRollNumber());
+        studentName = student.getStudentName();
+    }
+%&gt;
+
+&lt;form action="/crud" method="post"&gt;
+    &lt;input value="&lt;%=studentRollNumber%&gt;" type="number" name="studentRollNumber" placeholder="studentRollNumber"&gt;&lt;br&gt;&lt;br&gt;
+    &lt;input value="&lt;%=studentName%&gt;"  type="text" name="studentName" placeholder="studentName"&gt;
+    &lt;button name="save" value="save"&gt;Save&lt;/button&gt;
+    &lt;button name="search" value="search"&gt;Search&lt;/button&gt;
+    &lt;button name="edit" value="edit"&gt;Edit&lt;/button&gt;
+    &lt;button name="delete" value="delete"&gt;Delete&lt;/button&gt;
+&lt;/form&gt;
+&lt;table border="1"&gt;
+    &lt;tr&gt;
+        &lt;th&gt;Roll number&lt;/th&gt;
+        &lt;th&gt;Student name&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;%
+            List&lt;Student&gt; students = Crud.view();
+            for (int i = 0; i &lt; students.size(); i++) { %&gt;
+    &lt;tr&gt;
+        &lt;td&gt;&lt;%=students.get(i).getRollNumber()%&gt;
+        &lt;/td&gt;
+        &lt;td&gt;&lt;%=students.get(i).getStudentName()%&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;%
+            }
+            if (students.size() &lt; 1) {
+                out.print("No records available");
+            }
+    %&gt;
+&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_studentservlet_java">StudentServlet.java</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre>package com.saksham;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.sql.SQLException;
+
+@WebServlet("/crud")
+public class StudentServlet extends HttpServlet {
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            if (req.getParameter("save") != null) {
+                int studentRollNumber = Integer.parseInt(req.getParameter("studentRollNumber"));
+                String studentName = req.getParameter("studentName");
+                Crud.insert(studentRollNumber, studentName);
+            } else if (req.getParameter("search") != null) {
+
+                int studentRollNumber = Integer.parseInt(req.getParameter("studentRollNumber"));
+                Student student= Crud.search(studentRollNumber);
+                req.setAttribute("student", student);
+
+            } else if (req.getParameter("edit") != null) {
+                int studentRollNumber = Integer.parseInt(req.getParameter("studentRollNumber"));
+                String studentName = req.getParameter("studentName");
+                Crud.update(studentRollNumber, studentName);
+            } else if (req.getParameter("delete") != null) {
+                int studentRollNumber = Integer.parseInt(req.getParameter("studentRollNumber"));
+                Crud.delete(studentRollNumber);
+            }
+            req.getRequestDispatcher("index.jsp").forward(req, resp);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+}</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_database_java">Database.java</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre>package com.saksham;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+public class Database {
+    public static Connection getConnection() {
+        Connection connection = null;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            String url = "jdbc:mysql://localhost:3306/school";
+            String username = "root";
+            String password = "root";
+            connection = DriverManager.getConnection(url, username, password);
+            System.out.println("database connection established");
+        } catch (ClassNotFoundException e) {
+            System.err.println("ClassNotFoundException: " + e.getMessage());
+        } catch(SQLException e){
+            System.err.println("SQLException: " + e.getMessage());
+        }
+        return connection;
+    }
+}</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_student_java">Student.java</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre>package com.saksham;
+
+public class Student {
+    private int rollNumber;
+    private String studentName;
+
+    public int getRollNumber() {
+        return rollNumber;
+    }
+
+    public void setRollNumber(int rollNumber) {
+        this.rollNumber = rollNumber;
+    }
+
+    public String getStudentName() {
+        return studentName;
+    }
+
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "rollNumber=" + rollNumber +
+                ", studentName='" + studentName + '\'' +
+                '}';
+    }
+}</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_crud_java">Crud.java</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre>package com.saksham;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Crud {
+
+    public static Statement statement;
+
+    public static void delete(int studentRollNumber) throws SQLException {
+        String sql = "DELETE FROM student WHERE student_roll_number = " + studentRollNumber;
+        statement.executeUpdate(sql);
+    }
+
+    public static void insert(long studentRollNumber, String studentName) throws SQLException {
+        String sql = "INSERT INTO student VALUES (" + studentRollNumber + ", '" + studentName + "')";
+        statement.executeUpdate(sql);
+    }
+
+    public static void update(int studentRollNumber, String studentName) throws SQLException {
+        String sql = "UPDATE student SET student_name = '" + studentName + "' " + " WHERE student_roll_number = " + studentRollNumber;
+        statement.executeUpdate(sql);
+    }
+
+    public static Student search(int studentRollNumber) throws SQLException {
+        String sql = "SELECT * FROM student WHERE student_roll_number = " + studentRollNumber;
+        ResultSet resultSet = statement.executeQuery(sql);
+
+        Student student = new Student();
+        if (resultSet.next()) {
+            student.setRollNumber(resultSet.getInt(1));
+            student.setStudentName(resultSet.getString(2));
+        }
+        return student;
+    }
+
+    public static List&lt;Student&gt; view() throws Exception {
+        String sql = "SELECT * FROM student";
+        ResultSet resultSet = statement.executeQuery(sql);
+
+        List&lt;Student&gt; students = new ArrayList&lt;&gt;();
+        while (resultSet.next()) {
+            Student student = new Student();
+            student.setRollNumber(resultSet.getInt(1));
+            student.setStudentName(resultSet.getString(2));
+            students.add(student);
+        }
+        return students;
+    }
+
+    static {
+        try {
+            Crud.statement = Database.getConnection().createStatement();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
+}</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_pom_xml">pom.xml</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+&lt;project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"&gt;
+  &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+
+  &lt;groupId&gt;org.example&lt;/groupId&gt;
+  &lt;artifactId&gt;JustToLearn2&lt;/artifactId&gt;
+  &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+  &lt;packaging&gt;war&lt;/packaging&gt;
+
+  &lt;name&gt;JustToLearn2 Maven Webapp&lt;/name&gt;
+  &lt;!-- FIXME change it to the project's website --&gt;
+  &lt;url&gt;http://www.example.com&lt;/url&gt;
+
+  &lt;properties&gt;
+    &lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;
+    &lt;maven.compiler.source&gt;1.7&lt;/maven.compiler.source&gt;
+    &lt;maven.compiler.target&gt;1.7&lt;/maven.compiler.target&gt;
+  &lt;/properties&gt;
+
+  &lt;dependencies&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;mysql&lt;/groupId&gt;
+      &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+      &lt;version&gt;8.0.13&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;javax&lt;/groupId&gt;
+      &lt;artifactId&gt;javaee-api&lt;/artifactId&gt;
+      &lt;version&gt;8.0.1&lt;/version&gt;
+      &lt;scope&gt;provided&lt;/scope&gt;
+    &lt;/dependency&gt;
+  &lt;/dependencies&gt;
+
+  &lt;build&gt;
+    &lt;finalName&gt;JustToLearn2&lt;/finalName&gt;
+    &lt;pluginManagement&gt;&lt;!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) --&gt;
+      &lt;plugins&gt;
+        &lt;plugin&gt;
+          &lt;artifactId&gt;maven-clean-plugin&lt;/artifactId&gt;
+          &lt;version&gt;3.1.0&lt;/version&gt;
+        &lt;/plugin&gt;
+        &lt;!-- see http://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_war_packaging --&gt;
+        &lt;plugin&gt;
+          &lt;artifactId&gt;maven-resources-plugin&lt;/artifactId&gt;
+          &lt;version&gt;3.0.2&lt;/version&gt;
+        &lt;/plugin&gt;
+        &lt;plugin&gt;
+          &lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;
+          &lt;version&gt;3.8.0&lt;/version&gt;
+        &lt;/plugin&gt;
+        &lt;plugin&gt;
+          &lt;artifactId&gt;maven-surefire-plugin&lt;/artifactId&gt;
+          &lt;version&gt;2.22.1&lt;/version&gt;
+        &lt;/plugin&gt;
+        &lt;plugin&gt;
+          &lt;artifactId&gt;maven-war-plugin&lt;/artifactId&gt;
+          &lt;version&gt;3.2.2&lt;/version&gt;
+        &lt;/plugin&gt;
+        &lt;plugin&gt;
+          &lt;artifactId&gt;maven-install-plugin&lt;/artifactId&gt;
+          &lt;version&gt;2.5.2&lt;/version&gt;
+        &lt;/plugin&gt;
+        &lt;plugin&gt;
+          &lt;artifactId&gt;maven-deploy-plugin&lt;/artifactId&gt;
+          &lt;version&gt;2.8.2&lt;/version&gt;
+        &lt;/plugin&gt;
+        &lt;plugin&gt;
+          &lt;groupId&gt;org.apache.tomcat.maven&lt;/groupId&gt;
+          &lt;artifactId&gt;tomcat7-maven-plugin&lt;/artifactId&gt;
+          &lt;version&gt;2.2&lt;/version&gt;
+          &lt;configuration&gt;
+            &lt;port&gt;8080&lt;/port&gt;
+            &lt;path&gt;/&lt;/path&gt;
+          &lt;/configuration&gt;
+        &lt;/plugin&gt;
+      &lt;/plugins&gt;
+    &lt;/pluginManagement&gt;
+  &lt;/build&gt;
+&lt;/project&gt;</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_run">run</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre>tomcat7:run</pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-10-19 20:56:47 +0530
+Last updated 2024-10-19 23:03:41 +0530
 </div>
 </div>
 <script>

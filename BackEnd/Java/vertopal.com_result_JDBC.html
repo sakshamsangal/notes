@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.23">
-<title>Notes</title>
+<title>oracle database connection</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -546,16 +546,485 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 }
 </style>
 </head>
-<body class="article">
+<body class="article toc2 toc-left">
 <div id="header">
-<h1>Notes</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_oracle_database_connection">oracle database connection</a></li>
+<li><a href="#_mysql_connection">mysql connection</a></li>
+<li><a href="#_database_class">Database class</a></li>
+<li><a href="#_datetimeformatter">DateTimeFormatter</a></li>
+<li><a href="#_jsp_template_in_servlet">JSP template in servlet</a></li>
+<li><a href="#_scriptlets">scriptlets</a></li>
+<li><a href="#_for_loop_in_jsp_using_jstl">for loop in JSP using JSTL</a></li>
+<li><a href="#_if_user_is_not_logged_in_then_redirect_him_to_default_page_i_e_index_jsp">If user is not logged in then redirect him to default page i.e. index.jsp</a></li>
+<li><a href="#_logged_in_as">Logged In as</a></li>
+<li><a href="#_webservletblogpost">@WebServlet(``/blog/post'')</a></li>
+<li><a href="#_log_out">log out</a></li>
+<li><a href="#_write_java_code_to_populate_all_the_tag_options_in_the_drop_down_menu">Write java code to populate all the tag options in the drop-down menu.</a></li>
+<li><a href="#_todo_7_15_write_code_to_get_posts_for_the_selected_tag_and_render_the_search_result_on_the_web_page">TODO: 7.15. Write code to get posts for the selected ``tag'' and render the search result on the web page.</a></li>
+<li><a href="#_if_user_tries_to_click_on_browser_bac_k_button_then_he_she_should_not_be_able_to_access_this_page">If user tries to click on browser bac k button then he/ she should not be able to access this page*/</a></li>
+</ul>
+</div>
 </div>
 <div id="content">
+<div class="literalblock">
+<div class="content">
+<pre>// database name = localhost:port:SID
+// localhost = hostname
+// 1521 = port
+// xe = SID</pre>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_oracle_database_connection">oracle database connection</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre>try {
+    Class.forName("oracle.jdbc.driver.OracleDriver");
+    String url = "jdbc:oracle:thin:@localhost:1521:xe";
+    String username = "SYSTEM";
+    String password = "Mayankbagga@10";
 
+    con = DriverManager.getConnection(url, username, password);
+    System.out.println("connection established");
+} catch(Exception e){
+    System.out.println(e);
+}</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_mysql_connection">mysql connection</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre>try {
+    Class.forName("com.mysql.cj.jdbc.Driver");
+    String url = "jdbc:mysql://localhost:3306/springjdbctemplate";
+    String username = "root";
+    String password = "root";
+
+    con = DriverManager.getConnection(url, username, password);
+    System.out.println("connection established");
+}
+catch(Exception e){
+    System.out.println(e);
+}</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_database_class">Database class</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre>import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+public class Database {
+    public static Connection getConnection() {
+        Connection connection = null;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            String url = "jdbc:mysql://localhost:3306/school";
+            String username = "root";
+            String password = "root";
+            connection = DriverManager.getConnection(url, username, password);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return connection;
+    }
+}</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>public class Crud {
+
+    public static Statement statement;
+
+    public static void delete(int studentRollNumber) throws SQLException {
+        String sql = "DELETE FROM student WHERE student_roll_number = " + studentRollNumber;
+        statement.executeUpdate(sql);
+    }
+
+    public static void insert(long studentRollNumber, String studentName) throws SQLException {
+        String sql = "INSERT INTO student VALUES (" + studentRollNumber + ", '" + studentName + "')";
+        statement.executeUpdate(sql);
+    }
+
+    public static void update(int studentRollNumber, String studentName) throws SQLException {
+        String sql = "UPDATE student SET student_name = '" + studentName + "' " + " WHERE student_roll_number = " + studentRollNumber;
+        statement.executeUpdate(sql);
+    }
+
+    public static Student search(int studentRollNumber) throws SQLException {
+        String sql = "SELECT * FROM student WHERE student_roll_number = " + studentRollNumber;
+        ResultSet resultSet = statement.executeQuery(sql);
+
+        Student student = new Student();
+        if (resultSet.next()) {
+            student.setRollNumber(resultSet.getInt(1));
+            student.setStudentName(resultSet.getString(2));
+        }
+        return student;
+    }
+
+    public static List&lt;Student&gt; view() throws Exception {
+        String sql = "SELECT * FROM student";
+        ResultSet resultSet = statement.executeQuery(sql);
+
+        List&lt;Student&gt; students = new ArrayList&lt;&gt;();
+        while (resultSet.next()) {
+            Student student = new Student();
+            student.setRollNumber(resultSet.getInt(1));
+            student.setStudentName(resultSet.getString(2));
+            students.add(student);
+        }
+        return students;
+    }
+
+    static {
+        try {
+            Crud.statement = Database.getConnection().createStatement();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
+}</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>// default is get
+
+// embedded tomcat
+&lt;plugin&gt;
+    &lt;groupId&gt;org.apache.tomcat.maven&lt;/groupId&gt;
+    &lt;artifactId&gt;tomcat7-maven-plugin&lt;/artifactId&gt;
+    &lt;version&gt;2.2&lt;/version&gt;
+    &lt;configuration&gt;
+    &lt;port&gt;8080&lt;/port&gt;
+    &lt;path&gt;/&lt;/path&gt;
+    &lt;/configuration&gt;
+&lt;/plugin&gt;
+
+// mysql
+&lt;dependency&gt;
+    &lt;groupId&gt;mysql&lt;/groupId&gt;
+    &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+    &lt;version&gt;8.0.13&lt;/version&gt;
+&lt;/dependency&gt;
+
+// servlet
+&lt;dependency&gt;
+    &lt;groupId&gt;javax&lt;/groupId&gt;
+    &lt;artifactId&gt;javaee-api&lt;/artifactId&gt;
+    &lt;version&gt;8.0.1&lt;/version&gt;
+    &lt;scope&gt;provided&lt;/scope&gt;
+&lt;/dependency&gt;</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_datetimeformatter">DateTimeFormatter</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre>&lt;%=DateTimeFormatter.format((postDTOS.get(i).getTimestamp()))%&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>package org.example;</p>
+</div>
+<div class="paragraph">
+<p>import java.io.FileOutputStream; import java.sql.*;</p>
+</div>
+<div class="paragraph">
+<p>class JDBCTest \{ public static void main(String args[]) \{ Connection
+conn = null; PreparedStatement preparedStatement = null;</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>    String query = "select * from table1 where c1 = 1";
+
+    try {
+        //get connection
+        conn = Database.getConnection();
+
+        //create preparedStatement
+        preparedStatement = conn.prepareStatement(query);
+
+        //execute query
+        ResultSet resultSet = preparedStatement.executeQuery();
+        resultSet.next();
+
+        Blob clob = resultSet.getBlob(2);
+        byte[] byteArr = clob.getBytes(1, (int) clob.length());
+
+        FileOutputStream fileOutputStream =
+                new FileOutputStream("D:\\Temporary\\savedImage.jpg");
+        fileOutputStream.write(byteArr);
+
+        System.out.println("Image retrieved successfully.");
+
+        //close connection
+        fileOutputStream.close();
+        preparedStatement.close();
+        conn.close();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>}</p>
+</div>
+<div class="paragraph">
+<p>class Database \{ public static Connection getConnection() \{ Connection
+connection = null; try \{ Class.forName(<code>com.mysql.cj.jdbc.Driver'');
+String url = </code>jdbc:mysql://localhost:3306/sms''; String username =
+<code>root''; String password = </code>root''; connection =
+DriverManager.getConnection(url, username, password); } catch (Exception
+e) \{ e.printStackTrace(); } return connection; } }</p>
+</div>
+<div class="paragraph">
+<p>package org.example;</p>
+</div>
+<div class="paragraph">
+<p>import java.io.FileInputStream; import java.io.InputStream; import
+java.sql.Connection; import java.sql.DriverManager; import
+java.sql.PreparedStatement; class InsertImageToMySqlDB \{ public static
+void main(String args[]) throws Exception\{ //Registering the Driver
+DriverManager.registerDriver(new com.mysql.jdbc.Driver()); //Getting the
+connection String mysqlUrl = <code>jdbc:mysql://localhost/sms''; Connection
+con = DriverManager.getConnection(mysqlUrl, </code>root'', <code>root'');
+System.out.println(</code>Connection established……''); PreparedStatement
+pstmt = con.prepareStatement(<code>INSERT INTO table1 VALUES(1,?)'');
+InputStream in = new FileInputStream(</code>D:\Temporary\images.png'');
+pstmt.setBlob(1, in); //Executing the statement pstmt.execute();
+System.out.println(``Record inserted……''); } }</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_jsp_template_in_servlet">JSP template in servlet</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre>&lt;%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %&gt;
+&lt;%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %&gt;
+&lt;%@page isELIgnored="false" %&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+    &lt;link rel="stylesheet" href="&lt;%=request.getContextPath()%&gt;/css/styles.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+
+
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_scriptlets">scriptlets</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre>&lt;%!
+ // java code
+%&gt;
+
+&lt;%= // direct print %&gt;
+
+&lt;% out.print("Today is:"+java.util.Calendar.getInstance().getTime()); %&gt;
+
+&lt;%
+  // used for writing servlet code.
+%&gt;</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_for_loop_in_jsp_using_jstl">for loop in JSP using JSTL</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre>&lt;table&gt;
+    &lt;tr&gt;
+        &lt;th&gt;Airlines&lt;/th&gt;
+        &lt;th&gt;Departure City&lt;/th&gt;
+        &lt;th&gt;Arrival City&lt;/th&gt;
+        &lt;th&gt;Departure Time&lt;/th&gt;
+
+    &lt;/tr&gt;
+
+    &lt;c:forEach items="${flights}" var="flight"&gt;
+        &lt;tr&gt;
+            &lt;td&gt;${flight.operatingAirlines}&lt;/td&gt;
+            &lt;td&gt;${flight.departureCity}&lt;/td&gt;
+            &lt;td&gt;${flight.arrivalCity}&lt;/td&gt;
+            &lt;td&gt;${flight.estimatedDepartureTime}&lt;/td&gt;
+            &lt;td&gt;&lt;a href="showCompleteReservation?flightId=${flight.id}"&gt;Select&lt;/a&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+
+    &lt;/c:forEach&gt;
+&lt;/table&gt;</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>${msg} // direct print variable in jsp
+
+request.getContextPath() // return root directory of project</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_if_user_is_not_logged_in_then_redirect_him_to_default_page_i_e_index_jsp">If user is not logged in then redirect him to default page i.e. index.jsp</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre>try {
+    if (session.getAttribute("emailId").equals(null)) {
+        response.sendRedirect(request.getContextPath());
+    }
+} catch (NullPointerException e) {
+    response.sendRedirect(request.getContextPath());
+}</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_logged_in_as">Logged In as</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre>Logged In as &lt;%
+try {
+    out.print(session.getAttribute("emailId").toString().split("@")[0]);
+} catch (NullPointerException e) {}
+%&gt;</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&lt;form id="post_form" method="post" action="&lt;%=request.getContextPath()%&gt;/blog/post"&gt;
+&lt;span&gt;&lt;%=session.getAttribute("emailId")%&gt;&lt;/span&gt;</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_webservletblogpost">@WebServlet(``/blog/post'')</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre>public class PostServlet extends HttpServlet</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_log_out">log out</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre>&lt;%
+    session.invalidate();
+    response.sendRedirect(request.getContextPath());
+%&gt;</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_write_java_code_to_populate_all_the_tag_options_in_the_drop_down_menu">Write java code to populate all the tag options in the drop-down menu.</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre>&lt;%
+    HashSet&lt;String&gt; tagList = new DAOFactory().getPostCRUDS().findAllTags();
+    Object[] array = tagList.toArray();
+    for (int i = 0; i &lt; array.length; i++) { %&gt;
+&lt;option value="&lt;%=array[i]%&gt;"&gt;&lt;%=array[i]%&gt;
+&lt;/option&gt;
+&lt;%
+    }
+%&gt;</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_todo_7_15_write_code_to_get_posts_for_the_selected_tag_and_render_the_search_result_on_the_web_page">TODO: 7.15. Write code to get posts for the selected ``tag'' and render the search result on the web page.</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre>&lt;%
+    if (request.getMethod().equals("POST")) {
+        List&lt;PostDTO&gt; postDTOS = new DAOFactory().getPostCRUDS().findByTag(request.getParameter("tag"));
+        for (int i = 0; i &lt; postDTOS.size(); i++) { %&gt;
+            &lt;div class="post-list"&gt;
+                &lt;div&gt;Post Id: &lt;%=postDTOS.get(i).getPostId()%&gt;
+                &lt;/div&gt;
+                &lt;div&gt;Email Id: &lt;%=postDTOS.get(i).getEmailId()%&gt;
+                &lt;/div&gt;
+                &lt;div&gt;Title: &lt;%=postDTOS.get(i).getTitle()%&gt;&lt;/div&gt;
+                &lt;div&gt;Tag: &lt;%=postDTOS.get(i).getTag()%&gt;
+                &lt;/div&gt;
+                &lt;div&gt;Description: &lt;%=postDTOS.get(i).getDescription()%&gt;
+                &lt;/div&gt;
+                &lt;div&gt;Time: &lt;%=DateTimeFormatter.format(postDTOS.get(i).getTimestamp())%&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+&lt;%
+        }
+        if (postDTOS.size() &lt; 1) {
+            out.print("Sorry no posts exists for this tag");
+        }
+
+    }
+%&gt;</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_if_user_tries_to_click_on_browser_bac_k_button_then_he_she_should_not_be_able_to_access_this_page">If user tries to click on browser bac k button then he/ she should not be able to access this page*/</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre>response.setHeader("Cache-Control", "no-cache");
+response.setHeader("Cache-Control", "no-store");
+response.setHeader("Pragma", "no-cache");
+response.setDateHeader("Expires", 0);</pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-10-19 20:56:47 +0530
+Last updated 2024-10-19 23:22:01 +0530
 </div>
 </div>
 <script>

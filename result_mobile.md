@@ -1,0 +1,2286 @@
+# Recycler view design pattern
+
+## Class
+
+```java
+class StudentRecyclerAdapter extends RecyclerView.Adapter<StudentRecyclerAdapter.StudentViewHolder> {
+    // onCreateViewHolder
+    // onBindViewHolder
+    // getItemCount
+    // ViewHolder
+}
+```
+
+## Field
+
+```java
+private List<Student> mStudents;
+```
+
+## Constructor
+
+```java
+public StudentRecyclerAdapter(List<Student> students) {
+    mStudents = students;
+}
+```
+
+## onCreateViewHolder
+
+```java
+@NonNull
+@Override
+public StudentRecyclerAdapter.StudentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.student_row, parent, false);
+    return new StudentViewHolder(view);
+}
+```
+
+## getItemCount
+
+```java
+@Override
+public int getItemCount() {
+    return mStudents.size();
+}
+```
+
+## onBindViewHolder
+
+```java
+@Override
+public void onBindViewHolder(@NonNull StudentRecyclerAdapter.StudentViewHolder holder, int position) {
+    holder.mRollNumberTextView.setText(String.valueOf(mStudents.get(position).getRollNumber()));
+    holder.mNameTextView.setText(mStudents.get(position).getName());
+}
+```
+
+## ViewHolder
+
+```java
+public static class StudentViewHolder extends RecyclerView.ViewHolder {
+    TextView mRollNumberTextView;
+    TextView mNameTextView;
+    public StudentViewHolder(@NonNull View itemView) {
+        super(itemView);
+        mRollNumberTextView = itemView.findViewById(R.id.rollNumber);
+        mNameTextView = itemView.findViewById(R.id.name);
+    }
+}
+```
+
+```java
+public static class StudentViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
+
+public StudentViewHolder(@NonNull View itemView) {
+    super(itemView);
+    itemView.setOnClickListener(this);
+    mRollNumberTextView = itemView.findViewById(R.id.rollNumber);
+    mNameTextView = itemView.findViewById(R.id.name);
+}
+
+@Override
+public void onClick(View v) {
+    Toast.makeText(v.getContext(), "position " + getLayoutPosition() + mNameTextView.getText(), Toast.LENGTH_SHORT).show();
+}
+```
+
+# Listview custom adapater
+
+## class
+
+```java
+class CustomListAdapter extends ArrayAdapter<String> {
+    // getView
+}
+
+class CustomListAdapter extends ArrayAdapter<Product> { 
+    // getView
+}
+```
+
+## Field
+
+```
+String[] arr;
+private Product[] arr;
+private static final String TAG = "s170";
+```
+
+## Constructor
+
+```
+public CustomListAdapter(@NonNull Context context, int resource, String[] arr) {
+    super(context, resource, arr);
+    this.arr = arr;
+}
+
+CustomListAdapter(@NonNull Context context, int resource, Product[] arr) {
+    super(context, resource, arr);
+    this.arr = arr;
+}
+```
+
+## getView
+
+```
+@NonNull
+@Override
+public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+
+    LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+    View view = layoutInflater.inflate(R.layout.row, parent, false);
+
+    TextView textView = view.findViewById(R.id.textView);
+    textView.setText(arr[position]);
+
+    Button buttonDelete = view.findViewById(R.id.buttonDelete);
+    buttonDelete.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            removeHero(position);
+        }
+    });
+    return view;
+}
+```
+
+```
+@NonNull
+@Override
+public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    Log.d(TAG, "getView:  = " + arr[0].getName());
+
+    LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+    View view = layoutInflater.inflate(R.layout.support_simple_spinner_dropdown_item, parent, false);
+
+    TextView textView = view.findViewById(android.R.id.text1);
+    Log.d(TAG, "getView:  = " + arr[position].getName());
+    textView.setText(arr[position].getName());
+
+    return view;
+}
+```
+
+## Imports
+
+```
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Context;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.SearchView;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
+```
+
+## Main
+
+```
+protected void onCreate(Bundle savedInstanceState) {
+super.onCreate(savedInstanceState);
+setContentView(R.layout.activity_main);
+
+Product[] arr = {new Product("sa", 221), new Product("edwe", 56)};
+final CustomListAdapter customListAdapter = new CustomListAdapter(this, R.layout.support_simple_spinner_dropdown_item, arr);
+ListView listView = findViewById(R.id.lv);
+listView.setAdapter(customListAdapter);
+```
+
+## SearchView
+
+```
+SearchView searchView = findViewById(R.id.sv);
+searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        customListAdapter.getFilter().filter(newText);
+        return false;
+    }
+});
+```
+
+---
+
+asas
+
+asas
+
+asas
+
+| asas | sas  | sas |     |     |
+|------|------|-----|-----|-----|
+|      |      |     |     |     |
+|      | asas |     |     |     |
+|      |      |     |     |     |
+|      |      |     |     |     |
+
+$$
+sum((a + b)^2)
+$$
+
+# Bottom navigation view
+
+## Layout
+
+```
+<com.google.android.material.bottomnavigation.BottomNavigationView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:menu="@menu/tabs" />
+```
+
+## menu/tabs.xml
+
+``` xml
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:icon="@mipmap/ic_launcher"
+        android:id="@+id/tab1"
+        android:title="tab1" />
+    <item
+        android:id="@+id/tab2"
+        android:title="tab2" />
+    <item
+        android:id="@+id/tab3"
+        android:title="tab3" />
+</menu>
+```
+
+## Activity
+
+``` java
+BottomNavigationView bnv = findViewById(R.id.bnv);
+bnv.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        Toast.makeText(MainActivity.this, menuItem.getTitle(), Toast.LENGTH_SHORT).show();
+        return true;
+    }
+});
+```
+
+
+## dependencies
+
+```
+implementation 'com.google.code.gson:gson:2.8.6'
+implementation 'com.google.code.gson:gson:2.8.5'
+implementation 'androidx.recyclerview:recyclerview:1.1.0'
+implementation 'com.github.bumptech.glide:glide:4.7.1'
+```
+
+## Permission
+
+```
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+```
+
+## Theme
+
+```
+android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
+?android:attr/selectableItemBackground
+```
+
+## Title bar
+
+```
+getSupportActionBar()).setTitle(R.string.feedback);
+getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+```
+
+## Night mode
+
+```
+AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+```
+
+## List divider
+
+```
+recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+```
+
+## drawable/selector.xml
+
+```
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="#FFEB3B" android:state_checked="true" />
+    <item android:color="#E91E63" />
+</selector>
+```
+
+## TypedArray
+
+```
+String[] mPlaces = resources.getStringArray(R.array.places);
+
+TypedArray a = resources.obtainTypedArray(R.array.places_picture);
+mPlacePictures = new Drawable[a.length()];
+for (int i = 0; i < mPlacePictures.length; i++) {
+    mPlacePictures[i] = a.getDrawable(i);
+}
+a.recycle();
+```
+
+## get image from drawable
+
+```
+String imageName = item.getString("category_image");
+Resources resources = context.getResources();
+final int resourceId = resources.getIdentifier(imageName, "drawable", context.getPackageName());
+
+Drawable drawable = resources.getDrawable(resourceId);
+category_image.add(drawable);
+```
+
+# intent
+
+## simple
+
+``` java
+<Button
+    android:id="@+id/button"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Button" />
+
+// MainActivity
+Button button = findViewById(R.id.button);
+button.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        Intent intent = new Intent(MainActivity.this, Main2Activity.class);
+        startActivity(intent);
+    }
+});
+```
+
+## with data
+
+``` java
+// MainActivity
+Intent intent = new Intent(MainActivity.this, Main2Activity.class);
+intent.putExtra("price", 10);
+intent.putExtra("gender", "male");
+startActivity(intent);
+
+// Main2Activity
+getIntent().getIntExtra("price", 0);
+getIntent().getStringExtra("gender");
+
+```
+
+## with result
+
+``` java
+// MainActivity
+@Override
+protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if (requestCode == 5) {
+        if (resultCode == Activity.RESULT_OK) {
+            Log.d(TAG, data.getStringExtra("gender"));
+        } else if (resultCode == Activity.RESULT_CANCELED) {
+
+        }
+    }
+}
+
+public void onClick(View v) {
+    Intent intent = new Intent(MainActivity.this, Main2Activity.class);
+    startActivityForResult(intent, 5);
+}
+
+// Main2Activity
+Intent intent = new Intent();
+intent.putExtra("gender", "female");
+setResult(Activity.RESULT_OK, intent);
+finish();
+
+```
+
+```
+// How to pass an object from one activity to another on Android
+//To pass:
+intent.putExtra("MyClass", obj);
+
+// To retrieve object in second Activity
+getIntent().getSerializableExtra("MyClass");
+```
+
+```
+
+    public void writeFileInternalStorage(View view) {
+        String coupons = "Get upto 20% off mobile @ xyx shop \n Get upto 30% off on appliances @ yuu shop";
+        createUpdateFile(filenameInternal, coupons, false);
+    }
+
+    public void appendFileInternalStorage(View view) {
+        String coupons = "Get upto 50% off fashion @ xyx shop \n Get upto 80% off on beauty @ yuu shop";
+        createUpdateFile(filenameInternal, coupons, true);
+    }
+
+    private void createUpdateFile(String fileName, String content, boolean update) {
+        FileOutputStream outputStream;
+
+        try {
+            if (update) {
+                outputStream = openFileOutput(fileName, Context.MODE_APPEND);
+            } else {
+                outputStream = openFileOutput(fileName, Context.MODE_PRIVATE);
+            }
+            outputStream.write(content.getBytes());
+            outputStream.flush();
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void readFileInternalStorage(View view) {
+        try {
+            Log.d("s90", "readFileInternalStorage: " + getFilesDir());
+            FileInputStream fileInputStream = openFileInput(filenameInternal);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(fileInputStream));
+
+            StringBuffer sb = new StringBuffer();
+            String line = reader.readLine();
+
+            while (line != null) {
+                sb.append(line);
+                line = reader.readLine();
+            }
+            tv.setText(sb.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void createTemporaryFile(View view) {
+        try {
+            String fileName = "couponstemp";
+            String coupons = "Get upto 50% off shoes @ xyx shop \n Get upto 80% off on shirts @ yuu shop";
+
+            File file = File.createTempFile(fileName, null, getCacheDir());
+
+            FileOutputStream outputStream = new FileOutputStream(file);
+            outputStream.write(coupons.getBytes());
+            outputStream.flush();
+            outputStream.close();
+
+        } catch (IOException e) {
+        }
+    }
+
+    public void deleteFile(View view) {
+        try {
+            String fileName = "couponstemp";
+            File file = File.createTempFile(fileName, null, getCacheDir());
+
+            file.delete();
+        } catch (IOException e) {
+        }
+    }
+
+    public void writeFileExternalStorage(View view) {
+        String cashback = "Get 2% cashback on all purchases from xyz \n Get 10% cashback on travel from dhhs shop";
+        String state = Environment.getExternalStorageState();
+        //external storage availability check
+        if (!Environment.MEDIA_MOUNTED.equals(state)) {
+            return;
+        }
+        File file = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DOCUMENTS), filenameExternal);
+
+
+        FileOutputStream outputStream = null;
+        try {
+            file.createNewFile();
+            //second argument of FileOutputStream constructor indicates whether to append or create new file if one exists
+            outputStream = new FileOutputStream(file, true);
+
+            outputStream.write(cashback.getBytes());
+            outputStream.flush();
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+```
+
+# JSON parsing
+
+```
+JSONObject jsonObject = new JSONObject(readJSON());
+JSONArray jsonArray = jsonObject.getJSONArray("formulas");
+
+for(int i = 0; i < jsonArray.length(); i++){
+    JSONObject object = jsonArray.getJSONObject(i);
+    String name = object.getString("formulae");
+    String salary = object.getString("url");
+}
+```
+
+
+# Sample JSON
+
+## main/assets/temp.json
+
+```
+{
+  "formulas": [
+    {
+      "formulae": "Linear Motion",
+      "url": "qp1"
+    },
+    {
+      "formulae": "Constant Acceleration Motion",
+      "url": "qp2"
+    }
+  ]
+}
+```
+
+# Option menu
+
+## On create options menu
+
+``` 
+@Override
+public boolean onCreateOptionsMenu(Menu menu) {
+    getMenuInflater().inflate(R.menu.menu_main, menu);
+    return true;
+}
+```
+
+## On options item selected
+
+```
+@Override
+public boolean onOptionsItemSelected(MenuItem item) {
+    if (item.getItemId() == R.id.settings) {
+        Toast.makeText(this, "settings", Toast.LENGTH_SHORT).show();
+    } else if(item.getItemId() == R.id.about) {
+        Toast.makeText(this, "about", Toast.LENGTH_SHORT).show();
+    }
+    return super.onOptionsItemSelected(item);
+}
+```
+
+## menu/menu_main.xml
+
+``` xml
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/settings"
+        android:title="Settings" />
+    <item
+        android:id="@+id/about"
+        android:title="About" />
+</menu>
+```
+
+# Row
+
+## List
+
+```
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        app:srcCompat="@drawable/e" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+    </LinearLayout>
+</LinearLayout>
+```
+
+## Tile
+
+```
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="5dp"
+    app:cardElevation="5dp"
+    app:cardMaxElevation="5dp">
+
+    <ImageView
+        android:id="@+id/tile_picture"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/tile_height"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:scaleType="centerCrop"
+        tools:src="@drawable/hair_oil" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/tile_height"
+        android:alpha="0.5"
+        android:background="@color/dark_grey" />
+
+    <TextView
+        android:id="@+id/tile_title"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/tile_height"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="@dimen/article_titles" />
+```
+
+```
+@Override
+public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.recycler_view, container, false);
+    ContentAdapter adapter = new ContentAdapter(recyclerView.getContext());
+    recyclerView.setAdapter(adapter);
+    recyclerView.setHasFixedSize(true);
+
+    recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+    return recyclerView;
+}
+```
+
+## Card
+
+```
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="12dp"
+    app:cardCornerRadius="5dp"
+    app:cardElevation="5dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/e" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Saksham Sangal" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Action" />
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                app:srcCompat="@drawable/ic_favorite" />
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                app:srcCompat="@drawable/ic_share" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
+```
+
+
+
+# Sample DTO
+
+## Product
+
+```
+class Product {
+    private String name;
+    private int price;
+
+    public Product(String name, int price) {
+        this.name = name;
+        this.price = price;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+}
+```
+
+# Search view primitive
+
+``` 
+import android.widget.SearchView;
+public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener{
+
+    ArrayList<String> list;
+    ArrayAdapter<String> adapter;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        SearchView searchView = findViewById(R.id.searchView);
+        list = new ArrayList<>();
+        list.add("Apple");
+        list.add("Banana");
+        list.add("Pineapple");
+        list.add("Orange");
+        list.add("Lychee");
+        list.add("Gavava");
+        list.add("Peech");
+        list.add("Melon");
+        list.add("Watermelon");
+        list.add("Papaya");
+
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, list);
+        ListView listView = findViewById(R.id.lv1);
+        listView.setAdapter(adapter);
+
+        searchView.setOnQueryTextListener(this);
+         <!-- searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return false;
+            }
+        }); -->
+    }
+
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        adapter.getFilter().filter(newText);
+        return false;
+    }
+}
+<SearchView
+    android:id="@+id/searchView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:queryHint="Search Here" />
+
+//  ## Search view object
+
+public class MainActivity extends AppCompatActivity {
+
+    StudentRecyclerAdapter studentRecyclerAdapter;
+    RecyclerView mRecyclerView;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        mRecyclerView = findViewById(R.id.recyclerView);
+
+        List<Student> students = new ArrayList<>();
+
+        students.add(new Student(12, "rohan"));
+        students.add(new Student(42, "rohit"));
+        students.add(new Student(12, "saksham"));
+        students.add(new Student(12, "sahitya"));
+        students.add(new Student(42, "sakshi goel"));
+        students.add(new Student(12, "sakshi singhal"));
+        students.add(new Student(42, "sakshai singhal 173"));
+        students.add(new Student(12, "samriddhi"));
+
+        studentRecyclerAdapter = new StudentRecyclerAdapter(students);
+
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setAdapter(studentRecyclerAdapter);
+
+        SearchView searchView = findViewById(R.id.searchView);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String text) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String text) {
+                studentRecyclerAdapter.getFilter().filter(text);
+                return true;
+            }
+        });
+    }
+
+
+    static class StudentRecyclerAdapter extends RecyclerView.Adapter<StudentRecyclerAdapter.StudentViewHolder> implements Filterable {
+        private List<Student> mStudents;
+        private List<Student> filteredData;
+
+        public StudentRecyclerAdapter(List<Student> students) {
+            mStudents = students;
+            filteredData = mStudents;
+        }
+
+        @NonNull
+        @Override
+        public StudentRecyclerAdapter.StudentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.student_row, parent, false);
+            return new StudentViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull StudentRecyclerAdapter.StudentViewHolder holder, int position) {
+            holder.mRollNumberTextView.setText(String.valueOf(filteredData.get(position).getRollNumber()));
+            holder.mNameTextView.setText(filteredData.get(position).getName());
+        }
+
+        @Override
+        public int getItemCount() {
+            return filteredData.size();
+        }
+
+        @Override
+        public Filter getFilter() {
+            return new Filter() {
+                @Override
+                protected FilterResults performFiltering(CharSequence charSequence) {
+                    FilterResults results = new FilterResults();
+
+                    //If there's nothing to filter on, return the original data for your list
+                    if (charSequence == null || charSequence.length() == 0) {
+                        results.values = mStudents;
+                        results.count = mStudents.size();
+                    } else {
+                        List<Student> filterResultsData = new ArrayList<>();
+                        for (Student data : mStudents) {
+                            if (data.getName().toLowerCase().contains(charSequence.toString().toLowerCase())) {
+                                filterResultsData.add(data);
+                            }
+                        }
+                        results.values = filterResultsData;
+                        results.count = filterResultsData.size();
+                    }
+                    return results;
+                }
+                @Override
+                protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                    filteredData = (ArrayList<Student>) filterResults.values;
+                    notifyDataSetChanged();
+                }
+            };
+        }
+
+        public static class StudentViewHolder extends RecyclerView.ViewHolder {
+            TextView mRollNumberTextView;
+            TextView mNameTextView;
+            public StudentViewHolder(@NonNull View itemView) {
+                super(itemView);
+                mRollNumberTextView = itemView.findViewById(R.id.rollNumber);
+                mNameTextView = itemView.findViewById(R.id.name);
+            }
+        }
+    }
+}
+```
+
+## better approach
+
+```
+class StudentRecyclerAdapter extends RecyclerView.Adapter<StudentRecyclerAdapter.StudentViewHolder> implements Filterable {
+    private List<Student> mStudents;
+    private List<Student> temp;
+
+    public StudentRecyclerAdapter(List<Student> students) {
+        mStudents = students;
+        temp = new ArrayList<>(mStudents);
+    }
+
+    @NonNull
+    @Override
+    public StudentRecyclerAdapter.StudentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row, parent, false);
+        return new StudentViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull StudentRecyclerAdapter.StudentViewHolder holder, int position) {
+        holder.mRollNumberTextView.setText(String.valueOf(mStudents.get(position).getRollNumber()));
+        holder.mNameTextView.setText(mStudents.get(position).getName());
+    }
+
+    @Override
+    public int getItemCount() {
+        return mStudents.size();
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                List<Student> filteredList = new ArrayList<>();
+                if (constraint == null || constraint.length() == 0) {
+                    filteredList.addAll(temp);
+                } else {
+                    String filterPattern = constraint.toString().toLowerCase().trim();
+                    for (Student item : temp) {
+                        if (item.getName().toLowerCase().contains(filterPattern)) {
+                            filteredList.add(item);
+                        }
+                    }
+                }
+                FilterResults results = new FilterResults();
+                results.values = filteredList;
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                mStudents.clear();
+                mStudents.addAll((List) results.values);
+                notifyDataSetChanged();
+            }
+        };
+    }
+
+
+    public static class StudentViewHolder extends RecyclerView.ViewHolder {
+        TextView mRollNumberTextView;
+        TextView mNameTextView;
+        public StudentViewHolder(@NonNull View itemView) {
+            super(itemView);
+            mRollNumberTextView = itemView.findViewById(R.id.tv1);
+            mNameTextView = itemView.findViewById(R.id.tv2);
+        }
+    }
+}
+
+
+
+```
+
+## activity_main.xml
+
+``` xml
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <SearchView
+        android:id="@+id/searchView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>
+```
+
+## student_row.xml
+
+``` xml
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/rollNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
+</LinearLayout>
+```
+
+
+
+# Side navbar
+
+
+## MainActivity.java
+
+``` java
+import androidx.appcompat.widget.Toolbar;
+import com.google.android.material.tabs.TabLayout;
+
+public class MainActivity extends AppCompatActivity {
+    private DrawerLayout mDrawerLayout;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        mDrawerLayout = findViewById(R.id.drawer);
+
+
+        ActionBar supportActionBar = getSupportActionBar();
+
+        if (supportActionBar != null) {
+            VectorDrawableCompat indicator = VectorDrawableCompat.create(getResources(), R.drawable.ic_menu, getTheme());
+            indicator.setTint(ResourcesCompat.getColor(getResources(),R.color.white,getTheme()));
+            supportActionBar.setHomeAsUpIndicator(indicator);
+            supportActionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                menuItem.setChecked(true);
+                // TODO: handle navigation
+                mDrawerLayout.closeDrawers();
+                return true;
+            }
+        });
+
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            mDrawerLayout.openDrawer(GravityCompat.START);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+}
+
+```
+
+## activity_main.xml
+
+``` xml
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/main_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/navheader"
+        app:menu="@menu/menu_navigation">
+
+
+    </com.google.android.material.navigation.NavigationView>
+</androidx.drawerlayout.widget.DrawerLayout>
+```
+
+## navheader.xml
+
+``` xml 
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="222dp"
+    android:background="?attr/colorPrimaryDark"
+    android:orientation="vertical"
+    android:padding="16dp">
+</LinearLayout>
+```
+
+## menu/menu_navigation.xml
+
+``` xml 
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group android:checkableBehavior="single">
+        <item
+            android:icon="@drawable/ic_home_black_24dp"
+            android:tint="#807B7B"
+            android:title="One" />
+        <item
+            android:icon="@drawable/ic_favorite_black_24dp"
+            android:tint="#807B7B"
+            android:title="Two" />
+        <item
+            android:icon="@drawable/ic_bookmark_border_black_24dp"
+            android:tint="#807B7B"
+            android:title="Three" />
+    </group>
+</menu>
+```
+
+```
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+
+    DbHelper db;
+
+    EditText editTeasyd ,editTextName ,editTextEmail ,editTextMobile;
+    Button buttonInsert, buttonView, buttonDelete,buttonUpdate, buttonSearch;
+
+    String id;
+    String name;
+    String email;
+    String mobile;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        editTeasyd = findViewById(R.id.edit_id);
+        editTextName = findViewById(R.id.edit_name);
+        editTextEmail = findViewById(R.id.edit_email);
+        editTextMobile = findViewById(R.id.edit_mobile);
+
+        buttonInsert = findViewById(R.id.button_insert);
+        buttonView = findViewById(R.id.button_view);
+        buttonDelete = findViewById(R.id.button_delete);
+        buttonUpdate = findViewById(R.id.button_update);
+        buttonSearch = findViewById(R.id.button_search);
+
+        buttonInsert.setOnClickListener(this);
+        buttonView.setOnClickListener(this);
+        buttonDelete.setOnClickListener(this);
+        buttonUpdate.setOnClickListener(this);
+        buttonSearch.setOnClickListener(this);
+
+        db=new DbHelper(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+
+        switch (v.getId()){
+
+            case R.id.button_insert:
+                name=editTextName.getText().toString();
+                email=editTextEmail.getText().toString();
+                mobile=editTextMobile.getText().toString();
+                if(name.equals("") | email.equals("") | mobile.equals("")){
+                    Toast.makeText(this, "Please fill the Fields", Toast.LENGTH_SHORT).show();
+                }else {
+                    db.insertStudent(name,email,mobile);
+                    editTeasyd.setText("");
+                    editTextName.setText("");
+                    editTextEmail.setText("");
+                    editTextMobile.setText("");
+                    Toast.makeText(this, "saved successfully", Toast.LENGTH_SHORT).show();
+                }
+                break;
+
+            case R.id.button_view:
+                Intent intent=new Intent(getApplicationContext(),ViewSQLiteData.class);
+                startActivity(intent);
+                break;
+
+            case R.id.button_delete:
+                id = editTeasyd.getText().toString();
+                if(id.equals("")){
+                    Toast.makeText(this, "Plase fill the Id", Toast.LENGTH_SHORT).show();
+                }else {
+                    long l = Long.parseLong(id);
+                    db.deleteStudent(l);
+                    editTeasyd.setText("");
+                    editTextName.setText("");
+                    editTextEmail.setText("");
+                    editTextMobile.setText("");
+                    Toast.makeText(this, "deleted successfully", Toast.LENGTH_SHORT).show();
+                }
+                break;
+
+            case R.id.button_update:
+                id=editTeasyd.getText().toString().trim();
+                name=editTextName.getText().toString();
+                email=editTextEmail.getText().toString();
+                mobile=editTextMobile.getText().toString();
+                if(id.equals("") | name.equals("") | email.equals("") | mobile.equals("")){
+                    Toast.makeText(this, "Please fill all the fields", Toast.LENGTH_SHORT).show();
+                }else {
+                    long l= Long.parseLong(id);
+                    db.updateStudent(l,name,email,mobile);
+                    editTeasyd.setText("");
+                    editTextName.setText("");
+                    editTextEmail.setText("");
+                    editTextMobile.setText("");
+                    Toast.makeText(this, "updated successfully", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case R.id.button_search:
+                id=editTeasyd.getText().toString().trim();
+                if(id.equals("")){
+                    Toast.makeText(this, "Please Fill the Id", Toast.LENGTH_SHORT).show();
+                }else {
+                    try {
+                        long l1= Long.parseLong(id);
+                        name=db.getName(l1);
+                        email=db.getEmail(l1);
+                        mobile=db.getMobile(l1);
+
+                        editTextName.setText(name);
+                        editTextEmail.setText(email);
+                        editTextMobile.setText(mobile);
+                        Toast.makeText(this, "searched successfully", Toast.LENGTH_SHORT).show();
+
+                    }
+                    catch (Exception e)
+                    {
+                        Toast.makeText(this, "Id is not Available", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                break;
+        }
+    }
+}
+
+```
+
+``` 
+
+public class ViewSQLiteData extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_view_s_q_lite_data);
+
+        TextView textView = findViewById(R.id.view_data);
+
+        DbHelper db = new DbHelper(this);
+
+        String data = db.getData();
+        textView.setText(data);
+        textView.setMovementMethod(new ScrollingMovementMethod());
+    }
+}
+```
+
+```
+
+public class DbHelper extends SQLiteOpenHelper {
+    private static final String TAG = "s90";
+    private SQLiteDatabase db;
+
+    private static final String DATABASE_NAME = "database.db";
+    private static final int DATABASE_VERSION = 1;
+
+    private static final String TABLE_STUDENT = "_student";
+
+    private static final String KEY_ID = "id";
+    private static final String KEY_NAME = "name";
+    private static final String KEY_EMAIL = "email";
+    private static final String KEY_MOBILE = "mobile";
+
+    DbHelper(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        String Query_Table = " CREATE TABLE " + TABLE_STUDENT + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + KEY_NAME + " TEXT, " + KEY_EMAIL + " TEXT, " + KEY_MOBILE + " TEXT);";
+        // CREATE TABLE _student(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, email TEXT, mobile TEXT);
+        Log.d(TAG, "onCreate: " + Query_Table);
+        db.execSQL(Query_Table);
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_STUDENT);
+        onCreate(db);
+    }
+
+    void insertStudent(String name, String email, String mobile) {
+        db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_NAME, name);
+        values.put(KEY_EMAIL, email);
+        values.put(KEY_MOBILE, mobile);
+        db.insert(TABLE_STUDENT, null, values);
+    }
+
+    String getData() {
+        db = this.getReadableDatabase();
+        String[] columns = new String[]{KEY_ID, KEY_NAME, KEY_EMAIL, KEY_MOBILE};
+        Cursor cursor = db.query(TABLE_STUDENT, columns, null, null, null, null, null);
+
+        int iId = cursor.getColumnIndex(KEY_ID);
+        int iName = cursor.getColumnIndex(KEY_NAME);
+        int iEmail = cursor.getColumnIndex(KEY_EMAIL);
+        int iMobile = cursor.getColumnIndex(KEY_MOBILE);
+        StringBuilder result = new StringBuilder();
+
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            result.append("Id: ").append(cursor.getString(iId)).append("\n").append("Name: ").append(cursor.getString(iName)).append("\n").append("Email: ").append(cursor.getString(iEmail)).append("\n").append("Mobile: ").append(cursor.getString(iMobile)).append("\n\n");
+        }
+        db.close();
+        return result.toString();
+    }
+
+    void deleteStudent(long l) {
+        db = this.getWritableDatabase();
+        db.delete(TABLE_STUDENT, KEY_ID + "=" + l, null);
+    }
+
+    void updateStudent(long l, String name, String email, String mobile) {
+        db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_NAME, name);
+        values.put(KEY_EMAIL, email);
+        values.put(KEY_MOBILE, mobile);
+        db.update(TABLE_STUDENT, values, KEY_ID + "=" + l, null);
+        db.close();
+    }
+
+    String getName(long l1) {
+        db = this.getReadableDatabase();
+        String[] columns = new String[]{KEY_ID, KEY_NAME, KEY_EMAIL, KEY_MOBILE};
+        Cursor cursor = db.query(TABLE_STUDENT, columns, KEY_ID + "=" + l1, null, null, null, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+            return cursor.getString(1);
+        }
+        return null;
+    }
+
+    String getEmail(long l1) {
+        db = this.getReadableDatabase();
+        String[] columns = new String[]{KEY_ID, KEY_NAME, KEY_EMAIL, KEY_MOBILE};
+        Cursor cursor = db.query(TABLE_STUDENT, columns, KEY_ID + "=" + l1, null, null, null, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+            return cursor.getString(2);
+        }
+        return null;
+    }
+
+    String getMobile(long l1) {
+        db = this.getReadableDatabase();
+        String[] columns = new String[]{KEY_ID, KEY_NAME, KEY_EMAIL, KEY_MOBILE};
+        Cursor cursor = db.query(TABLE_STUDENT, columns, KEY_ID + "=" + l1, null, null, null, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+            return cursor.getString(3);
+        }
+        return null;
+    }
+}
+```
+
+```
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".MainActivity">
+
+    <EditText
+        android:id="@+id/edit_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Id"
+        android:layout_margin="10dp"
+        android:inputType="number"/>
+
+    <EditText
+        android:id="@+id/edit_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Name"
+        android:layout_margin="5dp"
+        android:inputType="text"/>
+
+    <EditText
+        android:id="@+id/edit_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Email"
+        android:layout_margin="5dp"
+        android:inputType="textEmailAddress"/>
+
+    <EditText
+        android:id="@+id/edit_mobile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Mobile"
+        android:layout_margin="5dp"
+        android:inputType="phone"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button_insert"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="save"
+            android:textSize="20sp"
+            android:layout_weight="1"
+            android:layout_marginTop="20dp"/>
+
+        <Button
+            android:id="@+id/button_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="view"
+            android:textSize="20sp"
+            android:layout_weight="1"
+            android:layout_marginTop="20dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="delete"
+            android:textSize="20sp"
+            android:layout_weight="1"
+            android:layout_marginTop="20dp"/>
+
+        <Button
+            android:id="@+id/button_update"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="update"
+            android:textSize="20sp"
+            android:layout_weight="1"
+            android:layout_marginTop="20dp"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/button_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="search"
+        android:textSize="20sp"
+        android:layout_marginTop="20dp"/>
+
+</LinearLayout>
+
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context=".ViewSQLiteData">
+
+    <TextView
+        android:id="@+id/view_data"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textSize="20sp"
+        android:textColor="@android:color/black"
+        android:scrollbars="vertical"/>
+
+</RelativeLayout>
+
+```
+
+# TabLayout with fragments
+
+
+## Prerequiste
+
+```
+Make <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+Download app bar layout
+```
+
+## Algorithm
+
+```
+Make fragments
+Make CustomAdapter extends FragmentPagerAdapter
+set adapter on view pager
+set view pager on tablayout
+
+```
+
+## simple version
+
+```
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        setViewPagerWithTab();
+    }
+
+    private void setViewPagerWithTab() {
+        ViewPager viewPager = findViewById(R.id.view_pager);
+
+        CustomAdapter customAdapter = new CustomAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(customAdapter);
+
+        TabLayout tabLayout = findViewById(R.id.tab_layout);
+        tabLayout.setupWithViewPager(viewPager);
+
+
+    }
+
+    static class CustomAdapter extends FragmentPagerAdapter {
+
+        String[] tabs = {"One", "Two"};
+        Fragment[] mFragments = {new OneFragment(), new TwoFragment()};
+
+        public CustomAdapter(@NonNull FragmentManager fm) {
+            super(fm);
+        }
+
+        @NonNull
+        @Override
+        public Fragment getItem(int position) {
+            return mFragments[position];
+        }
+
+        @Override
+        public int getCount() {
+            return tabs.length;
+        }
+
+        @Nullable
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return tabs[position];
+        }
+    }
+}
+public class OneFragment extends Fragment {
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_one, container, false);
+    }
+}
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+```
+
+## MainActivity.java
+
+``` java
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        ViewPager viewPager = findViewById(R.id.viewpager);
+        setupViewPager(viewPager);
+
+        TabLayout tabs = findViewById(R.id.tabs);
+        tabs.setupWithViewPager(viewPager);
+
+    }
+    private void setupViewPager(ViewPager viewPager) {
+        Adapter adapter = new Adapter(getSupportFragmentManager());
+        adapter.addFragment(new OneFragment(), "List");
+        adapter.addFragment(new TwoFragment(), "Tile");
+        adapter.addFragment(new ThreeFragment(), "Card");
+        viewPager.setAdapter(adapter);
+    }
+    static class Adapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        Adapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @NonNull
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
+    }
+}
+
+```
+
+## activity_main.xml
+
+``` xml
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/main_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>
+```
+
+## fragment java file
+
+``` java
+public class OneFragment extends Fragment {
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_one, container, false);
+    }
+}
+```
+
+## isNetworkAvailable
+
+```
+public boolean isNetworkAvailable(Context context) {
+    ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+    assert connectivityManager != null;
+    return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
+}
+```
+
+## readJSON
+
+```
+public String readJSON() {
+    String json = null;
+    try {
+        // Opening data.json file
+        InputStream inputStream = getAssets().open("temp.json");
+        int size = inputStream.available();
+        byte[] buffer = new byte[size];
+        // read values in the byte array
+        inputStream.read(buffer);
+        inputStream.close();
+        // convert byte to string
+        json = new String(buffer, "UTF-8");
+    } catch (IOException e) {
+        e.printStackTrace();
+        return json;
+    }
+    return json;
+}
+```
+
+# Sample values
+
+## arrays.xml
+
+``` xml
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="places">
+        <item>Palais Garnie</item>
+        <item>Piazza del Duomo</item>
+    </string-array>
+    <string-array name="place_details">
+        <item>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
+        eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+        nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+        pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
+        deserunt mollit anim id est laborum.</item>
+    </string-array>
+    
+    <array name="places_picture">
+        <item>@drawable/a</item>
+        <item>@drawable/b</item>    
+    </array>
+</resources>
+
+
+```
+
+## colors.xml
+
+``` xml
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="white">#FFFFFF</color>
+    <color name="dark_grey">#424242</color>
+    <color name="medium_grey">#9E9E9E</color>
+    <color name="button_grey">#757575</color>
+</resources>
+
+
+```
+
+## dimens.xml
+
+``` xml
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="card_height">304dp</dimen>
+    <dimen name="md_keylines">16dp</dimen>
+    <dimen name="tile_padding">8dp</dimen>
+    <dimen name="tile_height">160dp</dimen>
+    <dimen name="app_bar_height">256dp</dimen>
+    <dimen name="article_keylines">72dp</dimen>
+    <dimen name="avator_size">40dp</dimen>
+    <dimen name="card_title_height">40dp</dimen>
+    <dimen name="article_titles">20sp</dimen>
+    <dimen name="cards_button_width">48dp</dimen>
+    <dimen name="cards_button_height">48dp</dimen>
+    <dimen name="article_subheading">16sp</dimen>
+    <dimen name="card_image_height">200dp</dimen>
+    <dimen name="list_body">14sp</dimen>
+    <dimen name="navheader_height">222dp</dimen>
+</resources>
+
+
+```
+
+## styles.xml
+
+``` xml
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">#3F51B5</item>
+        <item name="colorPrimaryDark">#3949AB</item>
+        <item name="colorAccent">#00B0FF</item>
+    </style>
+    <style name="AppTheme" parent="AppTheme.Base"></style>
+</resources>
+```
+
+## Recycler View
+
+``` 
+<androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/recyclerView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
+
+Student
+    int rollNumber
+    String name
+
+mRecyclerView = findViewById(R.id.recyclerView);
+List<Student> students = new ArrayList<>();    
+students.add(new Student(12, "saksham"));
+students.add(new Student(42, "sahitya"));        
+StudentRecyclerAdapter studentRecyclerAdapter = new StudentRecyclerAdapter(students);
+
+mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+// mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2)); 
+mRecyclerView.setAdapter(studentRecyclerAdapter);
+```
+
+## ListView
+
+```
+String[] arr = {"c1", "c2", "c3", "c4"};
+
+ArrayAdapter<String> category = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arr);
+
+ListView listView = findViewById(R.id.list_view);
+listView.setAdapter(category);
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <ListView
+        android:id="@+id/list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>
+
+listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        // position = index
+        // listView.getItemAtPosition(position) = item
+    }
+});
+
+```
+
+
+
+
+
+
+# UI components
+
+## TextView
+
+```
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/md_keylines"
+    android:layout_marginBottom="@dimen/md_keylines"
+    android:text="Price"
+    android:textColor="?attr/colorAccent"
+    android:textSize="@dimen/article_titles" />
+```
+
+## Auto complete text view
+
+```
+String[] input
+ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, input);
+autoCompleteTextView.setAdapter(adapter);
+```
+
+## Radio group
+
+```
+RadioGroup
+    RadioButton
+    RadioButton
+    RadioButton
+
+radioGroup.setOnCheckedChangeListerner(new RadioGroup.onCheckedChangeListerner(){
+    onCheckedChange(group, id) {
+        R.id.radioButton1
+    }
+})
+```
+
+## Checkbox, toggle button, switch
+
+```
+isChecked() // true or false
+```
+
+## Rating bar
+
+```
+getRating()
+```
+
+## Seek bar
+
+```
+setOnSeekBarChangeListener => SeekBar.onSeekBarChangeListener
+onProgressChanged
+```
+
+## Spinner
+
+same as autoCompleteTextView but change the layout to
+_simple_spinner_dropdown_item_
+
+```
+setOnItemSelected => AdapterView.OnItemSelectedListener
+```
+
+## Time picker
+
+```
+setOnTimeChangeListener => TimePicker.onTimeChangeListener
+```
+
+## Alert dialog
+
+```
+AlertDialog.Builder builder = new AlertDialog.Builder(this);
+builer.setCancellable(false);
+builer.setTitle("Exit");
+builer.setMessage("Are you sure?");
+builer.setPositiveButton("Yes", DialogInterface.onClickListener(){
+    onClick(){}
+})
+builer.create();
+builer.show();
+
+onBackPressed = automatically call when back button is pressed.
+```
+
+
+## flutter
+
+```java
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Demo',
+      home: MyHome(),
+    );
+  }
+}
+
+class MyHome extends StatefulWidget {
+  const MyHome({Key? key}) : super(key: key);
+
+  @override
+  State<MyHome> createState() => _MyHomeState();
+}
+
+class _MyHomeState extends State<MyHome> {
+  int ind = 0;
+
+  void changeSelected(index) {
+    setState(() {
+      ind = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('MyApp'),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('images/cover.png'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: Column(
+                children: [
+                  Image(
+                    image: AssetImage('images/cover.png'),
+                    height: 70,
+                  ),
+                  Text(
+                    'saksham sangal',
+                    style: TextStyle(fontSize: 30, color: Colors.red),
+                  )
+                ],
+              ),
+            ),
+            ListTile(
+              title: Text('my file'),
+              selected: ind == 0,
+              onTap: () {
+                changeSelected(0);
+              },
+            ),
+            ListTile(
+              title: Text('my file2'),
+              selected: ind == 1,
+              onTap: () {
+                changeSelected(1);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+name: sidebar
+description: A new Flutter project.
+
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+# The following defines the version and build number for your application.
+# A version number is three numbers separated by dots, like 1.2.43
+# followed by an optional build number separated by a +.
+# Both the version and the builder number may be overridden in flutter
+# build by specifying --build-name and --build-number, respectively.
+# In Android, build-name is used as versionName while build-number used as versionCode.
+# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
+# In iOS, build-name is used as CFBundleShortVersionString while build-number is used as CFBundleVersion.
+# Read more about iOS versioning at
+# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
+# In Windows, build-name is used as the major, minor, and patch parts
+# of the product and file versions while build-number is used as the build suffix.
+version: 1.0.0+1
+
+environment:
+  sdk: '>=2.18.6 <3.0.0'
+
+# Dependencies specify other packages that your package needs in order to work.
+# To automatically upgrade your package dependencies to the latest versions
+# consider running `flutter pub upgrade --major-versions`. Alternatively,
+# dependencies can be manually updated by changing the version numbers below to
+# the latest version available on pub.dev. To see which dependencies have newer
+# versions available, run `flutter pub outdated`.
+dependencies:
+  flutter:
+    sdk: flutter
+
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^1.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  # The "flutter_lints" package below contains a set of recommended lints to
+  # encourage good coding practices. The lint set provided by the package is
+  # activated in the `analysis_options.yaml` file located at the root of your
+  # package. See that file for information about deactivating specific lint
+  # rules and activating additional ones.
+  flutter_lints: ^2.0.0
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter packages.
+flutter:
+
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+   - assets/images/cover.png
+  #   - images/a_dot_ham.jpeg
+
+  # An image asset can refer to one or more resolution-specific "variants", see
+  # https://flutter.dev/assets-and-images/#resolution-aware
+
+  # For details regarding adding assets from package dependencies, see
+  # https://flutter.dev/assets-and-images/#from-packages
+
+  # To add custom fonts to your application, add a fonts section here,
+  # in this "flutter" section. Each entry in this list should have a
+  # "family" key with the font family name, and a "fonts" key with a
+  # list giving the asset and other descriptors for the font. For
+  # example:
+  # fonts:
+  #   - family: Schyler
+  #     fonts:
+  #       - asset: fonts/Schyler-Regular.ttf
+  #       - asset: fonts/Schyler-Italic.ttf
+  #         style: italic
+  #   - family: Trajan Pro
+  #     fonts:
+  #       - asset: fonts/TrajanPro.ttf
+  #       - asset: fonts/TrajanPro_Bold.ttf
+  #         weight: 700
+  #
+  # For details regarding fonts from package dependencies,
+  # see https://flutter.dev/custom-fonts/#from-packages
+
+```
+

@@ -1,0 +1,1782 @@
+```java
+// Reversing an array using Java collections. 
+import java.util.*; 
+  
+public class reversingArray { 
+  
+    /*function reverses the elements of the array*/
+    static void reverse(Integer a[]) 
+    { 
+        Collections.reverse(Arrays.asList(a)); 
+        System.out.println(Arrays.asList(a)); 
+    } 
+  
+    public static void main(String[] args) 
+    { 
+        Integer [] arr = {10, 20, 30, 40, 50}; 
+        reverse(arr); 
+    } 
+} 
+```
+
+```java
+import java.util.*;
+import java.util.function.BiConsumer;
+
+class Main {
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+        int setSize = sc.nextInt();
+        int noOps = sc.nextInt();
+        BitSet[] bitSets = new BitSet[]{new BitSet(setSize), new BitSet(setSize)};
+        Map<String, BiConsumer<Integer, Integer>> ops = new HashMap<>();
+        ops.put("AND", (index1, index2) -> bitSets[index1 - 1].and(bitSets[index2 - 1]));
+        ops.put("OR", (index1, index2) -> bitSets[index1 - 1].or(bitSets[index2 - 1]));
+        ops.put("XOR", (index1, index2) -> bitSets[index1 - 1].xor(bitSets[index2 - 1]));
+        ops.put("SET", (index1, index2) -> bitSets[index1 - 1].set(index2));
+        ops.put("FLIP", (index1, index2) -> bitSets[index1 - 1].flip(index2));
+        
+        for (int i = 0; i < noOps; i++) {
+            ops.get(sc.next()).accept(sc.nextInt(), sc.nextInt());
+            System.out.println(bitSets[0].cardinality() + " " + bitSets[1].cardinality());
+        }
+        
+    }
+}
+
+5 2
+AND 1 2
+SET 1 4
+
+```
+
+/**
+
+* TODO: 2.1. Declare 6 private instance variables in this class named as postId,
+* emailId, tag, title, description, timestamp. Out of these 6 variables, postId
+* will be of type int and timestamp will be of type LocalDateTime
+* (import java.time.LocalDateTime). Other four variables will be of type String.
+*
+* TODO: 2.2. Provide getters and setters for each of the instance variables.
+*
+* Note: Uncomment the toString() method given below, instead of writing a new one.
+  */
+
+/**
+
+* This method re-generates hashed Password from raw-password and salt.
+* This will be used during authentication.
+*
+* @param password char array.
+* @param salt byte array.
+* @return byte array of hashed password.
+  */
+
+
+
+```
+Float
+1.4E-45
+3.4028235E38
+
+Double
+4.9E-324
+1.7976931348623157E308
+```
+
+```
+You can remove objects using an iterator, but you can't do it with a for each loop
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+
+class Test {
+    public static void main(String[] args) {
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            list.add(i);
+        }
+        Iterator<Integer> itr = list.iterator();
+
+        while (itr.hasNext()) {
+            // removing odd numbers   
+            if (itr.next() % 2 != 0) itr.remove();
+        }
+        System.out.println(list);
+        // 0 2 4 6 8
+    }
+}
+And there is the ListIterator<E> which provides two-way traversal it.next() and it.previous().
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
+
+class Test {
+    public static void main(String[] args) {
+
+        List<Integer> list = new ArrayList<>();
+        list.add(10);
+        list.add(20);
+        list.add(30);
+
+        ListIterator<Integer> itr = list.listIterator(list.size());
+
+        while (itr.hasPrevious()) {
+            System.out.println(itr.previous());
+        }
+       // 30 20 10
+    }
+}
+```
+
+```text
+netstat -ano | findstr :8080
+taskkill /PID <PID> /F
+```
+
+```
+run time memory allocation: memory is allocated at run time. e.g. linked list
+compile time memory allocation: memory is allocated at compile time. e.g. int a
+
+
+1. Does it allocates memory at compile time -when the class or method is invoked?
+Class gets memory at compile time while object gets memory at run time.
+
+
+2. At which step while compiling the memory is allocated.
+When JVM takes the byte code, it is then compiled. Java code is converted into byte code and then JVM converts the byte code into machine code.
+
+
+3. Why stack memory is used and not heap memory atcompile time.
+Stack is used to store static memory allocation(whose size is fixed) and heap is used for dynamic memory allocation.
+```
+
+```java
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.poi.xwpf.usermodel.*;
+
+import java.util.Scanner;
+
+class Main {
+    //Main Function
+    public static void main(String[] args) throws Exception {
+        //Instantiate WordGenerator Class
+        WordGenerator wg = new WordGenerator();
+
+        //VK lines text filename
+        // String vkFilename = "src/vk_no.txt";
+
+        //Gather VK Lines from text file
+        // List<String> vkLines = wg.getLines(vkFilename);
+
+        //Create word document according to VK lines
+        wg.createWord();
+    }
+}
+
+class WordGenerator {
+
+    public void createWord() throws IOException {
+        XWPFDocument document = new XWPFDocument();
+        FileOutputStream out = new FileOutputStream(new File("temp.docx"));
+
+        //Set Bold an Italic
+        XWPFParagraph title = document.createParagraph();
+        title.setAlignment(ParagraphAlignment.CENTER);
+        XWPFRun myTitle = title.createRun();
+        myTitle.setBold(true);
+        myTitle.setFontSize(20);
+        myTitle.setText("Aadhaar dedupe");
+        myTitle.addBreak();
+        myTitle.setUnderline(UnderlinePatterns.THICK);
+
+
+        // subTitle.setAlignment(ParagraphAlignment.CENTER);
+
+        File input = new File("src/test.txt");
+        FileWriter fileWriter = new FileWriter("src/output.txt");
+
+        Scanner fileReader = new Scanner(input);
+        Scanner console = new Scanner(System.in);
+
+        String data;
+        String str;
+        List<String> headerList = new ArrayList<>(Arrays.asList("URL", "method", "content-type"));
+
+
+        XWPFParagraph paragraph = document.createParagraph();
+
+        List<XWPFRun> xwpfRuns = new ArrayList<>();
+        xwpfRuns.add(paragraph.createRun());
+        xwpfRuns.add(paragraph.createRun());
+        xwpfRuns.add(paragraph.createRun());
+
+        xwpfRuns.add(paragraph.createRun());
+        xwpfRuns.add(paragraph.createRun());
+        xwpfRuns.add(paragraph.createRun());
+
+
+        xwpfRuns.add(paragraph.createRun());
+        xwpfRuns.add(paragraph.createRun());
+
+        xwpfRuns.add(paragraph.createRun());
+        xwpfRuns.add(paragraph.createRun());
+
+
+        int count  = 0;
+        for (int i = 0; i < 3; i++) {
+            data = fileReader.nextLine();
+            System.out.println("[pan-dedupe] " + headerList.get(i) + ": " + data);
+            System.out.print("change(y/n): ");
+            str = console.nextLine();
+            if (str.equals("y")) {
+                String item = console.nextLine();
+                fileWriter.write(item + "\n");
+                data = item;
+            } else fileWriter.write(data + "\n");
+
+            xwpfRuns.get(count).setBold(true);
+            xwpfRuns.get(count).setFontSize(12);
+            xwpfRuns.get(count).setFontFamily("Arial");
+            xwpfRuns.get(count).setText(headerList.get(i) + ": ");
+            count++;
+
+            xwpfRuns.get(count).setFontSize(12);
+            xwpfRuns.get(count).setFontFamily("Arial");
+            xwpfRuns.get(count).setText(data);
+            xwpfRuns.get(count).addBreak();
+            count++;
+        }
+
+        List<String> payload = new ArrayList<>(Arrays.asList("Request", "Response"));
+
+        for (int i = 0; i < 2; i++) {
+            xwpfRuns.get(count).addBreak();
+            xwpfRuns.get(count).setBold(true);
+            xwpfRuns.get(count).setFontSize(12);
+            xwpfRuns.get(count).setFontFamily("Arial");
+            xwpfRuns.get(count).setText(payload.get(i) + ": ");
+            xwpfRuns.get(count).addBreak();
+            count++;
+
+            // default value
+            StringBuilder result;
+            result = new StringBuilder();
+            while (fileReader.hasNextLine()) {
+                data = fileReader.nextLine();
+                if (data.trim().isEmpty()) {
+                    break;
+                } else {
+                    result.append(data).append("\n");
+                }
+            }
+            System.out.println("[pan-dedupe] " + payload.get(i) + ": ");
+            System.out.println(result);
+            System.out.print("change(y/n): ");
+
+
+            // based on choice
+            str = console.nextLine();
+            if (str.equals("y")) {
+                String lineNew;
+                while (console.hasNextLine()) {
+                    lineNew = console.nextLine();
+                    if (lineNew.isEmpty()) break;
+                    fileWriter.write(lineNew + "\n");
+                }
+            } else {
+                fileWriter.write(String.valueOf(result));
+                String[] request = result.toString().split("\n");
+                for (String req : request) {
+
+                    xwpfRuns.get(count).setFontSize(12);
+                    xwpfRuns.get(count).setFontFamily("Arial");
+                    xwpfRuns.get(count).setText(req);
+                    xwpfRuns.get(count).addBreak();
+
+                }
+            }
+            count++;
+
+        }
+
+        fileWriter.close();
+        fileReader.close();
+
+        document.write(out);
+        out.close();
+        System.out.println("done");
+    }
+}
+
+class ReadFile {
+    public List<String> readLines(String filename) throws IOException {
+        FileReader fileReader = new FileReader(filename);
+
+        BufferedReader bufferedReader = new BufferedReader(fileReader);
+        List<String> lines = new ArrayList<String>();
+        String line = null;
+
+        while ((line = bufferedReader.readLine()) != null) {
+            lines.add(line);
+        }
+
+        bufferedReader.close();
+        return lines;
+    }
+}
+
+```
+
+```
+class Student {
+    private int rollNumber;
+    private String name;
+
+    public int getRollNumber() {
+        return rollNumber;
+    }
+
+    public void setRollNumber(int rollNumber) {
+        this.rollNumber = rollNumber;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+
+```
+
+```
+public boolean isValidEmail(String email) {
+    // String regex = "^[a-zA-Z0-9]+@[a-zA-Z0-9]+[.][a-zA-Z0-9]{2,6}$";
+
+    String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+
+            "[a-zA-Z0-9_+&*-]+)*@" +
+            "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
+            "A-Z]{2,7}$";
+
+    Pattern pat = Pattern.compile(emailRegex);
+    if (email == null) return false;
+    return pat.matcher(email).matches();
+
+}
+```
+
+
+```text
+Hi Divya,
+
+Collections.reverse()reverses the order of elements in a list passed as an argument. The elements need to be ofobject type.
+
+
+You can do something like this:
+
+import java.util.Arrays;
+import java.util.Collections;
+
+class Main {
+    public static void main(String[] args) {
+        Integer[] arr = {1,2 ,3};
+        Collections.reverse(Arrays.asList(arr));
+        System.out.println(Arrays.toString(arr)); // [3, 2, 1]
+    }
+}
+I hope it helps!
+```
+
+```
+import java.util.Stack;
+
+class Demo {
+    public static void main(String[] args) {
+        int[] arr  = {1,2,3};
+        reverseArray(arr);
+        for (int i = 0; i < arr.length; i++)
+            System.out.print(arr[i] + " ");
+            // 3 2 1 
+    }
+
+    private static void reverseArray(int[] arr) {
+        Stack<Integer> stack = new Stack<>();
+        for (int value : arr) {
+            stack.add(value);
+        }
+
+        int i = 0;
+        while (!stack.empty()) {
+            arr[i++] = stack.pop();
+        }
+
+    }
+}
+```
+
+```
+
+package java.util;
+
+public class Stack<E> extends Vector<E> {
+    public Stack() { }
+
+    public E push(E item) {
+        addElement(item);
+        return item;
+    }
+
+    public synchronized E pop() {
+        E obj;
+        int len = size();
+        obj = peek();
+        removeElementAt(len - 1);
+        return obj;
+    }
+
+    public synchronized E peek() {
+        int len = size();
+        if (len == 0) throw new EmptyStackException();
+        return elementAt(len - 1);
+    }
+
+    public boolean empty() {
+        return size() == 0;
+    }
+
+    public synchronized int search(Object o) {
+        int i = lastIndexOf(o);
+        if (i >= 0) return size() - i;
+        return -1;
+    }
+}
+
+```
+
+```
+Stack is the subclass of Vector. Since stack follows LAST IN FIRST OUT order, So we can stack for reversing list.
+
+Basic structure of Stack class in Java 8.
+package java.util;
+public class Stack<E> extends Vector<E> {
+    public Stack() {}
+    public E push(E item) {}
+    public synchronized E pop() {}
+    public synchronized E peek() {}
+    public boolean empty() {}
+    public synchronized int search(Object o) {}
+}
+
+
+let list = [10, 20, 30]
+
+There are 4 ways in which we can reverse the list.
+Method 1:
+import java.util.*;
+class Demo {
+    static void reverseArrayList(ArrayList<Integer> list) {
+        Stack<Integer> stack = new Stack<>();
+
+        for (int value : list) {
+            stack.add(value); // add item to stack
+        }
+
+        int i = 0;
+        while (!stack.empty()) {
+            list.set(i++, stack.pop()); // 30 20 10
+        }
+    }
+
+    public static void main(String[] args) {
+        ArrayList<Integer> list = new ArrayList<>();
+        list.add(10);
+        list.add(20);
+        list.add(30);
+
+        reverseArrayList(list);
+        System.out.println(list); // [30, 20, 10]
+    }
+}
+
+
+Method 2: Using stack.addAll(list) and list.clear()
+Instead of for loop we can directly put all items of list into the stack by:
+
+import java.util.*;
+
+class Demo {
+    static void reverseArrayList(ArrayList<Integer> list) {
+        Stack<Integer> stack = new Stack<>();
+        stack.addAll(list); // [10, 20, 30]
+
+        list.clear();
+        while (!stack.empty()) {
+            list.add(stack.pop()); // 30 20 10
+        }
+    }
+
+    public static void main(String[] args) {
+        ArrayList<Integer> list = new ArrayList<>();
+        list.add(10);
+        list.add(20);
+        list.add(30);
+
+        reverseArrayList(list);
+        System.out.println(list); // [30, 20, 10]
+    }
+}
+
+Method 3: UsingCollections.reverse(list)
+import java.util.*;
+
+class Demo {
+    static void reverseArrayList(ArrayList<Integer> list) {
+        Collections.reverse(list);
+    }
+
+    public static void main(String[] args) {
+        ArrayList<Integer> list = new ArrayList<>();
+        list.add(10);
+        list.add(20);
+        list.add(30);
+
+        reverseArrayList(list);
+        System.out.println(list); // [30, 20, 10]
+    }
+}
+
+
+
+Method 4: Using for-loop and iterate the list in backward direction.
+import java.util.*;
+
+class Demo {
+    static void reverseArrayList(ArrayList<Integer> list) {
+        ArrayList<Integer> revArrayList = new ArrayList<>();
+        for (int i = list.size() - 1; i > -1; i--) {
+            revArrayList.add(list.get(i));
+        }
+        list.clear();
+        list.addAll(revArrayList);
+    }
+
+    public static void main(String[] args) {
+        ArrayList<Integer> list = new ArrayList<>();
+        list.add(10);
+        list.add(20);
+        list.add(30);
+
+        reverseArrayList(list);
+        System.out.println(list); // [30, 20, 10]
+    }
+}
+
+```
+
+# AES (Advanced Encryption Standard)
+
+## Code
+
+``` java 
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
+import javax.crypto.*;
+
+public class AdvancedEncryptionStandard {
+
+    public String encrypt(String plainText, SecretKey key) {
+
+        // the key is a 64 bits long sequence in AES
+        // we are going to deal with byte arrays
+        byte[] cipherText = null;
+
+        try {
+
+            // we use Advance Encryption Standard (AES)
+            Cipher encryptionCipher = Cipher.getInstance("AES");
+
+            // we use AES for encryption
+            encryptionCipher.init(Cipher.ENCRYPT_MODE, key);
+
+            // first convert the plaintext into bytes (ASCII value)
+            byte[] bytes = plainText.getBytes();
+
+            // this is when the encryption happens
+            cipherText = encryptionCipher.doFinal(bytes);
+
+            // we want to represent and encode the byte sequence as Base64 string
+            cipherText = Base64.getEncoder().encode(cipherText);
+
+            return new String(cipherText);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public String decrypt(String cipherText, SecretKey key) {
+
+        byte[] utfDecrypted = null;
+
+        try {
+
+            Cipher decryptionCipher = Cipher.getInstance("AES");
+
+            decryptionCipher.init(Cipher.DECRYPT_MODE, key);
+
+            // Base64 is an encoding to represent any byte sequence by a sequence of printable characters
+            // we want to deal with bytes
+            byte[] bytedDecrypted = Base64.getDecoder().decode(cipherText.getBytes());
+
+            // this is where the decryption happens
+            utfDecrypted = decryptionCipher.doFinal(bytedDecrypted);
+
+            return new String(utfDecrypted, "UTF8");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+}
+
+class Main {
+
+    public static void main(String[] args) throws NoSuchAlgorithmException {
+
+        String plainText = "Saksham Sangal";
+
+        // the private key is a 64 bits long sequence
+        SecretKey key = KeyGenerator.getInstance("AES").generateKey();
+
+        AdvancedEncryptionStandard aes = new AdvancedEncryptionStandard();
+
+        String cipherText = aes.encrypt(plainText, key);
+
+        System.out.println("Encrypted text: " + cipherText);
+
+        System.out.println("Decrypted text: " + aes.decrypt(cipherText, key));
+    }
+}
+```
+
+## output
+
+```
+Encrypted text: EVJRi3UCRl+6FHN0XF9cNA==
+Decrypted text: Saksham Sangal
+```
+
+# RSA Algorithm
+
+## Code
+
+``` java
+import java.math.BigInteger;
+import java.security.SecureRandom;
+
+public class RSA {
+
+    // this is e parameter after calculations
+    private BigInteger publicKey;
+
+    // this is d parameter after calculations
+    private BigInteger privetKey;
+
+    // this is n = p * q
+    private BigInteger n;
+
+    // we need random number generator
+    private SecureRandom secureRandom;
+
+    public RSA() {
+        secureRandom = new SecureRandom();
+    }
+
+    public BigInteger encryptText(String message) {
+        return encrypt(publicKey, n, message);
+    }
+
+    public String decryptText(BigInteger cipherText) {
+        return decrypt(privetKey, n, cipherText);
+    }
+
+    private String decrypt(BigInteger d, BigInteger n, BigInteger cipherText) {
+
+        // we use modular exponentiation in decryption as well
+        // cipher^d mod n
+        BigInteger messageInt = cipherText.modPow(d, n);
+
+        // we want to end up with string
+        return new String(messageInt.toByteArray());
+    }
+
+
+    // cipher text is huge integer
+    private BigInteger encrypt(BigInteger e, BigInteger n, String message) {
+
+        // first we transform original message into array of bytes
+        byte[] messageBytes = message.getBytes();
+
+        // we want to convert this messageBytes into huge integer
+        // because we want to do modular exponentiation
+        BigInteger messageInt = new BigInteger(messageBytes);
+
+        // we have to use modular exponentiation message^e mod n
+        return messageInt.modPow(e, n);
+
+    }
+
+    public void generateKeys(int keyDigits) {
+
+        // p is large prime number
+        BigInteger p = BigInteger.probablePrime(keyDigits, secureRandom);
+
+        // q is large prime number
+        BigInteger q = BigInteger.probablePrime(keyDigits, secureRandom);
+
+        // n = p * q this is trap door function
+        n = p.multiply(q);
+
+        // Euler's totient phi function
+        BigInteger phi = (p.subtract(BigInteger.ONE)).multiply(q.subtract(BigInteger.ONE));
+
+        // 0 < e < phi is co-prime to phi so gcd(e, phi) = 1
+        BigInteger e = generatePublicFactor(phi);
+
+        publicKey = e;
+
+        // d is modular inverse of e (with mod phi)
+        BigInteger d = e.modInverse(phi);
+
+        privetKey = d;
+    }
+
+    private BigInteger generatePublicFactor(BigInteger phi) {
+
+        BigInteger e = new BigInteger(phi.bitLength(), secureRandom);
+
+        // we are in search of co-prime of e and phi (gcd(e, phi) = 1)
+        while (!e.gcd(phi).equals(BigInteger.ONE)) {
+            e = new BigInteger(phi.bitLength(), secureRandom);
+        }
+
+        return e;
+    }
+
+}
+
+
+class App {
+    public static void main(String[] args) {
+
+        RSA rsa = new RSA();
+
+        rsa.generateKeys(1024);
+
+        String text = "Saksham Sangal";
+
+        BigInteger cipherText = rsa.encryptText(text);
+
+        System.out.println("Cipher text = " + cipherText);
+
+        String plainText = rsa.decryptText(cipherText);
+
+        System.out.println("Plain text = " + plainText);
+
+
+    }
+}
+```
+
+## Output
+
+```
+Cipher text = 16019983055019732776452430753234979314823561297004446928082954176273144791665895294272346956620296112688119686023149949103390709500964460695279209800867728958696459479772734669216126750050665904099231930732713341749600342489810832931038012512897260739864966412118256603480561186848893897513818772744922249935994893645421511355356061655165256044838598371921078763728033718098476555230710250370997550510246602735083631816831494451151146698192785184196618038285950335783311665811138660762311482079760140691239713352902800241382347510277272782971921568426358506303083942271282167344719409439581993132991473350678808990789
+Plain text = Saksham Sangal
+```
+
+```
+class Student {
+int rollNumber;
+String name;
+
+    public Student(DoSetterInjectionForMe doSetterInjectionForMe) {
+        rollNumber = doSetterInjectionForMe.rollNumber;
+        name = doSetterInjectionForMe.name;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "rollNumber=" + rollNumber +
+                ", name='" + name + '\'' +
+                '}';
+    }
+
+}
+class DoSetterInjectionForMe {
+int rollNumber;
+String name;
+
+    public void setRollNumber(int rollNumber) {
+        this.rollNumber = rollNumber;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+}
+class Source {
+public static void main(String[] args) {
+DoSetterInjectionForMe injection = new DoSetterInjectionForMe();
+injection.setRollNumber(123);
+injection.setName("Saksham");
+Student student = new Student(injection);
+System.out.println(student);
+}
+}
+
+Student{rollNumber=123, name='Saksham'}
+
+class Student {
+int rollNumber;
+String name;
+
+    public Student(DoSetterInjectionForMe doSetterInjectionForMe) {
+        rollNumber = doSetterInjectionForMe.rollNumber;
+        name = doSetterInjectionForMe.name;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "rollNumber=" + rollNumber +
+                ", name='" + name + '\'' +
+                '}';
+    }
+
+    static class DoSetterInjectionForMe {
+        int rollNumber;
+        String name;
+
+        public DoSetterInjectionForMe setRollNumber(int rollNumber) {
+            this.rollNumber = rollNumber;
+            return this;
+        }
+
+        public DoSetterInjectionForMe setName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        Student getStudentObject() {
+            return new Student(this);
+        }
+    }
+
+}
+
+class Source {
+public static void main(String[] args) {
+Student student = new Student.DoSetterInjectionForMe().setRollNumber(123).setName("Saksham").getStudentObject();
+System.out.println(student);
+}
+}
+
+Student{rollNumber=123, name='Saksham'}
+
+
+interface Car {
+public void color();
+public void price();
+}
+
+class Celerio implements Car {
+public void color() {
+System.out.println("white");
+}
+public void price() {
+System.out.println("600000");
+}
+}
+
+interface Bike {
+public void gear();
+}
+
+class Pulsar implements Bike {
+public void gear() {
+System.out.println("4");
+}
+}
+
+class CarAdapter implements Bike {
+Car car;
+
+    public CarAdapter(Car car) {
+        this.car = car;
+    }
+
+    public void gear() {
+        car.price();
+    }
+
+}
+
+class Main {
+public static void main(String[] args) {
+Celerio celerio = new Celerio();
+celerio.color();
+celerio.price();
+
+        Bike bike = new Pulsar();
+        bike.gear();
+
+        Bike birdAdapter = new CarAdapter(celerio);
+        birdAdapter.gear();
+    }
+
+}
+
+```
+
+```java
+class Student {
+    String name;
+    String rollNo;
+
+
+    public Student(String name, String rollNo) {
+        this.name = name;
+        this.rollNo = rollNo;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "name='" + name + '\'' +
+                ", rollNo='" + rollNo + '\'' +
+                '}';
+    }
+}
+
+class StudentBuilder {
+    String name;
+    String rollNo;
+
+    public StudentBuilder setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public StudentBuilder setRollNo(String rollNo) {
+        this.rollNo = rollNo;
+        return this;
+    }
+
+    public Student build(){
+        return new Student(name, rollNo);
+    }
+}
+
+class Main {
+    public static void main(String[] args) {
+        Student student = new StudentBuilder().setName("saksham").setRollNo("123").build();
+
+        System.out.println(student);
+        // Student{name='saksham', rollNo='123'}
+    }
+}
+```
+
+## Factory
+
+Object creation is done in separate class.
+
+```java
+interface Notification {
+    void notifyUser();
+}
+
+class SMSNotification implements Notification {
+
+    @Override
+    public void notifyUser() {
+        System.out.println("Sending an SMS notification");
+    }
+}
+
+class EmailNotification implements Notification {
+
+    @Override
+    public void notifyUser() {
+        System.out.println("Sending an e-mail notification");
+    }
+}
+
+class NotificationFactory {
+    public Notification createNotification(String channel) {
+        if (channel == null || channel.isEmpty())
+            return null;
+        if ("SMS".equals(channel)) {
+            return new SMSNotification();
+        } else if ("EMAIL".equals(channel)) {
+            return new EmailNotification();
+        }
+        return null;
+    }
+}
+
+class NotificationService {
+    public static void main(String[] args) {
+        NotificationFactory notificationFactory = new NotificationFactory();
+        Notification notification = notificationFactory.createNotification("SMS");
+        notification.notifyUser();
+    }
+}
+
+```
+
+protected is same as public except in the case when the package is different and class is not sub class.
+
+```
+package  p1;
+public class Coffee {
+     protected void order() {
+        System.out.println("Coffee");
+    }
+}
+
+package p2;
+import p1.Coffee;
+
+class Cappuccino {
+    public static void main(String args[]) {
+        Coffee c = new Coffee();
+        c.order(); // not allowed
+    }
+}
+```
+
+For reference:
+https://www.geeksforgeeks.org/access-modifiers-java/
+
+```
+class Main {
+    public static void main(String[] args) {
+
+        // command line argument: john mary kat
+        for (String val : args) {
+            System.out.println(val);
+        }
+
+        // output:
+        // john
+        // mary
+        // kat
+    }
+}
+```
+
+```
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+
+public class Source {
+   public static User deserializeUserData(String fileName) {
+
+      /*
+       * TODO: Read the file and deserialize the user data; convert the data into
+       * User object
+       */
+
+      User user = null;
+      try (InputStream is = new FileInputStream(fileName);) {
+         ObjectInputStream in = new ObjectInputStream(is);
+         user = (User) in.readObject();
+      } catch (Exception e) {
+         e.printStackTrace();
+      }
+      return user;
+   }
+
+   public static void main(String args[]) {
+      String fileName;
+      if(args != null && args.length != 0) {
+         fileName = args[0];
+      } else {
+         fileName = "src/user1.txt";
+      //uncomment below line and comment above line for testing sample test case 2
+//         fileName = "/code/workspace/user2.txt";
+      }
+
+      User user = deserializeUserData(fileName);
+      System.out.print(user.getName() + " " + user.getEmail());
+   }
+}
+
+
+import java.io.Serializable;
+
+public class User implements Serializable {
+   private String name;
+   private String email;
+
+   public String getName () {
+      return name;
+   }
+   
+   public String getEmail () {
+      return email;
+   }
+
+   public void setName(String name) {
+      this.name = name;
+   }
+
+   public void setEmail(String email) {
+      this.email = email;
+   }
+}
+
+
+¬í sr UserUý¸ÑÈŽ L emailt Ljava/lang/String;L nameq ~ xpt arun@gmail.comt Arun
+```
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+class CodeChef {
+
+    static void solve(BufferedReader bufferedReader) throws IOException {
+        int size = Integer.parseInt(bufferedReader.readLine());
+        StringTokenizer stringTokenizer = new StringTokenizer(bufferedReader.readLine());
+
+        int[] arr = new int[size];
+        for (int i = 0; i < size; i++) {
+            arr[i] = Integer.parseInt(stringTokenizer.nextToken());
+        }
+        System.out.println(kadaneAlgo(arr, size));
+    }
+
+}
+
+class Main {
+public static void main(String[] args) throws IOException {
+BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+int test = Integer.parseInt(bufferedReader.readLine());
+
+        while (test != 0) {
+            CodeChef.solve(bufferedReader);
+            test--;
+        }
+    }
+
+}
+
+
+
+```
+class WithoutSemicolon {
+    public static void main(String[] args) {
+        if(System.out.printf("Hello World") != null) {}
+    }
+}
+```
+
+
+
+```
+
+scanner is taking '\n' as string, so workaround for this is:
+int size = Integer.parseInt(sc.nextLine()); 
+
+For reference:
+https://www.geeksforgeeks.org/why-is-scanner-skipping-nextline-after-use-of-other-next-functions/
+
+```
+
+
+### convert json string to java object using gson
+
+```
+<dependency>
+    <groupId>com.google.code.gson</groupId>
+    <artifactId>gson</artifactId>
+    <version>2.8.5</version>
+</dependency>
+import com.google.gson.Gson;
+
+class Product {
+    String name;
+    int price;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "name='" + name + '\'' +
+                ", price=" + price +
+                '}';
+    }
+}
+
+public class App {
+
+    private static Product getProductObject() {
+        String product = "{\"name\": \"colgate\",\"price\": \"10\"}";
+        Gson gson = new Gson();
+        return gson.fromJson(product, Product.class);
+    }
+    public static void main(String[] args) {
+        System.out.println(getProductObject());
+    }
+
+}
+```
+
+# Convert JSON To CSV
+
+## pom
+
+``` xml 
+<!--  for csv file support  -->
+<dependency>
+    <groupId>commons-io</groupId>
+    <artifactId>commons-io</artifactId>
+    <version>1.4</version>
+</dependency>
+
+<!-- for json support -->
+<dependency>
+    <groupId>org.json</groupId>
+    <artifactId>json</artifactId>
+    <version>20180813</version>
+</dependency>
+```
+
+## App.java
+
+``` java 
+public static void convertJsonToCsv(String json) {
+    JSONObject jsonObject;
+    try {
+        jsonObject = new JSONObject(json);
+
+        // fetching json array by using key
+        // here the key name is "fileName"
+        JSONArray jsonArray = jsonObject.getJSONArray("fileName");
+
+        // creating a csv file
+        File file = new File("empDetails.csv");
+
+        // converting json array to string
+        String str = CDL.toString(jsonArray);
+
+        // writing csv string to file
+        FileUtils.writeStringToFile(file, str);
+    } catch(Exception e) {
+        e.printStackTrace();
+    }
+}
+public static void main(String[] args) throws JSONException {
+    String json = "{\"fileName\": [{\"first name\": \"Ravi\",\"last name\": \"Chandra\",\"location\": \"Bangalore\"}]}";
+    convertJsonToCsv(json);
+}
+```
+
+## output
+
+```
+by opening empDetails.csv we get the following data
+
+last name,first name,location
+Chandra,Ravi,Bangalore
+```
+
+![CSV](./image/convertJsonToCsv.png)
+
+public because so that implementing class can access it.
+static because interface object is not created.
+final because so that we cannot reassign variable.
+abstract because methods are declared without definition.
+
+In Java 8, we can have default and static methods in interfaces
+
+class Base {
+public void display() {
+System.out.println("This is the display function of the base class.");
+}
+}
+
+interface BaseInterface {
+default public void display() {
+System.out.println("This is the display function of the interface class.");
+}
+}
+
+class Source extends Base implements BaseInterface {
+
+    public static void main(String[] args) {
+        Source obj = new Source();
+        obj.display(); // class has higher priority than interface.
+    }
+
+}
+
+// output
+// This is the display function of the base class.
+
+// example 2
+interface Interface1 {
+default public void display() {
+System.out.println("This is the display function of the interface class.");
+}
+}
+
+interface Interface2 {
+default public void display() {
+System.out.println("This is the display function of the interface class.");
+}
+}
+
+class Source implements Interface1, Interface2 {
+
+    @Override
+    public void display() { // override display to avoid method conflict
+        System.out.println("Source");
+    }
+    public static void main(String[] args) {
+        Source obj = new Source();
+        obj.display();
+    }
+
+}
+
+For reference:
+https://www.geeksforgeeks.org/default-methods-java/
+
+```text
+Hi Aniruddha,
+
+In java 8, we can have an implementation of static and default methods in the interface.
+
+By default, the interface fields are public, static, and final
+
+interface Hello {
+    int a = 3; // public static final
+    public static final int b = 8;
+
+    // Here variable a and b both are same.
+    // By default the interface fields are public, static and final
+}
+class Main implements Hello{
+
+    public static void main(String[] args) {
+        System.out.println(a); // 3
+        System.out.println(b); // 8
+    }
+}
+I hope this helps!
+```
+
+    Polymorphism:
+
+```
+    Polymorphism is that in which we can perform a task in multiple forms or ways. It is applied to the functions or methods. Polymorphism allows the object to decide which form of the function to implement at compile-time as well as run-time.
+
+    Runtime polymorphism or Dynamic Method Dispatch is a process in which a call to an overridden method is resolved at runtime rather than compile-time.
+
+In this process, an overridden method is called through the reference variable of a superclass. The determination of the method to be called is based on the object being referred to by the reference variable.
+
+eg
+
+ 
+
+
+ 
+
+Out here will be "running safely with 60km."
+
+Below are some of the rules of runtime polymorphism:
+
+Methods of child and parent class must have the same name.
+Methods of child and parent class must have the same parameter.
+IS-A relationship is mandatory (inheritance).
+Below are some of the limitations of runtime polymorphism
+
+One cannot override private methods of a parent class.
+One cannot override Final methods.
+One cannot override static methods.
+```
+
+## class
+- prototype to create objects
+- pascal case
+- only extend (subclass) one parent class
+- implement more than one interface
+- superclass and subclass same field name: field value gets override
+
+
+## Abstraction
+- hide certain details
+- show essential information to user
+- class declared with abstract keyword
+- can have abstract and non-abstract methods
+
+
+## object class
+- defines base state and behavior of every object
+- parent class of all class
+
+
+## Inheritance
+- new class that inherits properties of already exist class
+- code reusability
+
+
+
+
+
+
+
+## anyMatch
+
+```java
+import java.util.ArrayList;
+import java.util.List;
+
+public class Source {
+    public static void main(String[] args) {
+
+        List<Student> students =  new ArrayList<>();
+        students.add(new Student(1, "John"));
+        students.add(new Student(2, "Lisa"));
+
+        System.out.println(students.stream().anyMatch(t -> t.name.equals("John"))); // true
+        System.out.println(students.stream().anyMatch(t -> t.name.equals("Mary"))); // false
+    }
+}
+
+class Student {
+
+    int id;
+    String name;
+
+    public Student(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+}
+```
+
+## sum
+
+```
+int[] a = {10,20,30,40,50};
+int sum = IntStream.of(a).sum();
+System.out.println("The sum is " + sum);
+```
+
+## example
+
+```
+import java.util.*;
+import java.util.stream.*;
+
+class Source {
+    public static void checkPassengers(Stream<Passenger> passengerStream) {
+        /*
+         * TODO: Print space-separated passenger names in all capital letters where passenger id
+         * is <= 10
+         */
+
+
+        passengerStream
+                .filter(p -> p.getId() <= 10)
+                .map(p -> p.getName().toUpperCase() + " ")
+                .forEach(System.out::print);
+
+
+    }
+
+    public static void main(String[] args) {
+        List<Passenger> passengers;
+        if (args != null && args.length != 0) {
+            passengers = getPassengersFromMainArgs(args);
+        } else {
+            passengers = getPassengers1();
+            //uncomment below line and comment above line for testing sample test case 2
+//         passengers = getPassengers2();
+        }
+        checkPassengers(passengers.stream());
+
+    }
+
+    public static List<Passenger> getPassengers1() {
+        Passenger p1 = new Passenger(3, "aakash");
+        Passenger p2 = new Passenger(13, "Aayush");
+        Passenger p3 = new Passenger(6, "Karan");
+
+        Passenger p4 = new Passenger(8, "Swati");
+        Passenger p5 = new Passenger(25, "MAYA");
+        Passenger p6 = new Passenger(30, "Rakesh");
+
+        Passenger p7 = new Passenger(7, "alex");
+        Passenger p8 = new Passenger(18, "john");
+        return Arrays.asList(p1, p2, p3, p4, p5, p6, p7, p8);
+    }
+
+    public static List<Passenger> getPassengers2() {
+        Passenger p1 = new Passenger(3, "Joseph");
+        Passenger p2 = new Passenger(4, "Yeshwanth");
+        Passenger p3 = new Passenger(5, "Rahul");
+        Passenger p4 = new Passenger(6, "Meena");
+        return Arrays.asList(p1, p2, p3, p4);
+    }
+
+    public static List<Passenger> getPassengersFromMainArgs(String[] args) {
+        List<Passenger> list = new ArrayList<>();
+        for (int i = 0; i < args.length; i++) {
+            String[] arr = args[i].split(",");
+            if (arr.length >= 2) {
+                Passenger p = new Passenger(Integer.parseInt(arr[0]), arr[1]);
+                list.add(p);
+            }
+        }
+
+        return list;
+    }
+}
+
+class Passenger {
+    private int id;
+    private String name;
+
+    public Passenger(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+}
+```
+
+## sort
+
+```
+list.sort((o1, o2) -> o1.getSalary() - o2.getSalary()) // ascending
+list.sort((o1, o2) -> o2.getSalary() - o1.getSalary()) // descending
+```
+
+## 3 distinct min in array
+
+```
+int[] arr
+copy of arr 
+sort 
+print first 3 of arr 
+
+using stream 
+// create stream 
+IntStream.of(arr) 
+
+// process stream 
+.distinct()
+.sort()
+.limit(3)
+
+// consume 
+.forEach(x -> sout(x))
+
+or  
+// process stream 
+.distinct()
+.sort()
+.limit(3)
+.sum 
+
+// consume 
+.getAsInt()
+```
+
+## on objects
+
+find 3 highest salary name
+list of employees
+
+// given
+employees = list of employees
+
+// create stream
+employees.stream()
+
+// process
+.sorted(Comparator.comparingInt(Employee::getSalary).reversed())
+.filter(x -> isActive(x))
+.limit(3)
+.map(Employee::getName)
+
+//consume
+.forEach(x -> sout(x))
+.collect(Collectors.toList())
+
+## name join
+
+Collectors.joining(", ")
+
+## group by dept
+
+civil -> ram, shyam
+cs -> saksham, sahitya
+
+Collectors.groupingBy(x -> x.dept)
+
+## count of emp in each dept
+
+Collectors.groupingBy(Employee::getDept, Collectors.counting())
+
+## multi threading
+
+.parallel()
+
+Arrays.stream(arr).sum(); // sum
+Arrays.stream(arr).filter(x -> x < 4).foreach(print)
+
+
+
+x= Arrays.asList(x).stream().map(String::toLowerCase).toArray(String[]::new);
+String[] elements) {
+elements= Arrays.stream(elements).map(String::toLowerCase).toArray(String[]::new);
+
+
+To print an object means we are calling toString() method implemented by the class. If the class has not implemented
+toString() method then className@hashcode will be printed.
+
+## int to string
+
+```
+ public static void main(String[] args) {
+        int a = 12;
+        // method 1
+        String str = a + "";
+
+        // method 2
+        String.valueOf(a);
+
+        // method 3
+        Integer.toString(a);
+    }
+```
+
+```java
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.*;
+
+public class Source {
+
+    public static void createAndExecuteTasks(int m, int n) {
+        ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(3);
+        List<Future<Integer>> resultList = new ArrayList<>();
+
+        /**
+         * TODO 1: create callable tasks of type Task with student id and given number n.
+         * submit each task object to executor and store the task result in resultList
+         */
+        for (int i = 0; i < m; i++) {
+            Task task = new Task(i + 1, n);
+            Future<Integer> result = executor.submit(task);
+            resultList.add(result);
+        }
+
+        executor.shutdown();
+        getResults(resultList);
+    }
+
+    public static void getResults(List<Future<Integer>> resultList) {
+        for(Future<Integer> result : resultList) {
+            try {
+                System.out.println(result.get());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        int m;
+        int n;
+        if(args != null && args.length == 2) {
+            m = Integer.parseInt(args[0]);
+            n = Integer.parseInt(args[1]);
+        } else {
+            // m = 10; n = 4;
+            //uncomment below line and comment above line for testing sample test case 2
+        m = 6; n = 12;
+        }
+        createAndExecuteTasks(m, n);
+    }
+}
+```
+
+***
+
+```
+class Task implements Callable<Integer> {
+    private int id;
+    private int n;
+    public Task(int id, int n) {
+        this.id = id;
+        this.n = n;
+    }
+
+    @Override
+    public Integer call() throws Exception {
+        return id*n;
+    }
+}
+```
+
