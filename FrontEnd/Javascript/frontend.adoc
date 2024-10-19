@@ -1,6 +1,7 @@
 = Notes
 :toc: left
-:safe-mode-safe:
+:safe-mode-unsafe:
+
 
 include::js.adoc[]
 include::react.adoc[]
