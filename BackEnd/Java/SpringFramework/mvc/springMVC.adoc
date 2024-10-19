@@ -1,8 +1,10 @@
-# Spring MVC
+:toc: left
+== Spring MVC
 
-## controller
+=== controller
 
-``` java
+[source,java]
+----
 @Controller
 public class ListController {
 
@@ -103,11 +105,12 @@ public class UserController {
         return "selectUser";
     }
 }
-```
+----
 
-## front-servelet.xml
+=== front-servlet.xml
 
-``` xml
+[source,xml]
+----
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
@@ -129,31 +132,33 @@ public class UserController {
         <property name="suffix">
             <value>.jsp</value>
         </property>
-        
+
     </bean>
 
 </beans>
-```
+----
 
-## pojo
+=== pojo
 
-```
-Employee 
+[source]
+----
+Employee
     int id
     String name
     String salary
 
 
 
-User 
+User
     int id
     String userName
 
-```
+----
 
-## JSP pages
+=== JSP pages
 
-``` html
+[source,html]
+----
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1" isELIgnored="false"%>
 <html>
@@ -169,7 +174,7 @@ User
             <button type="submit">Submit</button>
         </form>
     </pre>
-    
+
 </body>
 </html>
 
@@ -249,11 +254,12 @@ User
    <%= request.getAttribute("user") %>
 </body>
 </html>
-```
+----
 
-## pom and config
+=== pom and config
 
-``` xml 
+[source,xml]
+----
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -343,7 +349,7 @@ User
 
 <web-app>
   <display-name>spring-mvc</display-name>
-  
+
   <servlet>
     <servlet-name>front</servlet-name>
     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -354,4 +360,4 @@ User
   </servlet-mapping>
 </web-app>
 
-```
+----

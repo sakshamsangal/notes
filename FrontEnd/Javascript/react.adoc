@@ -1,4 +1,5 @@
-```
+[source]
+----
 Basic MTIzNDU2Nzg5OTpzdHJpbmdBQDE=
 
 Bearer eyJraWQiOiJhZjAwMzUwMy0yYzUwLTQyNjQtYjQyNy1mN2ZlNWMwZmQ1NDMiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJhdWQiOiJiZjA1OWNlOS1mOWY3LTQwYWItYTU3NC1hMmYyN2ViOTY0NGUiLCJpc3MiOiJodHRwczovL0Zvb2RPcmRlcmluZ0FwcC5pbyIsImV4cCI6MTYwNDc2MiwiaWF0IjoxNjA0NzMzfQ.8H6niMVczXQD9g5n3OTL12Rj1KN8lgWwmDd76f8ImtRSsxaGFWj22r9cXhEYWXe29fEiEzbVoKMthOjxJCUDyA
@@ -29,4 +30,12 @@ Bearer eyJraWQiOiJhZjAwMzUwMy0yYzUwLTQyNjQtYjQyNy1mN2ZlNWMwZmQ1NDMiLCJ0eXAiOiJKV
 }
 
 
-```
+----
+
+// install package globally
+npm install npkill -g
+
+// delete folder
+npx npkill
+
+https://medium.com/javascript-in-plain-english/quickly-remove-all-node-modules-folders-from-your-system-to-free-up-the-disk-space-efe9fe99e234[]

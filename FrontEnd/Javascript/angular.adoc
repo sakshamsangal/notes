@@ -1,0 +1,939 @@
+== Make angular project
+
+[source,text]
+----
+ng new shraddha-kapur
+ng build
+----
+
+
+== Make firebase project
+
+
+[source,text]
+----
+open browser and visit this site: https://console.firebase.google.com/
+create new project.
+----
+
+== Make hosting folder
+
+[source,text]
+----
+open cmd and type:
+    npm install -g firebase-tools
+    firebase init hosting
+paste dist folder content of angular project in public folder of hosting folder.
+open cmd and type:
+    firebase deploy.
+----
+
+== Make firebase project
+
+....
+https://console.firebase.google.com/
+create new project
+....
+
+== Make hosting folder
+
+....
+npm install -g firebase-tools
+firebase init hosting.
+paste html pages in public folder.
+firebase deploy.
+....
+
+[source,text]
+----
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatButtonModule } from '@angular/material/button';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatListModule } from '@angular/material/list';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import {MatIconModule} from '@angular/material/icon';
+
+
+MatGridListModule
+MatToolbarModule
+MatCheckboxModule
+MatButtonModule
+MatRadioModule
+MatTabsModule
+MatDividerModule
+MatListModule
+MatSnackBarModule
+MatFormFieldModule
+MatInputModule
+MatIconModule
+----
+
+[source,bash]
+----
+npm install bootstrap --save
+angular.json
+    "node_modules/bootstrap/dist/css/bootstrap.min.css",
+ng build
+
+
+# install package
+----
+
+bash npm install cordova -g cordova -v cordova create LeavePlan
+com.saksham.app ``LeavePlan'' cordova platform add browser cordova run
+browser
+
+=== connect with angular
+
+=== In angular project add to index.html
+
+[source]
+----
+<script type='text/javascript' src='cordova.js'></script>
+
+ng build --prod --base-href . --output-path ../../cordova/leave/www/
+
+javascript In main.ts let onDeviceReady = () => \{
+platformBrowserDynamic().bootstrapModule(AppModule); };
+document.addEventListener(`deviceready', onDeviceReady, false);
+----
+
+== run on mobile
+
+....
+
+bash ng build --prod --base-href . --output-path ../../cordova/LeavePlan/www/ cordova platform add android cordova run android
+
+# open cmd
+
+```bash
+npm start
+ctrl c
+npm init --yes
+npm install express --save
+npm install body-parser --save
+npm install mongoose --save
+
+
+
+npm install nodemon --save
+nodemon --exec npm start (infinite server)
+npm install cors
+....
+
+[source,javascript]
+----
+./models/student.js
+===================================================
+const mongoose = require('mongoose')
+const x = mongoose.Schema
+
+const schema = new x({
+    email: String,
+    password: String
+})
+
+module.exports = mongoose.model('students', schema)
+
+
+./routes/api
+===================================================
+const express = require("express");
+const router = express.Router();
+const mongoose = require("mongoose");
+const model = require("../models/student");
+const db = "mongodb://localhost:27017/college";
+
+mongoose.connect(
+  db,
+  {
+    useNewUrlParser: true
+  },
+  err => {
+    if (err) throw err;
+    console.log("mongodb connected");
+  }
+);
+router.post("/post", (req, res) => {
+  arr = req.body;
+  x = new model(arr);
+  x.save((err, data) => {
+    if (err) throw err;
+    res.json(data);
+  });
+});
+
+router.get("/", (req, res) => {
+    res.send("Hello! This is api");
+});
+router.get("/get", (req, res) => {
+  model.find({}).exec((err, data) => {
+    if (err) throw err;
+    res.json(data);
+  });
+});
+
+router.get("/getOne/:id", (req, res) => {
+  model.findById(req.params.id).exec((err, data) => {
+    if (err) throw err;
+    res.json(data);
+  });
+});
+
+router.put("/put/:id", (req, res) => {
+  model.findByIdAndUpdate(
+    req.params.id,
+    {
+      $set: {
+        email: req.body.email,
+        password: req.body.password
+      }
+    },
+    {
+      new: true
+    },
+    (err, data) => {
+      if (err) throw err;
+      res.json(data);
+    }
+  );
+});
+router.delete("/delete/:id", (req, res) => {
+  model.findByIdAndRemove(req.params.id, (err, data) => {
+    if (err) throw err;
+    res.json(data);
+  });
+});
+
+module.exports = router;
+
+./server.js
+===================================================
+const express = require('express');
+const bodyParser = require('body-parser');
+const api = require('./routes/api');
+const port = 3000;
+const app = express();
+
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use('/api', api);
+
+app.get('/', (req, res) => {
+    res.send("Experess Server");
+});
+
+app.listen(port, function(){
+    console.log("Server running on localhost:" + port);
+});
+
+----
+
+bash npm install firebase –save npm install @angular/fire –save
+
+....
+
+===========================================================================
+
+# environment.ts
+....
+
+javascript export const environment = \{ production: false, firebase: \{
+apiKey: ``AIzaSyB7s9s9uVgiZ1w1X2lMqMPaSDRvj7uEv2c'', authDomain:
+``project2-2092a.firebaseapp.com'', databaseURL:
+``https://project2-2092a.firebaseio.com'', projectId:
+``project2-2092a'', storageBucket: ``project2-2092a.appspot.com'',
+messagingSenderId: ``641766531722'' } };
+
+===========================================================================
+# component file import \{ HttpClient } from `@angular/common/http';
+import \{ AngularFirestore } from `@angular/fire/firestore';
+constructor(private angularFirestore: AngularFirestore) \{ }
+
+===========================================================================
+
+== module
+
+import \{ AngularFireModule } from ``@angular/fire''; import \{
+AngularFirestoreModule } from ``@angular/fire/firestore'';
+
+import \{ environment } from `./../environments/environment';
+
+AngularFireModule.initializeApp(environment.firebase),
+AngularFirestoreModule
+
+===========================================================================
+# service import \{ AngularFirestore } from `@angular/fire/firestore';
+constructor(private angularFirestore: AngularFirestore) \{ }
+
+insert(data) \{
+this.angularFirestore.collection(``employees'').add(data)
+console.log(`insert') }
+
+display() \{ return
+this.angularFirestore.collection(``employees'').snapshotChanges();
+console.log(`display') }
+
+update(id, data) \{ this.angularFirestore.doc(``employees/'' +
+id).update(data) console.log(`update') }
+
+delete(id) \{ this.angularFirestore.doc(``employees/'' + id).delete()
+console.log(`delete') }
+
+private subject = new Subject() b$ = this.subject.asObservable()
+
+sendData(obj)\{ this.subject.next(obj) }
+
+===========================================================================
+
+== component
+
+insert() \{ this.generalService.insert(this.arr)
+
+}
+
+display() \{ this.generalService.display() .subscribe( data => \{
+
+....
+            this.main = data.map(item => {
+                return {
+                    id: item.payload.doc.id,
+                    ...item.payload.doc.data()
+                }
+                as Employees
+            })
+            console.log(this.main)
+        }
+    )
+// console.log(this.main)
+....
+
+}
+
+id = ``fUtH2jdXnZdX4jpxCYyo'' update() \{
+this.generalService.update(this.id, this.arr) }
+
+delete() \{ this.generalService.delete(this.id) }
+
+....
+
+# html
+
+<button (click)="insert()">Insert</button>
+<button (click)="update()">Update</button>
+<button (click)="delete()">Delete</button>
+....
+
+https://my-fire-904e5-default-rtdb.firebaseio.com/
+
+\{ ``rules'': \{ ``.read'': ``now < 1614796200000'', // 2021-3-4
+``.write'': ``now < 1614796200000'', // 2021-3-4 } }
+
+....
+
+npm install --save font-awesome angular-font-awesome
+
+# angular.json
+
+    "node_modules/font-awesome/css/font-awesome.css"
+
+ng build
+
+# Template driven form
+
+==== Create form and register controls
+....
+
+html
+
+<form (ngSubmit)=``save()'' #f=``ngForm''> <div
+#userData=``ngModelGroup'' id=``user-data'' ngModelGroup=``userData''>
+
+Username
+
+<button (click)=``suggestUserName()'' class=``btn btn-default''
+type=``button''>Suggest an Username
+
+Mail <input required email #email=``ngModel'' ngModel name=``email''
+type=``email'' id=``email'' class=``form-control''> <span
+*ngIf=``!email.valid && email.touched'' class=``help-block''>Enter email
+
+....
+    <p *ngIf="!userData.valid && userData.touched">user data is invalid</p>
+    <div class="form-group">
+      <label for="secret">Secret Questions</label>
+      <select
+        [ngModel]="defaultQues"
+        name="secret"
+        id="secret" class="form-control">
+        <option value="pet">Your first Pet?</option>
+        <option value="teacher">Your first teacher?</option>
+      </select>
+    </div>
+    <div *ngFor="let g of genders">
+      <label for="">
+        <input
+          ngModel
+          [value]="g"
+          name="g"
+          type="radio"> {{ g }}
+      </label>
+    </div>
+    <button
+      [disabled]="!f.valid"
+      class="btn btn-primary" type="submit">Submit</button>
+  </form>
+</div>
+....
+
+....
+
+==== register controls
+....
+
+ts ngModel name=``username''
+
+....
+
+==== Submit form
+....
+
+ts <form (ngSubmit)=``save()'' #f=``ngForm''> save(f: NgForm): void \{
+console.log(f); }
+
+....
+
+==== State
+....
+
+ts
+
+....
+
+==== Accessing form with @ViewChild
+....
+
+ts @ViewChild(`f') f: NgForm; save(): void \{ console.log(this.f);
+this.f.reset(); }
+
+....
+
+==== Validation
+....
+
+ts required email
+
+....
+
+==== Output error Validation msg
+....
+
+ts <span *ngIf=``!email.valid && email.touched''
+class=``help-block''>Enter email [disabled]=``!f.valid''
+
+....
+
+==== Set default values with ngModel property
+....
+
+ts [ngModel]=``defaultQues'' defaultQues = `pet';
+
+....
+
+==== ngModel with 2 way binding
+....
+
+ts
+
+{empty}[(ngModel)]
+
+....
+
+==== Grouping form control
+....
+
+ts ngModelGroup=``userData'' #userData=``ngModelGroup'' <p
+*ngIf=``!userData.valid && userData.touched''>user data is invalid
+
+....
+
+==== Radio buttons
+....
+
+ts genders = [`male', `female']; <div *ngFor=``let g of genders''>
+<input ngModel [value]=``g'' name=``g'' type=``radio''> \{\{ g }}
+
+....
+
+==== Set and patch
+....
+
+ts this.f.setValue(\{ userData: \{ username: suggestedName, email: ’’ },
+secret: `pet', g: `male' });
+
+this.f.form.patchValue(\{ userData: \{ username: suggestedName } });
+
+....
+
+==== Form data
+....
+
+ts
+
+....
+
+==== Reset forms
+....
+
+ts save(): void \{ console.log(this.f); this.f.reset(); }
+
+....
+
+add httpclientmodule on app module
+inject httpclient in ts
+http.post(url, json).subscribe(callback);
+http.get(url)
+.pipe(map(callback))
+.subscribe(callback);
+
+==== app.html
+
+{{title}}
+<app-c1 (y)="foo($event)"></app-c1>
+
+==== app comp
+
+import { Component } from '@angular/core';
+
+@Component({
+selector: 'app-root',
+templateUrl: './app.component.html',
+styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+title: string;
+
+foo(e): void {
+this.title = e;
+}
+}
+
+==== c1 html
+
+<button (click)="bar()">bar</button>
+
+==== c1 comp
+
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+
+@Component({
+selector: 'app-c1',
+templateUrl: './c1.component.html',
+styleUrls: ['./c1.component.css']
+})
+export class C1Component implements OnInit {
+constructor() { }
+
+ngOnInit(): void {
+}
+@Output() y = new EventEmitter<string>();
+bar() {
+this.y.emit('hello fromm child');
+}
+}
+
+==== ====================================
+
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+
+@Component({
+selector: 'app-c1',
+templateUrl: './c1.component.html',
+styleUrls: ['./c1.component.css']
+})
+export class C1Component implements OnInit {
+
+@Input() x: string;
+
+constructor() { }
+
+ngOnInit(): void {
+}
+}
+
+{{x}}
+
+import { Component } from '@angular/core';
+
+@Component({
+selector: 'app-root',
+templateUrl: './app.component.html',
+styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+title = 'parent';
+}
+<app-c1 [x]="title"></app-c1>
+
+....
+
+bash ionic -v cordova -v
+
+npm install ionic -g npm install cordova -g
+
+ionic start todo blank ionic lab ionic serve
+
+....
+
+======================
+./home.html
+<ion-buttons end>
+
+</ion-buttons>
+<button ion-button (click)="fun1()">
+    <ion-icon name="add"></ion-icon>
+</button>
+....
+
+javascript fun1()\{ let x = this.alertController .create(\{ ``title'':
+``add'', ``msg'': ``enter todo'' ``inputs'': [ \{ ``type'': ``text'',
+``name'': ``addInput'' }] ``buttons'': [ \{ ``text'': ``cancel'' }, \{
+``text'': ``add''
+
+....
+        }
+    ]
+})
+x.present()
+....
+
+}
+
+import \{ AlertController } from `ionic-angular' alertController
+AlertController
+
+public arr = []
+
+handler: (data) => \{ let y y = data.addInput this.arr.push(y) }
+
+``node_modules/jquery/dist/jquery.js'' import * as $ from ``jquery'';
+
+== class
+
+[source,java]
+----
+export class Person {
+    constructor(
+        public email: string,
+        public password: string
+    ){}
+}
+
+----
+
+sql # create database use
+
+#delete database db.dropDatabase()
+
+#display database show dbs
+
+== display collection show collections
+
+== create collection db.createCollection()
+
+#find db..find() db..findOne()
+
+condition = \{ ``age'': \{$lt: ``30''} }
+
+db..find()
+
+#insert obj = \{ ``email'': ``sak'', ``password'': ``123'' } OR arr = [
+obj1, obj2,…] db..insert( OR )
+
+....
+{{username | uppercase}}
+{{username | date}}
+
+==== para pipes
+
+date: 'fullDate'
+
+==== chaining pipes
+date: 'fullDate' | uppercase
+
+==== custom pipe
+
+shorten.pipe.ts
+
+@Pipe({
+    name: 'shorten'
+})
+implements PipeTransform
+
+transform(value: any) {
+    return value.substr(0, 10);
+}
+{{username |shorten}}
+
+==== para custom pipe
+....
+
+@Pipe(\{ name: `shorten' }) implements PipeTransform
+
+transform(value: any, limit: number) \{ return value.substr(0, 10); }
+\{\{username |shorten:15}}
+
+....
+
+==== filter pipe
+....
+
+ng g p filter
+
+....
+....
+
+== import
+
+import \{ Router, ActivatedRoute } from `@angular/router' constructor(
+private quesService: QuesService, private router: Router, private route:
+ActivatedRoute ) \{}
+
+ng generate module app-routing –module app –flat
+
+== html
+
+Home
+
+== routing module
+
+[source,javascript]
+----
+const routes: Routes = [
+  {
+    path: "",
+    redirectTo: "/home",
+    pathMatch: "full"
+  },
+  {
+    path: "home",
+    component: HomeComponent,
+    children: [
+      {
+        path: "display",
+        component: DisplayComponent
+      },
+      {
+        path: "insert",
+        component: InsertComponent
+      },
+      {
+        path: "delete",
+        component: DeleteComponent
+      },
+      {
+        path: "update",
+        component: UpdateComponent
+      }
+    ]
+  },
+  {
+    path: "**",
+    component: PageNotFoundComponent
+  }
+];
+const routes: Routes = [
+  {
+    path: '',
+    redirectTo: '/home',
+    pathMatch: 'full'
+  },
+  {
+    path: 'home',
+    component: HomeComponent
+  }
+];
+
+
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+
+const routes: Routes = [];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }
+
+
+==== 1. Module Introduction
+----
+
+=== javascript
+
+----
+==== 2. Why do we need a Router
+----
+
+javascript
+....
+
+==== 4. Setting up and Loading Routes
+....
+
+javascript const appRoutes: Routes = [ \{ path: ’`, component:
+HomeComponent }, \{ path: ’users', component: UsersComponent}, \{ path:
+`servers', component: ServerssComponent}];
+
+@NgModule(\{ imports: [ RouterModule.forRoot(appRoutes)], })
+
+....
+
+==== 5. Navigating with Router Links
+....
+
+html
+
+Home
+
+<li role=``presentation'' Servers
+
+....
+
+==== 6. Understanding Navigation Paths
+....
+
+html
+
+routerLink=``servers'' // localhost:4200/servers/servers
+routerLink=``/servers'' // abs, localhost:4200/servers
+
+....
+
+==== 7. Styling Active Router Links
+....
+
+html <li role=``presentation'' routerLinkActive=``active''
+[routerLinkActiveOptions]=``\{exact: true}''> Home
+
+Servers
+
+<a [routerLink]=``[`users']''>Users
+
+....
+
+==== 8. Navigating Programmatically
+....
+
+javascript
+
+Home html click onLoadServer()
+
+inject router router.navigate([`/server']) // relative to root by
+default
+
+....
+
+==== 9. Using Relative Paths in Programmatic Navigation
+....
+
+javascript inject activatedRoute to refer current comp
+
+router.navigate([`/server'], \{relativeTo: this.ar}) // relative to root
+by default
+
+....
+
+==== 10. Passing Parameters to Routes
+....
+
+javascript
+
+\{ path: `users/:id', component: UsersComponent},
+
+....
+
+==== 11. Fetching Route Parameters
+....
+
+javascript // we Fetching route Parameters using activatedRoute
+
+ngoninit() \{ this.user = \{ id: ac.snapshot.params[`id'] id:
+ac.snapshot.params[`name'] } }
+
+....
+
+==== 12. Fetching Route Parameters Reactively
+....
+
+javascript [routerLink] = ``[`/users', 10, `ana']''
+
+ac.params.subs( (p) => \{ user.id = p[`id']; user.id = p[`name']; } );
+
+....
+
+==== 13. An Important Note about Route Observables
+....
+
+javascript
+
+ps = ac.params.subs( (p) => \{ user.id = p[`id']; user.id = p[`name']; }
+);
+
+destroy() \{ ps.unsubs(); }
+
+....
+
+javascript
+....
+
+First check node and npm is installed or not using following commands
+node -v npm -v
+
+–skip-tests’ instead of `–skipTests'.
+
+Now do: npm install -g @angular/cli then: ng new my-app then: cd my-app
+then: ng serve –open
+
+node -v ng –version npm install @angular/cli@latest ng new hello cd
+hello npm install bootstrap –save
+``node_modules/bootstrap/dist/css/bootstrap.min.css'' ng build ng serve
+-open -port 4200 ng serve
+
+ng g s services/general
+
+ng g cl models/person ng g c components/spinner
+
+ng g c components/home ng g c components/page1 ng g c components/page2
+ng g c components/page3 ng g c components/page4 ng g c components/page5
+ng g c components/display-delete
+
+ng g c components/display ng g c components/update ng g c
+components/delete ng g c components/insert ng g c
+components/page-not-found
+
+npm install -g @angular/cli npm install -g @angular/cli@latest //
+optional
+
+ng new app-demo ng serve
+
+for %n in (home, page1, page2, page3) do ng g c components/%n -is
+–skipTests
+
+for i in page1 page2 page3 page4; do ng g c
+comp/``latexmath:[${i}" -is --skip-tests; done for i in shopping-list; do ng g s service/"$]\{i}''
+–skip-tests; done
+
+for i in shopping-list shopping-edit; do ng g c components/``$\{i}'' -is
+–skip-tests; done
+
+for i in dropdown; do ng g d directive/``$\{i}'' –skip-tests; done
+

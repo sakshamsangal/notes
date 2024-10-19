@@ -1,5 +1,7 @@
-#step hello.xsd
-```xml
+=== step hello.xsd
+
+[source,xml]
+----
 <?xml version="1.0"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
     <xsd:include schemaLocation="temp.xsd"/>
@@ -16,11 +18,12 @@
 
 </xsd:schema>
 
+----
 
-```
+=== step sample.xml
 
-#step sample.xml
-```xml
+[source,xml]
+----
 <?xml version="1.0"?>
 <p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hello.xsd">
     <a>asas</a>
@@ -31,11 +34,12 @@
     </r>
 </p>
 
+----
 
-```
+=== step temp2.xsd
 
-#step temp2.xsd
-```xml
+[source,xml]
+----
 <?xml version="1.0"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <xsd:element name="r">
@@ -47,20 +51,23 @@
     </xsd:complexType>
   </xsd:element>
 </xsd:schema>
+----
 
-```
+=== step temp.xsd
 
-#step temp.xsd
-```xml
+[source,xml]
+----
 
 <?xml version="1.0"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <xsd:element name="q" type="xsd:string"/>
 </xsd:schema>
-```
+----
 
-#step oxygen
-```text
+=== step oxygen
+
+[source,text]
+----
 
 book/chp/section/s1/a1
 
@@ -76,5 +83,4 @@ book/chp/section/s1/a1
 
 important
 //section[parent::chap] ==  parent
-
-```
+----

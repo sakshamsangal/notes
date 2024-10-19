@@ -1,0 +1,558 @@
+/* TODO 1: Declare a variable with identifier itemsInCart in your code
+and initialize it with 0.*/ var itemsInCart = 0;
+
+function addItem() \{ var numberOfItemsInCart = ++itemsInCart;
+console.log("`Item added to cart!`"); console.log("`Item(s) in cart
+=`",numberOfItemsInCart ); } function removeItem() \{ var
+numberOfItemsInCart = –itemsInCart; console.log("`Item removed from
+cart!`"); console.log(” Item(s) in cart ="`,numberOfItemsInCart ); } //
+WARNING: DO NOT EDIT THE CODE GIVEN BELOW console.log(`"Initially:
+Item(s) in cart = ” + itemsInCart); addItem(); addItem(); removeItem();
+
+== Const in arrow function
+
+=== Note
+
+....
+Since we don't want to reassign arrow functions, that's why we use const keyword. We want a variable should hold one particular function only not anything else.
+
+Although it's not compulsory to use const, it is a good programming practice.
+....
+
+=== without const reassignment is possible
+
+[source,javascript]
+----
+fun = () => {
+      return "Hello World!";
+}
+
+fun = () => { 
+      return "Tejashri";
+}
+console.log(fun()); // Tejashri
+----
+
+=== with const reassignment is impossible
+
+[source,javascript]
+----
+const fun = () => {
+      return "Hello World!";
+}
+
+fun = () => { // TypeError: Assignment to constant variable.
+      return "Tejashri";
+}
+console.log(fun()); // error
+----
+
+== async and differ
+
+=== Normal
+
+###
+
+[source,javascript]
+----
+1. html parsing
+2. if script tag comes (normal)
+    1. stop html parsing
+    2. download script
+    3. execute script
+3. html parsing if available
+----
+
+'''''
+
+=== async: when order does not matter like google api
+
+###
+
+[source,javascript]
+----
+1. html parsing and download script simultaneously
+2. if script tags comes (async)
+   1. execute script
+3. html parsing if available
+----
+
+'''''
+
+=== differ: use when order of code is matter
+
+###
+
+[source,javascript]
+----
+1. html parsing and download script simultaneously
+2. html parsing finishes
+3. execute script 
+----
+
+== async
+
+=== example 1
+
+[source,javascript]
+----
+const getData = async() => { 
+    var data = "Hello World"; 
+    return data; 
+} 
+
+getData().then(data => console.log(data)); 
+
+
+const getData = async() => { 
+    var y = await "Hello World"; 
+    console.log(y); 
+} 
+
+console.log(1); 
+getData(); 
+console.log(2); 
+----
+
+=== example 2
+
+[source,javascript]
+----
+async function fun() {
+    const resp = await fetch("https://jsonplaceholder.typicode.com/posts");
+    const post = await resp.json();
+    return post;
+}
+
+a = fun();
+a.then((data) => {
+    console.log(data);
+});
+console.log("saksham");
+----
+
+....
+
+
+// call() used to invoke (call) a method with an owner object as an argument (parameter).
+
+
+
+var person = {
+  fullName: function() {
+    return this.firstName + " " + this.lastName;
+  }
+};
+var person1 = {
+  firstName: "John",
+  lastName: "Doe"
+};
+var person2 = {
+  firstName: "Mary",
+  lastName: "Doe"
+};
+person.fullName.call(person1); // Will return "John Doe"
+
+
+var person = {
+    fullName: function(city, country) {
+      return this.firstName + " " + this.lastName + "," + city + "," + country;
+    }
+  }
+  var person1 = {
+    firstName:"John",
+    lastName: "Doe"
+  }
+  person.fullName.call(person1, "Oslo", "Norway");
+
+// -------------------------------------------------------------
+// apply method that can be used on different objects.
+var person = {
+    fullName: function() {
+      return this.firstName + " " + this.lastName;
+    }
+  };
+  var person1 = {
+    firstName: "Mary",
+    lastName: "Doe"
+  };
+  person.fullName.apply(person1); // Will return "Mary Doe"
+  
+  // The call() method takes arguments separately.
+  // The apply() method takes arguments as an array.
+  
+  var person = {
+    fullName: function(city, country) {
+      return this.firstName + " " + this.lastName + "," + city + "," + country;
+    }
+  };
+  var person1 = {
+    firstName: "John",
+    lastName: "Doe"
+  };
+  person.fullName.apply(person1, ["Oslo", "Norway"]);
+  
+// In JavaScript strict mode, if the first argument of the apply() method is not an object, it becomes the owner (object) of the invoked function. In "non-strict" mode, it becomes the global object.  
+
+// Example showing binding some parameters
+// bind() creates a new function 
+var sum = function (a, b) {
+  return a + b;
+};
+
+var add5 = sum.bind(null, 5);
+console.log(add5(122));
+
+
+//---------------------------
+let celebrity = {
+  "firstName": "shraddha",
+  "lastname": "kapur"
+}
+
+function showAge(age) {
+  console.log(this.firstName + " " + this.lastname + " age is " + age);
+}
+
+let person = {
+  "firstName": "ram",
+  "lastname": "pal"
+}
+
+// showAge.call(person, 24)
+showAge.apply(person, [24])
+
+let student = {
+  "firstName": "pinky",
+  "lastName": "agarwal"
+}
+
+
+let showStudent = showAge.bind(person, 12);
+showStudent();
+
+
+// problem
+// 1. create multiple objects with fname, lname and fullName()
+// 2. fullName() must not be repeated
+// 3. create single code base for fullName()
+// 4. every object must call fullName()
+
+// solution
+// 1. create person object with fname and lname
+// 2. make fullName() separately 
+// 3. apply call/apply/bind method to use fullName()
+
+// call takes various argument 1 = pointer, 2 = argument, 3 = argument
+// apply takes 2 argument 1 = pointer, 2 = array of arguments
+// bind creates a copy of funtion 
+
+let student = {
+  "fname": "saksham",
+  "lname": "sangal"
+}
+
+let teacher = {
+  "fname": "sahitya",
+  "lname": "kumar"
+}
+
+let fullName = function (age, state) {
+  console.log(this.fname + " " + this.lname);
+  console.log(age);
+  console.log(state);
+}
+
+fullName.call(student, 23, "up");
+fullName.apply(student, [23, "up"])
+let myStudent = fullName.bind(student, 23, "up");
+myStudent();
+
+// ----
+
+let student = {
+  "fname": "saksham",
+  "lname": "sangal"
+}
+
+let teacher = {
+  "fname": "sahitya",
+  "lname": "kumar"
+}
+
+let fullName = function () {
+  console.log(this.fname + " " + this.lname);
+}
+
+Function.prototype.myBind = function(...args) {
+  let obj = this;
+  console.log(obj);
+  
+  return function () {
+      obj.call(args[0]);
+  }
+}
+
+
+let myStudent = fullName.myBind(student);
+myStudent();  
+
+var team = {
+  participantOne: "Srishti",
+  participantTwo: "Prateek",
+  print: function () {
+      /* TODO 1: 
+      A. Define a function with identifier greetParticipants
+      B. Pass the scope of the team object to greetParticipants function using bind() method
+      C. The function greetParticipants must print the message to welcome both participants defined in the team object on the console, as shown in Problem Statement
+      */
+     var greetParticipants = function() {
+          console.log('Welcome', this.participantOne, this.participantTwo);
+     }.bind(this);
+      greetParticipants();
+  }
+}
+team.print();
+....
+
+....
+var team = {
+    participantOne: "Srishti",
+    participantTwo: "Prateek",
+    print: function () {
+        /* TODO 1: 
+        A. Define a function with identifier greetParticipants
+        B. Pass the scope of the team object to greetParticipants function using bind() method
+        C. The function greetParticipants must print the message to welcome both participants defined in the team object on the console, as shown in Problem Statement
+        */
+        var greetParticipants = function () {
+            console.log("welcome" + " " + this.participantOne + " " + this.participantTwo);
+
+        }.bind(this)
+        greetParticipants();
+    }
+}
+team.print();
+
+var team = {
+    participantOne: "Srishti",
+    participantTwo: "Prateek",
+    print: function () {
+        /* TODO 2: 
+        A. Define a function with identifier greetParticipants
+        B. Pass the scope of the team object to greetParticipants function using call() method
+        C. The function greetParticipants must print the message to welcome both participants defined in the team object on the console, as shown in Problem Statement
+        */
+        var greetParticipants = function () {
+            console.log("welcome" + " " + this.participantOne + " " + this.participantTwo);
+
+        }.call(this);
+    }
+}
+team.print();
+
+var team = {
+    participants: ["Srishti", "Prateek"],
+    print: function () {
+        /* TODO 3: 
+        A. Define a function with identifier greetParticipants
+        B. Pass the scope of the team object to greetParticipants function using apply() method
+        C. The function greetParticipants must print the message to welcome both participants defined in the team object on the console, as shown in Problem Statement
+        */
+        var greetParticipants = function (arr) {
+            console.log("welcome" + " " + arr[0] + " " + arr[1]);
+
+        }.apply(this, [this.participants]);
+    }
+}
+team.print();
+....
+
+=== for in loop is used to iterate over json
+
+itemsToBuy is json array. We are getting key of object in item of for in
+loop Again we are iterating over json and once you get price as key hen
+we are storing the value of price in itemPricesArr array.
+
+....
+    
+var itemsToBuy = {
+    milk: {
+        quantity : 5,
+        price: 20
+    },
+    bread: {
+        quantity : 2,
+        price: 15
+    },
+    potato: {
+        quantity : 3,
+        price: 10
+    }
+}
+
+items = []
+prices = []
+for(i in itemsToBuy) {  // iterating over json array
+    items.push(i);
+    prices.push(itemsToBuy[i].price);
+}
+
+
+// Print the array consisting of the names of the items here
+console.log(items);
+
+// Print the array consisting of the prices of the items here
+console.log(prices);
+....
+
+[source,javascript]
+----
+// TODO 1: Create an object named shape which has a key is2D having the value true
+let shape = {
+    is2D: true
+}
+// TODO 2: Create an object named circle which has a key radius having the value 3
+let circle = {
+    radius: 3
+}
+// TODO 3: Create an object named rectangle which has keys length and breadth having the values 1 and 2 respectively
+let rectangle = {
+    length: 1,
+    breadth: 2
+}
+// TODO 4: Change the prototype of the circle object to the shape object
+circle.__proto__ = shape;
+// TODO 5: Print the values of the is2D and radius keys on the circle object
+console.log("Is circle a 2D shape? " + shape.is2D);
+console.log("Radius of circle = " + circle.radius);
+
+
+// TODO 6: Change the prototype of the rectangle object to the shape object
+rectangle.__proto__ = shape;
+// TODO 7: Print the values of the is2D, length, and breadth keys on the rectangle object
+console.log("is rectangle a 2D shape? " + shape.is2D);
+
+console.log("Length of rectangle = " + rectangle.length,", Breadth of rectangle = " + rectangle.breadth);
+----
+
+[source,javascript]
+----
+console.log(typeof typeof 9); // string
+
+let arr = [1, 2, 3]
+arr[10] = 12
+console.log(arr[4]); // undefined
+
+let a = typeof undefined == typeof NULL
+console.log(a); // true because NULL is variable name, its not null, its NULL
+
+console.log(3 > 2 > 1); // false
+// true means 1
+// 3 > 2 will give true
+// true > 1
+// means 1 > 1 
+
+let students = {
+    "ram": 22,
+    "shyam": 25,
+    "seeta": {
+        age: 16
+    }
+};
+
+var studentsClone = Object.assign({}, students);
+
+students.ram = "25";
+students.seeta.age = "18"
+
+console.log('studentsClone ', studentsClone); 
+// studentsClone  { ram: 22, shyam: 25, seeta: { age: '18' } }
+
+// in cloning, nested objects are not clone.
+// shallow copy is done 
+
+let x = 25;
+let priyanka = function () {
+    console.log(x);
+    var x = 22;
+};
+priyanka(); // undefined
+// variable initialisation not hoisted
+// it didnt went for global scope because 
+// functions knews about local x not dont know its value
+// if var x = 22 was absent then x = 25(func go for the global one)
+
+// hoisting 
+function raj(){ 
+    a = 10; 
+    var b = 50; 
+} 
+raj(); 
+console.log(a); // 10
+console.log(b); // ReferenceError : b is not defined 
+
+// a is global because a is undeclared
+// var scope is within function 
+
+(function () {
+    var x, y;
+    try {
+        throw new Error();
+    } catch (x) {
+        x = 10;
+        y = 20;
+        console.log(x);
+    }
+    console.log(x);
+    console.log(y);
+})();
+
+// 10
+// undefined
+// 20 
+// first preference goes to local variable than global variable
+
+----
+
+function sum(…items) \{ return items.reduce((previous, current) => \{
+return previous + current; }); }
+
+console.log(sum(10, 10, 20, 30)); // expected output: 77
+
+....
+
+const startTimer = () => {
+const now = new Date();
+h = now.getHours();
+m = prefixWithZero(now.getMinutes());
+s = prefixWithZero(now.getSeconds());
+console.log(h + ": " + m + ": " + s);
+}
+
+prefixWithZero = (i) => {
+if(i < 10) i = "0" + i;
+return i;
+}
+
+for (let i = 0; i < 3; i++) {
+setTimeout(startTimer, i * 1000);
+}
+
+
+
+```javascript
+
+str = "12";
+var n = +str;
+console.log(n + 3);
+....
+
+....
+var num1 = 1, num2 = 2;
+function swap(a, b) {
+    num1 = b;
+    num2 = a;
+}
+swap(num1, num2)
+....
