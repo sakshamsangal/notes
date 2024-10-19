@@ -1,6 +1,8 @@
 = Notes
 :toc: left
 
+:safe-mode-level: 1
+
 include::Javascript/js.adoc[]
 include::Javascript/react.adoc[]
 include::Javascript/css.adoc[]
@@ -8,4 +10,3 @@ include::Javascript/md.adoc[]
 include::Javascript/xml.adoc[]
 include::Javascript/angular.adoc[]
 
-Document body.
