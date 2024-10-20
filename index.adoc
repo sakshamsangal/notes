@@ -24,15 +24,12 @@
 
 
 == Mobile
-
 * link:adoc/mobile.adoc[]
 
 == Database
-
 * link:adoc/database.adoc[]
 * link:adoc/git.adoc[]
 
 == Windows
-
 * link:adoc/AHK.adoc[]
 * link:adoc/win.adoc[]

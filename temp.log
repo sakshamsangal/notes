@@ -1,16 +1,8 @@
-link:AHK.adoc[]
-link:database.adoc[]
-link:git.adoc[]
-link:hibernate.adoc[]
-link:index.adoc[]
-link:javaCore.adoc[]
-link:JDBC.adoc[]
-link:maven.adoc[]
-link:microservice.adoc[]
-link:mobile.adoc[]
-link:python.adoc[]
-link:sb.adoc[]
-link:servlet.adoc[]
-link:spring.adoc[]
-link:swing.adoc[]
-link:win.adoc[]
+single source shortest path
+
+let all cities cost 1 cr
+
+
+
+
+
