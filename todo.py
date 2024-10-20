@@ -1,10 +1,11 @@
 import os
 from fnmatch import fnmatch
 
-root = 'BackEnd/Python'
+sub = "AHK"
+root = f'ahk/{sub}'
 pattern = "*.md"
 
-with open("result_python.md", "wb") as outfile:
+with open(f"{sub}.md", "wb") as outfile:
     for path, subdirs, files in os.walk(root):
         for name in files:
             if fnmatch(name, pattern):

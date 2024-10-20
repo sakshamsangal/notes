@@ -1,0 +1,513 @@
+
+
+----
+The IN operator allows you to specify multiple values in a WHERE clause. The IN operator is a shorthand for multiple OR conditions.
+
+e_department IN ('D1', 'D2') means e_department = 'D1' or e_department = 'D2'
+
+For reference:
+https://www.w3schools.com/sql/sql_in.asp
+----
+
+----
+
+CREATE TABLE table1 (
+    id int(5),
+    name VARCHAR(10)
+);
+
+INSERT INTO table1 VALUES(
+    1,
+    'a'
+);
+
+INSERT INTO table1 VALUES(
+    2,
+    'b'
+);
+INSERT INTO table1 VALUES(
+    3,
+    'c'
+);
+INSERT INTO table1 VALUES(
+    4,
+    'd'
+);
+
+CREATE TABLE table2 (
+    id int(5),
+    salary int(10)
+);
+
+INSERT INTO table2 VALUES(
+    2,
+    100
+);
+
+INSERT INTO table2 VALUES(
+    3,
+    200
+);
+
+INSERT INTO table2 VALUES(
+    5,
+    600
+);
+
+SELECT table1.id, table1.name, table2.id, table2.salary
+FROM table1
+INNER JOIN table2 ON table1.id = table2.id;
+
+// output
+2	b	2	100
+3	c	3	200
+
+SELECT table1.id, table1.name, table2.id, table2.salary
+FROM table1
+LEFT JOIN table2 ON table1.id = table2.id;
+
+// output
+2	b	2	100
+3	c	3	200
+1	a		
+4	d		
+
+SELECT table1.id, table1.name, table2.id, table2.salary
+FROM table1
+// output
+RIGHT JOIN table2 ON table1.id = table2.id;
+2	b	2	100
+3	c	3	200
+		5	600
+
+SELECT * 
+FROM table1
+LEFT JOIN table2 ON table1.id = table2.id
+UNION
+SELECT * 
+FROM table1
+RIGHT JOIN table2 ON table1.id = table2.id;
+// output
+2	b	2	100
+3	c	3	200
+1	a		
+4	d		
+		5	600
+----
+
+Normalisation = 2NF
+
+Table: booking_location
+mobile_number(PK)
+vehicle_owner
+location_name
+complete_address
+city_name
+pincode
+
+e.g.
+[9090909090, "ajay", "adarsh colony", "HN 153", "mzn", "251001"]
+
+Table: specification
+vehicle_number (PK)
+vehicle_model
+vehicle_type
+vehicle_category
+vehicle_colour
+vehicle_image
+price_per_hour
+fuel_type
+mobile_number(foreign key)
+
+e.g.
+["up012", "zxi", "car", "Sedan", "black", "img", "100", "petrol", 9090909090] 
+
+----
+-- TODO 1: Create the ‘vote’ table.
+CREATE TABLE vote (
+    voter_id VARCHAR(10),
+    constituency_id VARCHAR(10),
+    candidate_id VARCHAR(10),
+    date_of_voting DATE
+);
+
+--TODO 2: Insert records into the ‘vote’ table.
+INSERT INTO vote VALUES(
+    'SMO-009211',
+    'CO-0000651',
+    'CA-0012892',
+    '98-3-01'
+);
+
+INSERT INTO vote VALUES(
+    'SMO-009212',
+    'CO-0000652',
+    'CA-0012802',
+    '98-3-01'
+);
+-- TODO 3: Fetch the records from the ‘vote’ table as Id for the record CA-0012802
+
+CREATE TABLE voter (
+    voter_id VARCHAR(10),
+    voter_name VARCHAR(40)
+);
+
+CREATE TABLE constituency (
+    constituency_id VARCHAR(10),
+    constituency_name VARCHAR(40)
+);
+
+INSERT INTO voter VALUES(
+    'SMO-009211',
+    'Sachin Sharma'
+);
+
+INSERT INTO voter VALUES(
+    'SMO-009212',
+    'Rahul Verrma'
+);
+
+INSERT INTO constituency VALUES(
+    'CO-0000651',
+    'South Delhi'
+);
+
+INSERT INTO constituency VALUES(
+    'CO-0000652',
+    'North Delhi'
+);
+
+----
+
+CREATE TABLE patient (
+
+id INT primary key auto_increment,
+
+patient_name VARCHAR(50),
+
+pr INT,
+
+bp_systolic INT,
+
+bp_diastolic INT,
+
+temp DECIMAL(8,4),
+
+rr INT,
+
+spo2 INT,
+
+o2 DECIMAL(8,4),
+
+fio2 DECIMAL(8,4),
+
+other VARCHAR(100),
+
+remarks VARCHAR(100),
+
+gcs DECIMAL(8,4),
+
+urine DECIMAL(8,4),
+
+inotrope VARCHAR(100),
+
+position VARCHAR(100),
+Intake VARCHAR(100),
+Steroids VARCHAR(100),
+Antibiotics VARCHAR(100),
+Clexane VARCHAR(100)
+
+);
+
+----
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <version>8.0.13</version>
+</dependency>
+
+desc orderdetails;
+
+// check mysql version
+SHOW VARIABLES LIKE "%version%";
+
+-- drop table if already exists --
+DROP TABLE OrderDetails;
+
+-- table for the exercise --
+CREATE TABLE OrderDetails (OrderId INT, ProductName VARCHAR(30), Price INT, Quantity INT, CustomerName VARCHAR(30));
+
+-- initial data --
+INSERT INTO OrderDetails (OrderId, ProductName, Price, Quantity, CustomerName) VALUES (1, 'LENOVO LAPTOP', 40000, 1, 'Bob');
+INSERT INTO OrderDetails (OrderId, ProductName, Price, Quantity, CustomerName) VALUES (2, 'DELL LAPTOP', 50000, 1, 'Alex');
+INSERT INTO OrderDetails (OrderId, ProductName, Price, Quantity, CustomerName) VALUES (3, 'HP LAPTOP', 45000, 1, 'John');
+INSERT INTO OrderDetails (OrderId, ProductName, Price, Quantity, CustomerName) VALUES (4, 'SMART TV', 20000, 1, 'Bob');
+INSERT INTO OrderDetails (OrderId, ProductName, Price, Quantity, CustomerName) VALUES (5, 'SONY HEADPHONES', 5000, 2, 'Bob');
+INSERT INTO OrderDetails (OrderId, ProductName, Price, Quantity, CustomerName) VALUES (6, 'LENOVO LAPTOP', 40000, 1, 'Katie');
+INSERT INTO OrderDetails (OrderId, ProductName, Price, Quantity, CustomerName) VALUES (7, 'LENOVO LAPTOP', 40000, 1, 'Joy');
+
+----
+
+----
+-- drop table if already exists --
+DROP TABLE Users;
+
+-- table for the exercise --
+CREATE TABLE Users (UserId INT, UserName VARCHAR(30), PhoneNumber VARCHAR(10));
+
+-- initial data --
+INSERT INTO Users (UserId, UserName, PhoneNumber) VALUES (1, 'Rahul', '9876543210');
+
+INSERT INTO Users (UserId, UserName, PhoneNumber) VALUES (2, 'Nikita', '8776543201');
+
+INSERT INTO Users (UserId, UserName, PhoneNumber) VALUES (3, 'Manoj', '8876543012');
+
+INSERT INTO Users (UserId, UserName, PhoneNumber) VALUES (4, 'Rekha', '7896543210');
+----
+
+== mysql command
+
+----
+SET GLOBAL log_bin_trust_function_creators = 1;
+SET SQL_SAFE_UPDATES = 0;
+SET GLOBAL log_bin_trust_function_creators = 1;
+----
+
+----
+-- table for the exercise --
+CREATE TABLE posts (id INT primary key auto_increment, email_id VARCHAR(30), title VARCHAR(100),description VARCHAR(500), tag VARCHAR(10), timestamp VARCHAR(100));
+
+-- initial data --
+INSERT INTO Users (email_id, password) VALUES ('Rahul', '9876543210');
+INSERT INTO Users (email_id, password) VALUES ('Nikita', '8776543201');
+INSERT INTO Users (email_id, password) VALUES ('Manoj', '8876543012');
+INSERT INTO Users (email_id, password) VALUES ('Rekha', '7896543210');
+
+CREATE DATABASE school;
+CREATE TABLE student (student_roll_number INT(10), student_name VARCHAR(30));
+INSERT INTO student (student_roll_number, student_name) VALUES (98640, 'Rahul');
+INSERT INTO student (student_roll_number, student_name) VALUES (87641, 'Nikita');
+INSERT INTO student (student_roll_number, student_name) VALUES (88642, 'Manoj');
+INSERT INTO student (student_roll_number, student_name) VALUES (78640, 'Rekha');
+
+----
+
+CREATE DATABASE temp;
+
+CREATE TABLE `sms`.`table1` (
+`c1` INT NOT NULL,
+`c2` BLOB NULL,
+PRIMARY KEY (`c1`));
+
+== trigger
+
+== introduction
+
+----
+use test;
+
+create table sales(id int primary key, product varchar(30) not null, value numeric(10,2));
+
+create table sales_update(
+	id int primary key auto_increment, 
+	product_id int not null, 
+    changed_at timestamp,
+	before_value numeric(10,2) not null, 
+    after_value numeric(10,2) not null);
+    
+drop table sales_update;
+    
+    
+insert into sales (id, product, value) values (3, "Cake", 0.80);
+
+select * from sales;
+
+update sales set value = 0.60 where id = 3;
+
+delimiter $$
+
+create trigger before_sales_update before update on sales for each row
+begin
+
+	insert into sales_update(product_id, changed_at, before_value, after_value)
+		value (old.id, now(), old.value, new.value);
+
+end$$
+
+delimiter ;
+
+select * from sales_update;
+
+----
+
+== validations
+
+----
+use test;
+
+drop table products;
+create table products (id int primary key auto_increment, value numeric(10,2) not null);
+
+set delimiter $$
+
+create trigger before_products_insert before insert on products for each row
+begin
+
+	if new.value > 100.0 then
+		set new.value := 100.0;
+    end if;
+
+end$$
+
+create trigger before_products_update before update on products for each row
+begin
+
+	if new.value > 100.0 then
+		set new.value := 100.0;
+    end if;
+
+end$$
+
+set delimiter ;
+
+insert into products (value) values (500);
+
+update products set value = 102 where id=1;
+
+select * from products;
+----
+
+== trigger and transactions
+
+----
+use test;
+
+show tables;
+
+create table sales(id int primary key auto_increment, product varchar(45) not null, sold numeric(8,2) not null);
+
+create table sales_totals(id int primary key auto_increment, total numeric(11,2) not null, day date);
+
+alter table sales_totals add unique (day);
+
+show index from sales_totals;
+
+delimiter $$
+
+create trigger before_sales_insert before insert on sales for each row
+begin
+
+	declare today date default date(now());
+	declare count int default 0;
+    
+	select count(*) from sales_totals where day = today into count for update;
+    
+    if count = 0 then
+		insert into sales_totals (total, day) values (new.sold, today);
+	else
+		update sales_totals set total = total + new.sold where day = today;
+	end if;
+
+end$$
+
+delimiter ;
+
+drop trigger before_sales_insert;
+
+select * from sales;
+select * from sales_totals;
+
+insert into sales (product, sold) values ("Dog Lead Deluxe", 10.00);
+
+set sql_safe_updates=0;
+delete from sales;
+delete from sales_totals;
+
+----
+
+== exercise
+
+----
+
+Create a table of animals that includes a text-type column (e.g. varchar or text) called "animal_name".
+
+Create a trigger that prevents you from inserting any animal name containing the word "cat". E.g. "Wildcat", "Housecat", etc.
+
+If someone tries to insert any kind of cat, the trigger should insert "xxx" instead and should log the attempted entry, including the animal name,
+in a "violations" table, along with the date and time it occurred.
+
+Animals
+primary key
+animal name
+(anything else)
+
+Violations
+primary key
+animal name
+date and time
+----
+
+== exercise solution
+
+----
+use test;
+
+create table animals (id int primary key auto_increment, animal_name varchar(50) not null);
+
+create table violations(id int primary key auto_increment, animal_name varchar(50) not null, moment datetime not null);
+
+delimiter $$
+
+create trigger before_animals_insert before insert on animals for each row
+begin
+
+	if new.animal_name like "%cat%" then
+    
+		insert into violations (animal_name, moment) values (new.animal_name, now());
+    
+		set new.animal_name = "xxx";
+    
+    end if;
+
+end$$
+
+delimiter ;
+
+insert into animals (animal_name) values ("Housecat");
+
+select * from animals;
+select * from violations;
+----
+
+== Oracle database set up
+
+----
+Download and install OracleXE112_Win64.zip
+
+Got to http://127.0.0.1:8080/apex/f?p=4950:1:3636606493993877
+
+username = sys 
+password = root
+
+Go to application express >> object browser
+
+CREATE table and insert data
+
+CREATE maven-quickstart project
+
+add oracle dependency
+
+Download ojdbc6.jar 
+
+Execute in the terminal: mvn install:install-file -DgroupId=com.oracle -DartifactId=ojdbc6 -Dversion=11.2.0.3 -Dpackaging=jar -Dfile=D:/Temporary/ojdbc6.jar -DgeneratePom=true
+
+Write the jdbc oracle connectivity code.
+----
+----
+
+CREATE TABLE customers(customer_id number(10) , customer_name varchar2(50)NOT NULL, city varchar2(50));
+
+----
+----
+create table customer(id number(2));
+----

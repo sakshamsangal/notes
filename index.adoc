@@ -1,0 +1,14 @@
+= notes
+
+
+* link:mobile.adoc[]
+* link:springBoot.adoc[]
+* link:swing.adoc[]
+* link:servlet.adoc[]
+* link:javaCore.adoc[]
+* link:python.adoc[]
+* link:JDBC.adoc[]
+* link:git.adoc[]
+// link:
+// link:
+// link:

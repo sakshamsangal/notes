@@ -1,0 +1,187 @@
+:toc: left
+
+== mysql
+
+[source,text]
+----
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <version>8.0.13</version>
+</dependency>
+----
+
+== oracle
+
+[source,text]
+----
+<dependency>
+    <groupId>com.oracle</groupId>
+    <artifactId>ojdbc6</artifactId>
+    <version>11.2.0.3</version>
+</dependency>
+----
+
+= pom
+
+== web
+
+[source,xml]
+----
+<!-- for @Controller, @RequestMapping-->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+----
+
+----
+org.springframework.boot:spring-boot-starter
+org.springframework.boot:spring-boot-starter-tomcat
+org.springframework.boot:spring-boot-starter-validation
+com.fasterxml.jackson.core:jackson-databind
+org.springframework:spring-web
+org.springframework:spring-webmvc
+----
+
+== jasper
+
+[source,xml]
+----
+<!-- for view support -->
+<dependency>
+    <groupId>org.apache.tomcat.embed</groupId>
+    <artifactId>tomcat-embed-jasper</artifactId>
+</dependency>
+----
+
+== jpa
+
+[source,xml]
+----
+<!-- for API operations-->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-jpa</artifactId>
+</dependency>
+----
+
+== mysql-connector-java
+
+[source,xml]
+----
+<!-- for mysql connection-->
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <scope>runtime</scope>
+</dependency>
+----
+
+== mail
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-mail</artifactId>
+</dependency>
+----
+
+== jstl
+
+[source,xml]
+----
+<dependency>
+    <groupId>javax.servlet</groupId>
+    <artifactId>jstl</artifactId>
+</dependency>
+----
+
+== jfreechart
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.jfree</groupId>
+    <artifactId>jfreechart</artifactId>
+    <version>1.0.19</version>
+</dependency>
+----
+
+== test
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-test</artifactId>
+    <scope>test</scope>
+</dependency>
+----
+
+== cache
+
+[source,xml]
+----
+<!-- enable cache support -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-cache</artifactId>
+</dependency>
+----
+
+== hazelcast
+
+[source,xml]
+----
+<!-- enable hazelcast implementation of cache -->
+<dependency>
+    <groupId>com.hazelcast</groupId>
+    <artifactId>hazelcast</artifactId>
+</dependency>
+----
+
+== hazelcast-spring
+
+[source,xml]
+----
+<!-- integration of cache hazelcast -->
+<dependency>
+    <groupId>com.hazelcast</groupId>
+    <artifactId>hazelcast-spring</artifactId>
+</dependency>
+----
+
+== swagger2
+
+[source,xml]
+----
+<dependency>
+    <groupId>io.springfox</groupId>
+    <artifactId>springfox-swagger2</artifactId>
+    <version>2.9.2</version>
+</dependency>
+----
+
+== springfox-boot-starter
+
+[source,xml]
+----
+<dependency>
+    <groupId>io.springfox</groupId>
+    <artifactId>springfox-boot-starter</artifactId>
+    <version>3.0.0</version>
+</dependency>
+----
+
+== swagger-ui
+
+[source,xml]
+----
+<dependency>
+    <groupId>io.springfox</groupId>
+    <artifactId>springfox-swagger-ui</artifactId>
+    <version>2.9.2</version>
+</dependency>
+----

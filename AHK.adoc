@@ -1,0 +1,142 @@
+[source,ahk]
+----
+; Variables
+Increments 			:= 20 ; < lower for a more granular change, higher for larger jump in brightness 
+CurrentBrightness 	:= GetCurrentBrightNess()
+
+; Hot Keys
+F6::ChangeBrightness( CurrentBrightness -= Increments ) ; decrease brightness
+F7::ChangeBrightness( CurrentBrightness += Increments ) ; increase brightness
+
+; Functions
+ChangeBrightness( ByRef brightness, timeout = 1 )
+{
+	if ( brightness > 0 && brightness < 100 )
+	{
+		For property in ComObjGet( "winmgmts:\\.\root\WMI" ).ExecQuery( "SELECT * FROM WmiMonitorBrightnessMethods" )
+			property.WmiSetBrightness( timeout, brightness )	
+	}
+ 	else if ( brightness >= 100 )
+ 	{
+ 		brightness := 100
+ 	}
+ 	else if ( brightness <= 0 )
+ 	{
+ 		brightness := 0
+ 	}
+}
+
+GetCurrentBrightNess()
+{
+	For property in ComObjGet( "winmgmts:\\.\root\WMI" ).ExecQuery( "SELECT * FROM WmiMonitorBrightness" )
+		currentBrightness := property.CurrentBrightness	
+
+	return currentBrightness
+}
+
+----
+
+----
+
+fn1 := "temp"
+F9::setFileName()
+
+setFileName() {
+    global fn1
+    fn := InputBox("Enter file name.", "File name", "w640 h480")
+    if (fn.Result = "OK") {
+        fn1 := fn.Value
+    }
+    else{
+        MsgBox "You entered '" fn.Value "' but then cancelled."
+    }
+
+}
+F8::{
+
+    A_Clipboard := "" ; Empty the clipboard
+    Send "^c"
+    if !ClipWait(2)
+    {
+        MsgBox "The attempt to copy text onto the clipboard failed."
+        return
+    } else{
+        FileAppend "``````" . "`n`n" . A_Clipboard . "`n`n```````n`n`n", "C:\Users\saksangal\Documents\saksham\document\lang\front_end\kb4\" . fn1 . ".md" 
+    }
+}
+
+;Run "notepad++"
+;WinActive("ahk_class Notepad")
+;FileAppend ClipboardAll() . "`n", "C:\Users\saksangal\Documents\saksham\document\text\temp.txt" 
+;WinActive("C:\Users\saksangal\Documents\saksham\document\text\temp.txt", , 2)
+;Send "^v"
+
+----
+
+----
+
+::hv::Hi Vaibhav
+::sv::Sent on VDI teams.
+----
+
+----
+
+::1::
+(
+ try {
+            Person pojo = new Person()
+
+            XmlMapper xmlMapper = new XmlMapper()
+            xmlMapper.enable(SerializationFeature.INDENT_OUTPUT)
+            String str = "Helwewewelo jhguhg\n"
+            BufferedWriter writer = new BufferedWriter(new FileWriter("simple_bean.xml"))
+            writer.write(str)
+            xmlMapper.writeValue(writer, pojo)
+            writer.close()
+
+        } catch(Exception e) {
+            e.printStackTrace()
+        }
+
+)
+
+----
+
+----
+F1::^c
+F2::^v
+F3::^x
+F4::+F6
+F5::^s
+AppsKey::^d
+PrintScreen::Ctrl
+#c::Run "calc.exe"
+#n::Run "notepad++" 
+;F10::{
+;	Send "{AppsKey}"
+;}
+
+F6::{
+	Send "^a"
+	Send "^c"
+}
+
+F7::{
+	Send "^a"
+	Send "{Delete}"
+}
+
+; F9::^z
+F12::!insert
+; F11::!Tab
+
+F11::^+y
+
+;`::AltTabMenu
+
+;#=WINDOWS KEY
+;^=CTRL
+;!=ALT
+;+=SHIFT
+;{ } = DATA ENTRY
+----
