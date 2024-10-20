@@ -1166,7 +1166,7 @@ public class User implements Serializable {
 import java.io.BufferedReader; import java.io.IOException; import
 java.io.InputStreamReader; import java.util.StringTokenizer;
 
-class CodeChef \{
+class CodeChef {
 
 ....
 static void solve(BufferedReader bufferedReader) throws IOException {
@@ -1183,8 +1183,8 @@ static void solve(BufferedReader bufferedReader) throws IOException {
 
 }
 
-class Main \{ public static void main(String[] args) throws IOException
-\{ BufferedReader bufferedReader = new BufferedReader(new
+class Main { public static void main(String[] args) throws IOException
+{ BufferedReader bufferedReader = new BufferedReader(new
 InputStreamReader(System.in)); int test =
 Integer.parseInt(bufferedReader.readLine());
 
@@ -1338,14 +1338,14 @@ definition.
 
 In Java 8, we can have default and static methods in interfaces
 
-class Base \{ public void display() \{ System.out.println(``This is the
+class Base { public void display() { System.out.println(``This is the
 display function of the base class.''); } }
 
-interface BaseInterface \{ default public void display() \{
+interface BaseInterface { default public void display() {
 System.out.println(``This is the display function of the interface
 class.''); } }
 
-class Source extends Base implements BaseInterface \{
+class Source extends Base implements BaseInterface {
 
 ....
 public static void main(String[] args) {
@@ -1358,15 +1358,15 @@ public static void main(String[] args) {
 
 // output // This is the display function of the base class.
 
-// example 2 interface Interface1 \{ default public void display() \{
+// example 2 interface Interface1 { default public void display() {
 System.out.println(``This is the display function of the interface
 class.''); } }
 
-interface Interface2 \{ default public void display() \{
+interface Interface2 { default public void display() {
 System.out.println(``This is the display function of the interface
 class.''); } }
 
-class Source implements Interface1, Interface2 \{
+class Source implements Interface1, Interface2 {
 
 ....
 @Override
@@ -1669,7 +1669,7 @@ Arrays.stream(arr).sum(); // sum Arrays.stream(arr).filter(x -> x <
 
 x=
 Arrays.asList(x).stream().map(String::toLowerCase).toArray(String[]::new);
-String[] elements) \{ elements=
+String[] elements) { elements=
 Arrays.stream(elements).map(String::toLowerCase).toArray(String[]::new);
 
 To print an object means we are calling toString() method implemented by

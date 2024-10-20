@@ -2728,7 +2728,7 @@ MyDAO [dbServer=sakshamServer]
 
 package com.spring.scope;
 
-public class Employee \{ private int id; private String name;
+public class Employee { private int id; private String name;
 
 ....
 public int getId() {

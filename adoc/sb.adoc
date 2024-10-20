@@ -2402,7 +2402,7 @@ public class Report {
 |* |used in form input to bind the java object
 |===
 
-*show data from java controller* div th:text=``$\{message}''
+*show data from java controller* div th:text=``${message}''
 
 *to prevent html cache* `spring.thymeleaf.cache=false`
 
@@ -4056,8 +4056,8 @@ org.springframework.stereotype.Component;
 
 import java.io.File; import java.io.IOException; import java.util.List;
 
-@Component public class Report \{ public void generatePieChart(String
-path, List<Object[]> data) \{ DefaultPieDataset dataset = new
+@Component public class Report { public void generatePieChart(String
+path, List<Object[]> data) { DefaultPieDataset dataset = new
 DefaultPieDataset();
 
 ....

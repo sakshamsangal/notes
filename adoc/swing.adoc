@@ -596,7 +596,7 @@ import javax.swing._; import javax.swing.table.DefaultTableModel; import
 java.awt._; import java.awt.event.ActionEvent; import
 java.awt.event.ActionListener;
 
-public class Form1 \{ private JTable table1; private JPanel panel1;
+public class Form1 { private JTable table1; private JPanel panel1;
 private JButton button1; private DefaultTableModel model;
 ....
 
@@ -677,7 +677,7 @@ javax.swing.tree.DefaultMutableTreeNode; import
 javax.swing.tree.DefaultTreeModel; import javax.swing.tree.TreeModel;
 import java.awt._; import java.io.IOException; import java.net.URL;
 
-public class MyFrame1 extends JFrame \{ private JTree tree1; private
+public class MyFrame1 extends JFrame { private JTree tree1; private
 JPanel panel1; private JLabel label1; private JEditorPane editorPane1;
 
 ....
@@ -1059,7 +1059,7 @@ package com.company;
 
 import java.awt._; import javax.swing._;
 
-class Border \{ JFrame f;
+class Border { JFrame f;
 
 ....
 Border() {
@@ -1092,7 +1092,7 @@ package com.company;
 
 import java.awt._; import javax.swing._;
 
-class BoxLayoutExample1 extends Frame \{ Button buttons[];
+class BoxLayoutExample1 extends Frame { Button buttons[];
 
 ....
 public BoxLayoutExample1() {
@@ -1121,7 +1121,7 @@ import java.awt._; import java.awt.event._;
 
 import javax.swing.*;
 
-class CardLayoutExample extends JFrame implements ActionListener \{
+class CardLayoutExample extends JFrame implements ActionListener {
 CardLayout card; JButton b1, b2, b3; Container c;
 
 ....
@@ -1163,7 +1163,7 @@ package com.company;
 
 import java.awt._; import javax.swing._;
 
-class MyFlowLayout \{ JFrame f;
+class MyFlowLayout { JFrame f;
 
 ....
 MyFlowLayout() {
@@ -1199,7 +1199,7 @@ package com.company;
 
 import javax.swing.*; import java.awt.GridLayout;
 
-class MyGridLayout \{ JFrame f;
+class MyGridLayout { JFrame f;
 
 ....
 MyGridLayout() {
@@ -1238,7 +1238,7 @@ public static void main(String[] args) {
 
 }
 
-import javax.swing.JOptionPane; public class Controller \{ private Model
+import javax.swing.JOptionPane; public class Controller { private Model
 model; private View view;
 
 ....
@@ -1277,7 +1277,7 @@ private void sayBye() {
 
 import javax.swing._; import java.awt._; import java.awt.event.*;
 
-public class Main \{
+public class Main {
 
 [source,java]
 ....
@@ -1292,10 +1292,10 @@ public static void main(String[] args) {
 
 }
 
-public class Model \{ private String firstname; private String lastname;
-public Model(String firstname, String lastname) \{ this.firstname =
-firstname; this.lastname = lastname; } public String getFirstname() \{
-return firstname; } public void setFirstname(String firstname) \{
-this.firstname = firstname; } public String getLastname() \{ return
-lastname; } public void setLastname(String lastname) \{ this.lastname =
+public class Model { private String firstname; private String lastname;
+public Model(String firstname, String lastname) { this.firstname =
+firstname; this.lastname = lastname; } public String getFirstname() {
+return firstname; } public void setFirstname(String firstname) {
+this.firstname = firstname; } public String getLastname() { return
+lastname; } public void setLastname(String lastname) { this.lastname =
 lastname; } }
