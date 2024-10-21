@@ -1,3 +1,4 @@
+:toc: left
 == Make angular project
 
 [source,text]
@@ -99,7 +100,7 @@ browser
 
 ng build --prod --base-href . --output-path ../../cordova/leave/www/
 
-javascript In main.ts let onDeviceReady = () => \{
+javascript In main.ts let onDeviceReady = () => {
 platformBrowserDynamic().bootstrapModule(AppModule); };
 document.addEventListener(`deviceready', onDeviceReady, false);
 ----
@@ -245,7 +246,7 @@ bash npm install firebase –save npm install @angular/fire –save
 # environment.ts
 ....
 
-javascript export const environment = \{ production: false, firebase: \{
+javascript export const environment = { production: false, firebase: {
 apiKey: ``AIzaSyB7s9s9uVgiZ1w1X2lMqMPaSDRvj7uEv2c'', authDomain:
 ``project2-2092a.firebaseapp.com'', databaseURL:
 ``https://project2-2092a.firebaseio.com'', projectId:
@@ -253,53 +254,53 @@ apiKey: ``AIzaSyB7s9s9uVgiZ1w1X2lMqMPaSDRvj7uEv2c'', authDomain:
 messagingSenderId: ``641766531722'' } };
 
 ===========================================================================
-# component file import \{ HttpClient } from `@angular/common/http';
-import \{ AngularFirestore } from `@angular/fire/firestore';
-constructor(private angularFirestore: AngularFirestore) \{ }
+# component file import { HttpClient } from `@angular/common/http';
+import { AngularFirestore } from `@angular/fire/firestore';
+constructor(private angularFirestore: AngularFirestore) { }
 
 ===========================================================================
 
 == module
 
-import \{ AngularFireModule } from ``@angular/fire''; import \{
+import { AngularFireModule } from ``@angular/fire''; import {
 AngularFirestoreModule } from ``@angular/fire/firestore'';
 
-import \{ environment } from `./../environments/environment';
+import { environment } from `./../environments/environment';
 
 AngularFireModule.initializeApp(environment.firebase),
 AngularFirestoreModule
 
 ===========================================================================
-# service import \{ AngularFirestore } from `@angular/fire/firestore';
-constructor(private angularFirestore: AngularFirestore) \{ }
+# service import { AngularFirestore } from `@angular/fire/firestore';
+constructor(private angularFirestore: AngularFirestore) { }
 
-insert(data) \{
+insert(data) {
 this.angularFirestore.collection(``employees'').add(data)
 console.log(`insert') }
 
-display() \{ return
+display() { return
 this.angularFirestore.collection(``employees'').snapshotChanges();
 console.log(`display') }
 
-update(id, data) \{ this.angularFirestore.doc(``employees/'' +
+update(id, data) { this.angularFirestore.doc(``employees/'' +
 id).update(data) console.log(`update') }
 
-delete(id) \{ this.angularFirestore.doc(``employees/'' + id).delete()
+delete(id) { this.angularFirestore.doc(``employees/'' + id).delete()
 console.log(`delete') }
 
 private subject = new Subject() b$ = this.subject.asObservable()
 
-sendData(obj)\{ this.subject.next(obj) }
+sendData(obj){ this.subject.next(obj) }
 
 ===========================================================================
 
 == component
 
-insert() \{ this.generalService.insert(this.arr)
+insert() { this.generalService.insert(this.arr)
 
 }
 
-display() \{ this.generalService.display() .subscribe( data => \{
+display() { this.generalService.display() .subscribe( data => {
 
 ....
             this.main = data.map(item => {
@@ -317,10 +318,10 @@ display() \{ this.generalService.display() .subscribe( data => \{
 
 }
 
-id = ``fUtH2jdXnZdX4jpxCYyo'' update() \{
+id = ``fUtH2jdXnZdX4jpxCYyo'' update() {
 this.generalService.update(this.id, this.arr) }
 
-delete() \{ this.generalService.delete(this.id) }
+delete() { this.generalService.delete(this.id) }
 
 ....
 
@@ -333,7 +334,7 @@ delete() \{ this.generalService.delete(this.id) }
 
 https://my-fire-904e5-default-rtdb.firebaseio.com/
 
-\{ ``rules'': \{ ``.read'': ``now < 1614796200000'', // 2021-3-4
+{ ``rules'': { ``.read'': ``now < 1614796200000'', // 2021-3-4
 ``.write'': ``now < 1614796200000'', // 2021-3-4 } }
 
 ....
@@ -405,7 +406,7 @@ ts ngModel name=``username''
 ==== Submit form
 ....
 
-ts <form (ngSubmit)=``save()'' #f=``ngForm''> save(f: NgForm): void \{
+ts <form (ngSubmit)=``save()'' #f=``ngForm''> save(f: NgForm): void {
 console.log(f); }
 
 ....
@@ -420,7 +421,7 @@ ts
 ==== Accessing form with @ViewChild
 ....
 
-ts @ViewChild(`f') f: NgForm; save(): void \{ console.log(this.f);
+ts @ViewChild(`f') f: NgForm; save(): void { console.log(this.f);
 this.f.reset(); }
 
 ....
@@ -468,17 +469,17 @@ ts ngModelGroup=``userData'' #userData=``ngModelGroup'' <p
 ....
 
 ts genders = [`male', `female']; <div *ngFor=``let g of genders''>
-<input ngModel [value]=``g'' name=``g'' type=``radio''> \{\{ g }}
+<input ngModel [value]=``g'' name=``g'' type=``radio''> {{ g }}
 
 ....
 
 ==== Set and patch
 ....
 
-ts this.f.setValue(\{ userData: \{ username: suggestedName, email: ’’ },
+ts this.f.setValue({ userData: { username: suggestedName, email: ’’ },
 secret: `pet', g: `male' });
 
-this.f.form.patchValue(\{ userData: \{ username: suggestedName } });
+this.f.form.patchValue({ userData: { username: suggestedName } });
 
 ....
 
@@ -492,7 +493,7 @@ ts
 ==== Reset forms
 ....
 
-ts save(): void \{ console.log(this.f); this.f.reset(); }
+ts save(): void { console.log(this.f); this.f.reset(); }
 
 ....
 
@@ -602,9 +603,9 @@ ionic start todo blank ionic lab ionic serve
 </button>
 ....
 
-javascript fun1()\{ let x = this.alertController .create(\{ ``title'':
-``add'', ``msg'': ``enter todo'' ``inputs'': [ \{ ``type'': ``text'',
-``name'': ``addInput'' }] ``buttons'': [ \{ ``text'': ``cancel'' }, \{
+javascript fun1(){ let x = this.alertController .create({ ``title'':
+``add'', ``msg'': ``enter todo'' ``inputs'': [ { ``type'': ``text'',
+``name'': ``addInput'' }] ``buttons'': [ { ``text'': ``cancel'' }, {
 ``text'': ``add''
 
 ....
@@ -616,12 +617,12 @@ x.present()
 
 }
 
-import \{ AlertController } from `ionic-angular' alertController
+import { AlertController } from `ionic-angular' alertController
 AlertController
 
 public arr = []
 
-handler: (data) => \{ let y y = data.addInput this.arr.push(y) }
+handler: (data) => { let y y = data.addInput this.arr.push(y) }
 
 ``node_modules/jquery/dist/jquery.js'' import * as $ from ``jquery'';
 
@@ -650,11 +651,11 @@ sql # create database use
 
 #find db..find() db..findOne()
 
-condition = \{ ``age'': \{$lt: ``30''} }
+condition = { ``age'': {$lt: ``30''} }
 
 db..find()
 
-#insert obj = \{ ``email'': ``sak'', ``password'': ``123'' } OR arr = [
+#insert obj = { ``email'': ``sak'', ``password'': ``123'' } OR arr = [
 obj1, obj2,…] db..insert( OR )
 
 ....
@@ -685,10 +686,10 @@ transform(value: any) {
 ==== para custom pipe
 ....
 
-@Pipe(\{ name: `shorten' }) implements PipeTransform
+@Pipe({ name: `shorten' }) implements PipeTransform
 
-transform(value: any, limit: number) \{ return value.substr(0, 10); }
-\{\{username |shorten:15}}
+transform(value: any, limit: number) { return value.substr(0, 10); }
+{{username |shorten:15}}
 
 ....
 
@@ -702,9 +703,9 @@ ng g p filter
 
 == import
 
-import \{ Router, ActivatedRoute } from `@angular/router' constructor(
+import { Router, ActivatedRoute } from `@angular/router' constructor(
 private quesService: QuesService, private router: Router, private route:
-ActivatedRoute ) \{}
+ActivatedRoute ) {}
 
 ng generate module app-routing –module app –flat
 
@@ -789,11 +790,11 @@ javascript
 ==== 4. Setting up and Loading Routes
 ....
 
-javascript const appRoutes: Routes = [ \{ path: ’`, component:
-HomeComponent }, \{ path: ’users', component: UsersComponent}, \{ path:
+javascript const appRoutes: Routes = [ { path: ’`, component:
+HomeComponent }, { path: ’users', component: UsersComponent}, { path:
 `servers', component: ServerssComponent}];
 
-@NgModule(\{ imports: [ RouterModule.forRoot(appRoutes)], })
+@NgModule({ imports: [ RouterModule.forRoot(appRoutes)], })
 
 ....
 
@@ -822,7 +823,7 @@ routerLink=``/servers'' // abs, localhost:4200/servers
 ....
 
 html <li role=``presentation'' routerLinkActive=``active''
-[routerLinkActiveOptions]=``\{exact: true}''> Home
+[routerLinkActiveOptions]=``{exact: true}''> Home
 
 Servers
 
@@ -847,7 +848,7 @@ default
 
 javascript inject activatedRoute to refer current comp
 
-router.navigate([`/server'], \{relativeTo: this.ar}) // relative to root
+router.navigate([`/server'], {relativeTo: this.ar}) // relative to root
 by default
 
 ....
@@ -857,7 +858,7 @@ by default
 
 javascript
 
-\{ path: `users/:id', component: UsersComponent},
+{ path: `users/:id', component: UsersComponent},
 
 ....
 
@@ -866,7 +867,7 @@ javascript
 
 javascript // we Fetching route Parameters using activatedRoute
 
-ngoninit() \{ this.user = \{ id: ac.snapshot.params[`id'] id:
+ngoninit() { this.user = { id: ac.snapshot.params[`id'] id:
 ac.snapshot.params[`name'] } }
 
 ....
@@ -876,7 +877,7 @@ ac.snapshot.params[`name'] } }
 
 javascript [routerLink] = ``[`/users', 10, `ana']''
 
-ac.params.subs( (p) => \{ user.id = p[`id']; user.id = p[`name']; } );
+ac.params.subs( (p) => { user.id = p[`id']; user.id = p[`name']; } );
 
 ....
 
@@ -885,10 +886,10 @@ ac.params.subs( (p) => \{ user.id = p[`id']; user.id = p[`name']; } );
 
 javascript
 
-ps = ac.params.subs( (p) => \{ user.id = p[`id']; user.id = p[`name']; }
+ps = ac.params.subs( (p) => { user.id = p[`id']; user.id = p[`name']; }
 );
 
-destroy() \{ ps.unsubs(); }
+destroy() { ps.unsubs(); }
 
 ....
 
@@ -929,11 +930,11 @@ for %n in (home, page1, page2, page3) do ng g c components/%n -is
 –skipTests
 
 for i in page1 page2 page3 page4; do ng g c
-comp/``latexmath:[${i}" -is --skip-tests; done for i in shopping-list; do ng g s service/"$]\{i}''
+comp/``latexmath:[${i}" -is --skip-tests; done for i in shopping-list; do ng g s service/"$]{i}''
 –skip-tests; done
 
-for i in shopping-list shopping-edit; do ng g c components/``$\{i}'' -is
+for i in shopping-list shopping-edit; do ng g c components/``${i}'' -is
 –skip-tests; done
 
-for i in dropdown; do ng g d directive/``$\{i}'' –skip-tests; done
+for i in dropdown; do ng g d directive/``${i}'' –skip-tests; done
 
