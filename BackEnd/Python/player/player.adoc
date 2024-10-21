@@ -1,4 +1,5 @@
-```python
+[source,python]
+----
 import glob
 import json
 import re
@@ -8,13 +9,11 @@ import pandas as pd
 
 tag_dic = {}
 
-
 class SetEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, set):
             return list(obj)
         return json.JSONEncoder.default(self, obj)
-
 
 def xml_traverse(parent, root, xpath):
     tag_name = etree.QName(root).localname
@@ -44,7 +43,6 @@ def xml_traverse(parent, root, xpath):
             tag_dic[tag_name]['child'].add(etree.QName(child).localname)
             xml_traverse(tag_name, child, f'{xpath}/{etree.QName(child).localname}')
 
-
 if __name__ == '__main__':
     # xml_folder = input('xml folder loc: ')
     # for xml_file in glob.glob(f"{xml_folder}/*.xml"):
@@ -57,14 +55,13 @@ if __name__ == '__main__':
     # df.to_excel(f'{out}/mastersheet.xlsx', index=False)
     df.to_excel(f'mastersheet.xlsx', index=False)
 
-```
+----
 
-
-```python
+[source,python]
+----
 import re
 
 import pandas as pd
-
 
 df_p = pd.read_excel('akshu_p.xlsx', sheet_name='pat')
 df = pd.read_excel('akshu.xlsx', sheet_name='Sheet1')
@@ -80,12 +77,10 @@ for index1, row1 in df_p.iterrows():
 
 df.to_excel('akshu.xlsx', index=False)
 
+----
 
-
-```
-
-
-```python
+[source,python]
+----
 import json
 
 from flask import Flask, jsonify
@@ -111,7 +106,6 @@ def get_player_by_year(year):
     per = str(round(len(z) / len(x) * 100, 2))
     return jsonify({"player_percentage": per + "%"})
 
-
 # Todo 2: Average age of players in the different teams.
 @app.route('/avg-age')
 def average_age():
@@ -128,7 +122,6 @@ def average_age():
         ans_dic[k] = round(sum(v) / len(v), 2)
 
     return jsonify(ans_dic)
-
 
 # Todo 3: Which country has the maximum number of left-hand batsmen.
 @app.route('/left-hand')
@@ -152,7 +145,6 @@ def und_player():
             ls.append(dic['Player_Name'])
     return jsonify(ls)
 
-
 # Todo 5: List of all players in an input Country
 @app.route('/country/<string:country>')
 def get_player_by_country(country):
@@ -162,26 +154,23 @@ def get_player_by_country(country):
             ls.append(dic['Player_Name'])
     return jsonify(ls)
 
-
 def load_json():
     global x
     with open('static/player.json') as f:
         x = json.load(f)
-
 
 load_json()
 
 if __name__ == '__main__':
     app.run()
 
-```
+----
 
-
-```python
+[source,python]
+----
 
 import csv
 import json
-
 
 def make_json(csv_path, json_path):
     data = {}
@@ -194,17 +183,15 @@ def make_json(csv_path, json_path):
     with open(json_path, 'w', encoding='utf-8') as jsonf:
         jsonf.write(json.dumps(data, indent=4))
 
-
 if __name__ == '__main__':
     csv_path = r'static/Players.csv'
     json_path = r'static/player.json'
     make_json(csv_path, json_path)
 
+----
 
-```
-
-
-```text
+[source,text]
+----
 Steps to run:
 
 pip install -r requirements.txt
@@ -220,19 +207,18 @@ end point:
 /left-hand
 /und-player
 /country/<string:country>
-```
+----
 
-
-```txt
+[source,txt]
+----
 Flask~=2.1.1
 app~=0.0.1
-```
+----
 
-
-```python
+[source,python]
+----
 from app import app
 import unittest
-
 
 class FlaskTest(unittest.TestCase):
 
@@ -283,10 +269,7 @@ class FlaskTest(unittest.TestCase):
             b'["A Flintoff","AC Thomas","AD Mascarenhas","CJ Jordan","CK Langeveldt","EJG Morgan","GR Napier","JC Buttler","LJ Wright","MJ Lumb","OA Shah","PD Collingwood","RS Bopara","SW Billings"]\n',
             res.data)
 
-
 if __name__ == '__main__':
     unittest.main()
 
-```
-
-
+----
