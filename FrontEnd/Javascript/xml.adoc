@@ -1,3 +1,6 @@
+= xsd
+:toc: left
+
 === step hello.xsd
 
 [source,xml]

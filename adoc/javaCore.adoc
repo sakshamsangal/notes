@@ -1,349 +1,17 @@
 :toc: left
+== Java core
+
+=== Class
 [source,java]
 ----
-// Reversing an array using Java collections. 
-import java.util.*; 
-  
-public class reversingArray { 
-  
-    /*function reverses the elements of the array*/
-    static void reverse(Integer a[]) 
-    { 
-        Collections.reverse(Arrays.asList(a)); 
-        System.out.println(Arrays.asList(a)); 
-    } 
-  
-    public static void main(String[] args) 
-    { 
-        Integer [] arr = {10, 20, 30, 40, 50}; 
-        reverse(arr); 
-    } 
-} 
-----
-
-[source,java]
-----
-import java.util.*;
-import java.util.function.BiConsumer;
-
-class Main {
-    public static void main(String[] args) {
-
-        Scanner sc = new Scanner(System.in);
-        int setSize = sc.nextInt();
-        int noOps = sc.nextInt();
-        BitSet[] bitSets = new BitSet[]{new BitSet(setSize), new BitSet(setSize)};
-        Map<String, BiConsumer<Integer, Integer>> ops = new HashMap<>();
-        ops.put("AND", (index1, index2) -> bitSets[index1 - 1].and(bitSets[index2 - 1]));
-        ops.put("OR", (index1, index2) -> bitSets[index1 - 1].or(bitSets[index2 - 1]));
-        ops.put("XOR", (index1, index2) -> bitSets[index1 - 1].xor(bitSets[index2 - 1]));
-        ops.put("SET", (index1, index2) -> bitSets[index1 - 1].set(index2));
-        ops.put("FLIP", (index1, index2) -> bitSets[index1 - 1].flip(index2));
-        
-        for (int i = 0; i < noOps; i++) {
-            ops.get(sc.next()).accept(sc.nextInt(), sc.nextInt());
-            System.out.println(bitSets[0].cardinality() + " " + bitSets[1].cardinality());
-        }
-        
-    }
-}
-
-5 2
-AND 1 2
-SET 1 4
-----
-
-/**
-
-* TODO: 2.1. Declare 6 private instance variables in this class named as
-postId,
-* emailId, tag, title, description, timestamp. Out of these 6 variables,
-postId
-* will be of type int and timestamp will be of type LocalDateTime
-* (import java.time.LocalDateTime). Other four variables will be of type
-String.
-* {blank}
-* TODO: 2.2. Provide getters and setters for each of the instance
-variables.
-* {blank}
-* Note: Uncomment the toString() method given below, instead of writing
-a new one. */
-
-/**
-
-* This method re-generates hashed Password from raw-password and salt.
-* This will be used during authentication.
-* {blank}
-* @param password char array.
-* @param salt byte array.
-* @return byte array of hashed password. */
-
-....
-Float
-1.4E-45
-3.4028235E38
-
-Double
-4.9E-324
-1.7976931348623157E308
-....
-
-....
-You can remove objects using an iterator, but you can't do it with a for each loop
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-
-class Test {
-    public static void main(String[] args) {
-        List<Integer> list = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            list.add(i);
-        }
-        Iterator<Integer> itr = list.iterator();
-
-        while (itr.hasNext()) {
-            // removing odd numbers   
-            if (itr.next() % 2 != 0) itr.remove();
-        }
-        System.out.println(list);
-        // 0 2 4 6 8
-    }
-}
-And there is the ListIterator<E> which provides two-way traversal it.next() and it.previous().
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
-
-class Test {
-    public static void main(String[] args) {
-
-        List<Integer> list = new ArrayList<>();
-        list.add(10);
-        list.add(20);
-        list.add(30);
-
-        ListIterator<Integer> itr = list.listIterator(list.size());
-
-        while (itr.hasPrevious()) {
-            System.out.println(itr.previous());
-        }
-       // 30 20 10
-    }
-}
-....
-
-[source,text]
-----
-netstat -ano | findstr :8080
-taskkill /PID <PID> /F
-----
-
-....
-run time memory allocation: memory is allocated at run time. e.g. linked list
-compile time memory allocation: memory is allocated at compile time. e.g. int a
-
-
-1. Does it allocates memory at compile time -when the class or method is invoked?
-Class gets memory at compile time while object gets memory at run time.
-
-
-2. At which step while compiling the memory is allocated.
-When JVM takes the byte code, it is then compiled. Java code is converted into byte code and then JVM converts the byte code into machine code.
-
-
-3. Why stack memory is used and not heap memory atcompile time.
-Stack is used to store static memory allocation(whose size is fixed) and heap is used for dynamic memory allocation.
-....
-
-[source,java]
-----
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.apache.poi.xwpf.usermodel.*;
-
-import java.util.Scanner;
-
-class Main {
-    //Main Function
-    public static void main(String[] args) throws Exception {
-        //Instantiate WordGenerator Class
-        WordGenerator wg = new WordGenerator();
-
-        //VK lines text filename
-        // String vkFilename = "src/vk_no.txt";
-
-        //Gather VK Lines from text file
-        // List<String> vkLines = wg.getLines(vkFilename);
-
-        //Create word document according to VK lines
-        wg.createWord();
-    }
-}
-
-class WordGenerator {
-
-    public void createWord() throws IOException {
-        XWPFDocument document = new XWPFDocument();
-        FileOutputStream out = new FileOutputStream(new File("temp.docx"));
-
-        //Set Bold an Italic
-        XWPFParagraph title = document.createParagraph();
-        title.setAlignment(ParagraphAlignment.CENTER);
-        XWPFRun myTitle = title.createRun();
-        myTitle.setBold(true);
-        myTitle.setFontSize(20);
-        myTitle.setText("Aadhaar dedupe");
-        myTitle.addBreak();
-        myTitle.setUnderline(UnderlinePatterns.THICK);
-
-
-        // subTitle.setAlignment(ParagraphAlignment.CENTER);
-
-        File input = new File("src/test.txt");
-        FileWriter fileWriter = new FileWriter("src/output.txt");
-
-        Scanner fileReader = new Scanner(input);
-        Scanner console = new Scanner(System.in);
-
-        String data;
-        String str;
-        List<String> headerList = new ArrayList<>(Arrays.asList("URL", "method", "content-type"));
-
-
-        XWPFParagraph paragraph = document.createParagraph();
-
-        List<XWPFRun> xwpfRuns = new ArrayList<>();
-        xwpfRuns.add(paragraph.createRun());
-        xwpfRuns.add(paragraph.createRun());
-        xwpfRuns.add(paragraph.createRun());
-
-        xwpfRuns.add(paragraph.createRun());
-        xwpfRuns.add(paragraph.createRun());
-        xwpfRuns.add(paragraph.createRun());
-
-
-        xwpfRuns.add(paragraph.createRun());
-        xwpfRuns.add(paragraph.createRun());
-
-        xwpfRuns.add(paragraph.createRun());
-        xwpfRuns.add(paragraph.createRun());
-
-
-        int count  = 0;
-        for (int i = 0; i < 3; i++) {
-            data = fileReader.nextLine();
-            System.out.println("[pan-dedupe] " + headerList.get(i) + ": " + data);
-            System.out.print("change(y/n): ");
-            str = console.nextLine();
-            if (str.equals("y")) {
-                String item = console.nextLine();
-                fileWriter.write(item + "\n");
-                data = item;
-            } else fileWriter.write(data + "\n");
-
-            xwpfRuns.get(count).setBold(true);
-            xwpfRuns.get(count).setFontSize(12);
-            xwpfRuns.get(count).setFontFamily("Arial");
-            xwpfRuns.get(count).setText(headerList.get(i) + ": ");
-            count++;
-
-            xwpfRuns.get(count).setFontSize(12);
-            xwpfRuns.get(count).setFontFamily("Arial");
-            xwpfRuns.get(count).setText(data);
-            xwpfRuns.get(count).addBreak();
-            count++;
-        }
-
-        List<String> payload = new ArrayList<>(Arrays.asList("Request", "Response"));
-
-        for (int i = 0; i < 2; i++) {
-            xwpfRuns.get(count).addBreak();
-            xwpfRuns.get(count).setBold(true);
-            xwpfRuns.get(count).setFontSize(12);
-            xwpfRuns.get(count).setFontFamily("Arial");
-            xwpfRuns.get(count).setText(payload.get(i) + ": ");
-            xwpfRuns.get(count).addBreak();
-            count++;
-
-            // default value
-            StringBuilder result;
-            result = new StringBuilder();
-            while (fileReader.hasNextLine()) {
-                data = fileReader.nextLine();
-                if (data.trim().isEmpty()) {
-                    break;
-                } else {
-                    result.append(data).append("\n");
-                }
-            }
-            System.out.println("[pan-dedupe] " + payload.get(i) + ": ");
-            System.out.println(result);
-            System.out.print("change(y/n): ");
-
-
-            // based on choice
-            str = console.nextLine();
-            if (str.equals("y")) {
-                String lineNew;
-                while (console.hasNextLine()) {
-                    lineNew = console.nextLine();
-                    if (lineNew.isEmpty()) break;
-                    fileWriter.write(lineNew + "\n");
-                }
-            } else {
-                fileWriter.write(String.valueOf(result));
-                String[] request = result.toString().split("\n");
-                for (String req : request) {
-
-                    xwpfRuns.get(count).setFontSize(12);
-                    xwpfRuns.get(count).setFontFamily("Arial");
-                    xwpfRuns.get(count).setText(req);
-                    xwpfRuns.get(count).addBreak();
-
-                }
-            }
-            count++;
-
-        }
-
-        fileWriter.close();
-        fileReader.close();
-
-        document.write(out);
-        out.close();
-        System.out.println("done");
-    }
-}
-
-class ReadFile {
-    public List<String> readLines(String filename) throws IOException {
-        FileReader fileReader = new FileReader(filename);
-
-        BufferedReader bufferedReader = new BufferedReader(fileReader);
-        List<String> lines = new ArrayList<String>();
-        String line = null;
-
-        while ((line = bufferedReader.readLine()) != null) {
-            lines.add(line);
-        }
-
-        bufferedReader.close();
-        return lines;
-    }
-}
-----
-
-....
 class Student {
-    private int rollNumber;
-    private String name;
+    int rollNumber;
+    String name;
+
+    public Student(int rollNumber, String name) {
+        this.rollNumber = rollNumber;
+        this.name = name;
+    }
 
     public int getRollNumber() {
         return rollNumber;
@@ -361,229 +29,120 @@ class Student {
         this.name = name;
     }
 }
-....
-
-....
-public boolean isValidEmail(String email) {
-    // String regex = "^[a-zA-Z0-9]+@[a-zA-Z0-9]+[.][a-zA-Z0-9]{2,6}$";
-
-    String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+
-            "[a-zA-Z0-9_+&*-]+)*@" +
-            "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
-            "A-Z]{2,7}$";
-
-    Pattern pat = Pattern.compile(emailRegex);
-    if (email == null) return false;
-    return pat.matcher(email).matches();
-
-}
-....
-
-[source,text]
 ----
-Hi Divya,
+- prototype to create objects
+- Pascal case
+- only extend (subclass) one parent.
+- implement more than one interface.
 
-Collections.reverse()reverses the order of elements in a list passed as an argument. The elements need to be ofobject type.
+=== What happens if both superclass and subclass have a field with same name?
+Field value gets override.
 
+[source,java]
+----
 
-You can do something like this:
+class Car {
+    String color = "white";
+}
 
-import java.util.Arrays;
-import java.util.Collections;
+class SuperCar extends Car {
+    String color = "yellow";
+}
 
 class Main {
     public static void main(String[] args) {
-        Integer[] arr = {1,2 ,3};
-        Collections.reverse(Arrays.asList(arr));
-        System.out.println(Arrays.toString(arr)); // [3, 2, 1]
+        SuperCar superCar = new SuperCar();
+        System.out.println(superCar.color); // yellow
     }
 }
-I hope it helps!
+
+
+if SuperCar is empty then,
+
+class Car {
+    String color = "white";
+}
+
+class SuperCar extends Car {
+    // String color = "yellow";
+}
+
+class Main {
+    public static void main(String[] args) {
+        SuperCar superCar = new SuperCar();
+        System.out.println(superCar.color); // white
+    }
+}
+
 ----
 
-....
-import java.util.Stack;
+=== Abstraction
+- hide certain details
+- show essential information to user
+- class declared with abstract keyword
+- can have abstract and non-abstract methods
 
-class Demo {
+
+=== object class
+- defines base state and behavior of every object
+- parent class of all class.
+
+
+=== inheritance
+[source,java]
+----
+class Car {
+    void show() {
+        System.out.println("Car");
+    }
+}
+
+// inheritance
+class SuperCar extends Car {
+
+    // run time polymorphism
+    @Override
+    void show() {
+        System.out.println("SuperCar");
+    }
+
+}
+
+class Main {
     public static void main(String[] args) {
-        int[] arr  = {1,2,3};
-        reverseArray(arr);
-        for (int i = 0; i < arr.length; i++)
-            System.out.print(arr[i] + " ");
-            // 3 2 1 
-    }
-
-    private static void reverseArray(int[] arr) {
-        Stack<Integer> stack = new Stack<>();
-        for (int value : arr) {
-            stack.add(value);
-        }
-
-        int i = 0;
-        while (!stack.empty()) {
-            arr[i++] = stack.pop();
-        }
-
+        SuperCar superCar = new SuperCar();
+        superCar.show(); // SuperCar
     }
 }
-....
+----
 
-....
+=== exception
+[source,java]
+----
+public class EmailNotValidException extends Exception{
+	//*****************START*****************Solution 3.1 + 3.2*****************
 
-package java.util;
-
-public class Stack<E> extends Vector<E> {
-    public Stack() { }
-
-    public E push(E item) {
-        addElement(item);
-        return item;
+    public EmailNotValidException(String message) {
+        super(message);
     }
 
-    public synchronized E pop() {
-        E obj;
-        int len = size();
-        obj = peek();
-        removeElementAt(len - 1);
-        return obj;
-    }
 
-    public synchronized E peek() {
-        int len = size();
-        if (len == 0) throw new EmptyStackException();
-        return elementAt(len - 1);
-    }
-
-    public boolean empty() {
-        return size() == 0;
-    }
-
-    public synchronized int search(Object o) {
-        int i = lastIndexOf(o);
-        if (i >= 0) return size() - i;
-        return -1;
-    }
-}
-....
-
-....
-Stack is the subclass of Vector. Since stack follows LAST IN FIRST OUT order, So we can stack for reversing list.
-
-Basic structure of Stack class in Java 8.
-package java.util;
-public class Stack<E> extends Vector<E> {
-    public Stack() {}
-    public E push(E item) {}
-    public synchronized E pop() {}
-    public synchronized E peek() {}
-    public boolean empty() {}
-    public synchronized int search(Object o) {}
-}
-
-
-let list = [10, 20, 30]
-
-There are 4 ways in which we can reverse the list.
-Method 1:
-import java.util.*;
-class Demo {
-    static void reverseArrayList(ArrayList<Integer> list) {
-        Stack<Integer> stack = new Stack<>();
-
-        for (int value : list) {
-            stack.add(value); // add item to stack
-        }
-
-        int i = 0;
-        while (!stack.empty()) {
-            list.set(i++, stack.pop()); // 30 20 10
-        }
-    }
+    //*****************END*****************Solution 3.1 + 3.2*****************
 
     public static void main(String[] args) {
-        ArrayList<Integer> list = new ArrayList<>();
-        list.add(10);
-        list.add(20);
-        list.add(30);
+		try {
+			throw new EmailNotValidException("Custom Message");
+		} catch (EmailNotValidException e) {
+			System.out.println(e.getMessage());
+		}
 
-        reverseArrayList(list);
-        System.out.println(list); // [30, 20, 10]
-    }
+		/**
+		 * Your output should look like this.
+		 * Custom Message
+		 */
+	}
 }
-
-
-Method 2: Using stack.addAll(list) and list.clear()
-Instead of for loop we can directly put all items of list into the stack by:
-
-import java.util.*;
-
-class Demo {
-    static void reverseArrayList(ArrayList<Integer> list) {
-        Stack<Integer> stack = new Stack<>();
-        stack.addAll(list); // [10, 20, 30]
-
-        list.clear();
-        while (!stack.empty()) {
-            list.add(stack.pop()); // 30 20 10
-        }
-    }
-
-    public static void main(String[] args) {
-        ArrayList<Integer> list = new ArrayList<>();
-        list.add(10);
-        list.add(20);
-        list.add(30);
-
-        reverseArrayList(list);
-        System.out.println(list); // [30, 20, 10]
-    }
-}
-
-Method 3: UsingCollections.reverse(list)
-import java.util.*;
-
-class Demo {
-    static void reverseArrayList(ArrayList<Integer> list) {
-        Collections.reverse(list);
-    }
-
-    public static void main(String[] args) {
-        ArrayList<Integer> list = new ArrayList<>();
-        list.add(10);
-        list.add(20);
-        list.add(30);
-
-        reverseArrayList(list);
-        System.out.println(list); // [30, 20, 10]
-    }
-}
-
-
-
-Method 4: Using for-loop and iterate the list in backward direction.
-import java.util.*;
-
-class Demo {
-    static void reverseArrayList(ArrayList<Integer> list) {
-        ArrayList<Integer> revArrayList = new ArrayList<>();
-        for (int i = list.size() - 1; i > -1; i--) {
-            revArrayList.add(list.get(i));
-        }
-        list.clear();
-        list.addAll(revArrayList);
-    }
-
-    public static void main(String[] args) {
-        ArrayList<Integer> list = new ArrayList<>();
-        list.add(10);
-        list.add(20);
-        list.add(30);
-
-        reverseArrayList(list);
-        System.out.println(list); // [30, 20, 10]
-    }
-}
-....
+----
 
 == AES (Advanced Encryption Standard)
 

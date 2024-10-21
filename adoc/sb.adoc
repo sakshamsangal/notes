@@ -1,4 +1,18 @@
 :toc: left
+
+== request flow in spring boot
+
+. request -> servlet container -> dispatcher servlet
+. Dispatcher servlet do:
+.. choose controller -> IOC -> object create
+.. preHandle will execute
+.. call to controller
+.. postHandle
+.. afterCompletion
+.. get response from controller
+
+image:img/apiFlow.png[]
+
 == spring aop
 
 === step 1

@@ -1,13 +1,14 @@
+[source,html]
 ....
 <div class="list-group">
-  <a href="#" class="list-group-item list-group-item-action">First item</a>
-  <a href="#" class="list-group-item list-group-item-action">Second item</a>
-  <a href="#" class="list-group-item list-group-item-action">Third item</a>
+ <a href="#" class="list-group-item list-group-item-action">First item</a>
+ <a href="#" class="list-group-item list-group-item-action">Second item</a>
+ <a href="#" class="list-group-item list-group-item-action">Third item</a>
 </div>
 ....
 
 == nav bar dark
-
+[source,html]
 ....
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="insertLocation">Location</a>
@@ -34,6 +35,7 @@
 </nav>
 ....
 
+[source,html]
 ....
 <ul class="nav flex-column">
     <li class="nav-item">
@@ -182,6 +184,7 @@ body {
   </div> 
 ----
 
+[source,html]
 ....
 <div class="card">
   <div class="card-header">Header</div>
@@ -266,10 +269,12 @@ body {
 </button>
 ----
 
+[source,html]
 ....
 <div class="col-md-4 offset-md-4"></div>
 ....
 
+[source,html]
 ....
 <!-- 3 unit each -->
 <div class="row">
@@ -290,45 +295,46 @@ body {
 ....
 // radio button
 <div class="form-check">
-  <label class="form-check-label">
-    <input type="radio" class="form-check-input" name="optradio">Option 1
-  </label>
+ <label class="form-check-label">
+ <input type="radio" class="form-check-input" name="optradio">Option 1
+ </label>
 </div>
 <div class="form-check">
-  <label class="form-check-label">
-    <input type="radio" class="form-check-input" name="optradio">Option 2
-  </label>
+ <label class="form-check-label">
+ <input type="radio" class="form-check-input" name="optradio">Option 2
+ </label>
 </div>
 <div class="form-check disabled">
-  <label class="form-check-label">
-    <input type="radio" class="form-check-input" name="optradio" disabled>Option 3
-  </label>
+ <label class="form-check-label">
+ <input type="radio" class="form-check-input" name="optradio" disabled>Option 3
+ </label>
 </div>
 
 // checkbox
 <div class="form-check">
-  <label class="form-check-label">
-    <input type="checkbox" class="form-check-input" value="">Option 1
-  </label>
+ <label class="form-check-label">
+ <input type="checkbox" class="form-check-input" value="">Option 1
+ </label>
 </div>
 <div class="form-check">
-  <label class="form-check-label">
-    <input type="checkbox" class="form-check-input" value="">Option 2
-  </label>
+ <label class="form-check-label">
+ <input type="checkbox" class="form-check-input" value="">Option 2
+ </label>
 </div>
 <div class="form-check">
-  <label class="form-check-label">
-    <input type="checkbox" class="form-check-input" value="" disabled>Option 3
-  </label>
+ <label class="form-check-label">
+ <input type="checkbox" class="form-check-input" value="" disabled>Option 3
+ </label>
 </div>
 
 // textarea
 <div class="form-group">
-  <label for="comment">Comment:</label>
-  <textarea class="form-control" rows="5" id="comment"></textarea>
+ <label for="comment">Comment:</label>
+ <textarea class="form-control" rows="5" id="comment"></textarea>
 </div>
 ....
 
+[source,html]
 ....
 <a href="insertLocationPage" 
     class="btn btn-primary btn-sm float-right">

@@ -1,6 +1,0 @@
-= Notes
-:toc: left
-
-include::sb.adoc[]
-include::core.adoc[]
-

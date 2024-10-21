@@ -1,8 +1,9 @@
-# vue 3
+= vue 3
+:toc: left
+== router
 
-## router
-
-```vue
+[source,js]
+----
 import {createRouter, createWebHistory} from 'vue-router';
 
 const routes = [
@@ -31,7 +32,6 @@ const routes = [
     }
 ]
 
-
 const router = createRouter({
     history: createWebHistory(),
     routes,
@@ -39,11 +39,12 @@ const router = createRouter({
 })
 
 export default router
-```
+----
 
-## about vue
+== about vue
 
-```vue
+[source,html]
+----
 <template>
 
   <div class="container-fluid mt-5">
@@ -66,11 +67,12 @@ export default {}
 <style scoped>
 
 </style>
-```
+----
 
-## xml chunk ui
+== xml chunk ui
 
-```vue
+[source,html]
+----
 <template>
   <div class="row">
     <div class="col-sm-6">
@@ -254,11 +256,12 @@ export default {
   }
 }
 </script>
-```
+----
 
-## header comp
+== header comp
 
-```vue
+[source,vue]
+----
 <template>
   <nav class="topnav">
       <router-link to="/">Home</router-link>
@@ -266,11 +269,12 @@ export default {
       <router-link to="/co">Contact</router-link>
     </nav>
 </template>
-```
+----
 
-## app vue
+== app vue
 
-```vue
+[source,vue]
+----
 <template>
   <HeaderComp/>
   <router-view></router-view>
@@ -288,37 +292,37 @@ export default {
 
 </script>
 
+----
 
+== main.js
 
-```
-
-## main.js
-
-```vue
+[source,vue]
+----
 import { createApp } from 'vue'
 import './style.css'
 import './grid.css'
 import App from './App.vue'
 import router from "./router/index_router.js";
 
-
 createApp(App).use(router).mount('#app')
 
-```
+----
 
-## expose network
+== expose network
 
-```vue
+[source,vue]
+----
 export default defineConfig({
   plugins: [vue()],
   server: {
     host: true
   }
 })
-```
+----
 
-## run vite app
+== run vite app
 
-```vue
+[source,vue]
+----
 npm run dev
-```
+----
