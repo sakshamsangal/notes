@@ -1,4 +1,4 @@
-:toc: left
+
 
 [source,yml]
 ----

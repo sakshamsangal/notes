@@ -1,5 +1,5 @@
 = vue 3
-:toc: left
+
 == router
 
 [source,js]

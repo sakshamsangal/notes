@@ -1,8 +1,7 @@
 = notes
 
-:toc: left
-
 == Back end
+
 * link:adoc/javaCore.adoc[]
 * link:adoc/JDBC.adoc[]
 * link:adoc/maven.adoc[]
@@ -15,21 +14,23 @@
 * link:adoc/swing.adoc[]
 
 == Front end
+
 * link:FrontEnd/Javascript/js.adoc[js]
 * link:FrontEnd/Javascript/react.adoc[react]
 * link:FrontEnd/Javascript/css.adoc[css]
-* link:FrontEnd/Javascript/md.adoc[md]
 * link:FrontEnd/Javascript/xml.adoc[xml]
 * link:FrontEnd/Javascript/angular.adoc[angular]
 
-
 == Mobile
+
 * link:adoc/mobile.adoc[]
 
 == Database
+
 * link:adoc/database.adoc[]
 * link:adoc/git.adoc[]
 
 == Windows
+
 * link:adoc/AHK.adoc[]
 * link:adoc/win.adoc[]

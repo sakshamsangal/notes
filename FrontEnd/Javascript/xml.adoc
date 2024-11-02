@@ -1,5 +1,5 @@
 = xsd
-:toc: left
+
 
 === step hello.xsd
 

@@ -1,4 +1,4 @@
-:toc: left
+
 == Recycler view design pattern
 
 === Class

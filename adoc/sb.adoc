@@ -1,5 +1,47 @@
-:toc: left
+== web client
+=== bean
 
+[source,java]
+----
+@Bean
+public WebClient webClient() {
+    return WebClient.builder()
+            .baseUrl(configProperty.getBaseUrl())
+            .build();
+}
+----
+
+=== get
+
+[source,java]
+----
+public String getBooksApi() {
+
+    // web client call
+    return webClient.get()
+            .uri(configProperty.getBooksUri())
+            .retrieve()
+            .bodyToMono(String.class)
+            .block();
+}
+----
+
+=== post
+
+[source,java]
+----
+
+public String postFileApi() {
+
+    // web client call
+    return webClient.post()
+            .uri(configProperty.getPostFileUri())
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+            .retrieve()
+            .bodyToMono(String.class)
+            .block();
+}
+----
 == request flow in spring boot
 
 . request -> servlet container -> dispatcher servlet

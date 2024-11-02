@@ -1,4 +1,4 @@
-:toc: left
+
 == Make angular project
 
 [source,text]
