@@ -1,0 +1,1 @@
+how we are using integration user to call Pajero API for a transaction oi find legal entity for the transaction in oi DV we have nothing between legal entity and integration user from that mapping connected user and the access to open if that open is expired than it uses refresh it uses refresh token to generate access token using access to open OI is able to call pagaar API
