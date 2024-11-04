@@ -1,1 +1,3 @@
 how we are using integration user to call Pajero API for a transaction oi find legal entity for the transaction in oi DV we have nothing between legal entity and integration user from that mapping connected user and the access to open if that open is expired than it uses refresh it uses refresh token to generate access token using access to open OI is able to call pagaar API
+
+user login through UI using credential after successful authentication with page there is orange exchange the authorisation code page Orange store the access to open as refresh token along with user id and TV user already exist in TV then update the page user and then and user and the page otherwise add the page user and tenant user now company schedulers logic security
